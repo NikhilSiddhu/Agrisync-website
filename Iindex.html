@@ -1,0 +1,1058 @@
+<!DOCTYPE html>
+
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>AgriSync</title>
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@300;400;600;700&family=JetBrains+Mono:wght@300;400;500&family=Syne:wght@400;600;700;800&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --soil: #0d1208;
+    --deep: #111a0a;
+    --leaf: #1a2e0f;
+    --moss: #2d4a1e;
+    --sprout: #4a7c3f;
+    --lime: #7ec850;
+    --glow: #a8e063;
+    --gold: #d4a843;
+    --amber: #f0c040;
+    --cream: #f5efe0;
+    --text: #c8d8b0;
+    --muted: #6a7d5a;
+    --border: rgba(126,200,80,0.15);
+  }
+
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+html { scroll-behavior: smooth; }
+
+body {
+background-color: var(–soil);
+color: var(–text);
+font-family: ‘JetBrains Mono’, monospace;
+overflow-x: hidden;
+cursor: none;
+}
+
+/* CUSTOM CURSOR */
+.cursor {
+width: 8px; height: 8px;
+background: var(–glow);
+border-radius: 50%;
+position: fixed; top: 0; left: 0;
+pointer-events: none; z-index: 9999;
+transition: transform 0.1s;
+mix-blend-mode: screen;
+}
+.cursor-ring {
+width: 32px; height: 32px;
+border: 1px solid rgba(168,224,99,0.4);
+border-radius: 50%;
+position: fixed; top: 0; left: 0;
+pointer-events: none; z-index: 9998;
+transition: transform 0.18s ease, width 0.2s, height 0.2s;
+}
+
+/* NOISE OVERLAY */
+body::before {
+content: ‘’;
+position: fixed; inset: 0;
+background-image: url(“data:image/svg+xml,%3Csvg viewBox=‘0 0 256 256’ xmlns=‘http://www.w3.org/2000/svg’%3E%3Cfilter id=‘noise’%3E%3CfeTurbulence type=‘fractalNoise’ baseFrequency=‘0.9’ numOctaves=‘4’ stitchTiles=‘stitch’/%3E%3C/filter%3E%3Crect width=‘100%25’ height=‘100%25’ filter=‘url(%23noise)’ opacity=‘0.04’/%3E%3C/svg%3E”);
+pointer-events: none; z-index: 1; opacity: 0.35;
+}
+
+/* CANVAS */
+#field-canvas {
+position: fixed; inset: 0;
+pointer-events: none; z-index: 0;
+opacity: 0.35;
+}
+
+/* NAV */
+nav {
+position: fixed; top: 0; left: 0; right: 0;
+z-index: 100;
+display: flex; align-items: center; justify-content: space-between;
+padding: 1.5rem 4rem;
+background: linear-gradient(to bottom, rgba(13,18,8,0.95), transparent);
+backdrop-filter: blur(4px);
+}
+.nav-logo {
+font-family: ‘Syne’, sans-serif;
+font-weight: 800; font-size: 1.2rem;
+color: var(–glow);
+letter-spacing: 0.08em;
+text-decoration: none;
+}
+.nav-logo span { color: var(–amber); }
+.nav-links { display: flex; gap: 2.5rem; list-style: none; }
+.nav-links a {
+font-size: 0.7rem; letter-spacing: 0.15em;
+text-transform: uppercase; color: var(–muted);
+text-decoration: none;
+transition: color 0.3s;
+}
+.nav-links a:hover { color: var(–glow); }
+.nav-badge {
+font-size: 0.6rem; letter-spacing: 0.12em;
+text-transform: uppercase; color: var(–amber);
+border: 1px solid rgba(212,168,67,0.35);
+padding: 0.35rem 0.8rem; border-radius: 2rem;
+}
+
+/* HERO */
+.hero {
+position: relative; z-index: 2;
+min-height: 100vh;
+display: flex; flex-direction: column;
+justify-content: center; align-items: flex-start;
+padding: 0 4rem;
+overflow: hidden;
+}
+.hero-tag {
+font-size: 0.65rem; letter-spacing: 0.25em;
+text-transform: uppercase;
+color: var(–lime);
+border-left: 2px solid var(–lime);
+padding-left: 1rem;
+margin-bottom: 2.5rem;
+opacity: 0;
+animation: fadeUp 0.8s 0.3s forwards;
+}
+.hero-title {
+font-family: ‘Cormorant Garamond’, serif;
+font-size: clamp(4rem, 10vw, 9rem);
+font-weight: 700;
+line-height: 0.92;
+color: var(–cream);
+max-width: 18ch;
+opacity: 0;
+animation: fadeUp 1s 0.5s forwards;
+}
+.hero-title .highlight {
+color: var(–glow);
+font-style: italic;
+}
+.hero-title .highlight-gold {
+color: var(–amber);
+}
+.hero-sub {
+margin-top: 2.5rem;
+max-width: 52ch;
+font-size: 0.85rem;
+line-height: 1.9;
+color: var(–muted);
+opacity: 0;
+animation: fadeUp 1s 0.8s forwards;
+}
+.hero-meta {
+margin-top: 3.5rem;
+display: flex; gap: 3rem; align-items: center;
+opacity: 0;
+animation: fadeUp 1s 1s forwards;
+}
+.hero-origin {
+font-size: 0.65rem; letter-spacing: 0.15em;
+text-transform: uppercase; color: var(–muted);
+display: flex; flex-direction: column; gap: 0.3rem;
+}
+.hero-origin strong { color: var(–cream); font-family: ‘Syne’, sans-serif; font-size: 0.8rem; }
+.hero-cta {
+display: inline-flex; align-items: center; gap: 0.8rem;
+background: var(–glow);
+color: var(–soil);
+font-family: ‘Syne’, sans-serif;
+font-weight: 700; font-size: 0.75rem;
+letter-spacing: 0.1em; text-transform: uppercase;
+text-decoration: none;
+padding: 1rem 2rem;
+border-radius: 0.25rem;
+transition: background 0.3s, transform 0.2s;
+}
+.hero-cta:hover { background: var(–amber); transform: translateY(-2px); }
+.hero-cta svg { width: 14px; height: 14px; }
+.scroll-hint {
+position: absolute; bottom: 2.5rem; left: 4rem;
+font-size: 0.6rem; letter-spacing: 0.2em; text-transform: uppercase;
+color: var(–muted); display: flex; align-items: center; gap: 0.8rem;
+opacity: 0; animation: fadeUp 1s 1.4s forwards;
+}
+.scroll-hint::before {
+content: ‘’; display: block;
+width: 40px; height: 1px; background: var(–muted);
+}
+
+/* COUNTDOWN */
+.countdown-section {
+position: relative; z-index: 2;
+padding: 5rem 4rem;
+border-top: 1px solid var(–border);
+background: linear-gradient(to bottom, transparent, rgba(26,46,15,0.4));
+}
+.countdown-label {
+font-size: 0.65rem; letter-spacing: 0.25em;
+text-transform: uppercase; color: var(–lime);
+margin-bottom: 2rem;
+display: flex; align-items: center; gap: 1rem;
+}
+.countdown-label::after {
+content: ‘’; flex: 1; height: 1px;
+background: linear-gradient(to right, var(–border), transparent);
+}
+.countdown-grid {
+display: grid; grid-template-columns: repeat(4, 1fr);
+gap: 1px; background: var(–border);
+max-width: 700px;
+}
+.countdown-unit {
+background: var(–deep);
+padding: 2.5rem 2rem;
+display: flex; flex-direction: column;
+align-items: center; gap: 0.6rem;
+transition: background 0.3s;
+}
+.countdown-unit:hover { background: var(–leaf); }
+.countdown-num {
+font-family: ‘Cormorant Garamond’, serif;
+font-size: 4rem; font-weight: 300;
+color: var(–glow);
+line-height: 1;
+transition: color 0.3s;
+}
+.countdown-lbl {
+font-size: 0.55rem; letter-spacing: 0.2em;
+text-transform: uppercase; color: var(–muted);
+}
+.deadline-note {
+margin-top: 1.5rem;
+font-size: 0.7rem; color: var(–muted);
+}
+.deadline-note span { color: var(–amber); }
+
+/* SECTIONS */
+section {
+position: relative; z-index: 2;
+padding: 7rem 4rem;
+}
+.section-tag {
+font-size: 0.62rem; letter-spacing: 0.28em;
+text-transform: uppercase; color: var(–lime);
+margin-bottom: 1.5rem;
+display: flex; align-items: center; gap: 1rem;
+}
+.section-tag::before {
+content: ‘//’; color: var(–sprout);
+}
+.section-title {
+font-family: ‘Cormorant Garamond’, serif;
+font-size: clamp(2.5rem, 5vw, 4.5rem);
+font-weight: 600; color: var(–cream);
+line-height: 1.1;
+max-width: 22ch;
+margin-bottom: 1.5rem;
+}
+.section-body {
+font-size: 0.82rem; line-height: 2;
+color: var(–muted); max-width: 60ch;
+}
+
+/* HOW IT WORKS — PIPELINE */
+.pipeline {
+margin-top: 5rem;
+display: flex; flex-direction: column; gap: 0;
+}
+.pipeline-step {
+display: grid; grid-template-columns: 80px 1fr;
+gap: 0; position: relative;
+}
+.pipeline-step::before {
+content: ‘’;
+position: absolute; left: 39px; top: 64px;
+width: 2px; bottom: 0;
+background: linear-gradient(to bottom, var(–sprout), transparent);
+}
+.pipeline-step:last-child::before { display: none; }
+.pipeline-index {
+display: flex; flex-direction: column;
+align-items: center; padding-top: 1.5rem;
+}
+.pipeline-dot {
+width: 20px; height: 20px;
+border-radius: 50%;
+border: 2px solid var(–sprout);
+background: var(–deep);
+display: flex; align-items: center; justify-content: center;
+flex-shrink: 0;
+transition: border-color 0.3s, background 0.3s;
+}
+.pipeline-dot::after {
+content: ‘’; width: 6px; height: 6px;
+border-radius: 50%; background: var(–sprout);
+transition: background 0.3s;
+}
+.pipeline-step:hover .pipeline-dot {
+border-color: var(–glow); background: var(–leaf);
+}
+.pipeline-step:hover .pipeline-dot::after { background: var(–glow); }
+.pipeline-card {
+margin: 1rem 0 3rem 0;
+border: 1px solid var(–border);
+background: linear-gradient(135deg, rgba(26,46,15,0.5), rgba(13,18,8,0.8));
+padding: 2rem 2.5rem;
+border-radius: 0.5rem;
+transition: border-color 0.3s, transform 0.3s;
+backdrop-filter: blur(8px);
+}
+.pipeline-step:hover .pipeline-card {
+border-color: rgba(126,200,80,0.4);
+transform: translateX(6px);
+}
+.pipeline-card-head {
+display: flex; align-items: center;
+justify-content: space-between; margin-bottom: 0.8rem;
+}
+.pipeline-card-title {
+font-family: ‘Syne’, sans-serif;
+font-weight: 700; font-size: 1rem;
+color: var(–cream);
+}
+.pipeline-card-badge {
+font-size: 0.6rem; letter-spacing: 0.12em;
+text-transform: uppercase;
+padding: 0.3rem 0.7rem;
+border-radius: 2rem;
+border: 1px solid var(–border);
+color: var(–lime);
+}
+.pipeline-card p {
+font-size: 0.78rem; line-height: 1.85;
+color: var(–muted);
+}
+.pipeline-card-tags {
+display: flex; flex-wrap: wrap; gap: 0.5rem;
+margin-top: 1.2rem;
+}
+.tag {
+font-size: 0.58rem; letter-spacing: 0.1em;
+text-transform: uppercase;
+padding: 0.3rem 0.75rem;
+background: rgba(74,124,63,0.15);
+border: 1px solid rgba(74,124,63,0.25);
+border-radius: 0.2rem;
+color: var(–sprout);
+}
+
+/* IMPACT */
+.impact-grid {
+display: grid; grid-template-columns: repeat(3, 1fr);
+gap: 1px; background: var(–border);
+margin-top: 4rem;
+}
+.impact-card {
+background: var(–deep);
+padding: 3rem 2.5rem;
+transition: background 0.3s;
+}
+.impact-card:hover { background: var(–leaf); }
+.impact-icon {
+font-size: 2.5rem; margin-bottom: 1.5rem;
+}
+.impact-num {
+font-family: ‘Cormorant Garamond’, serif;
+font-size: 3.5rem; font-weight: 300;
+color: var(–glow); line-height: 1;
+margin-bottom: 0.5rem;
+}
+.impact-label {
+font-family: ‘Syne’, sans-serif;
+font-weight: 600; font-size: 0.85rem;
+color: var(–cream); margin-bottom: 0.75rem;
+}
+.impact-desc {
+font-size: 0.72rem; line-height: 1.8;
+color: var(–muted);
+}
+
+/* AI SECTION */
+.ai-window {
+margin-top: 4rem;
+border: 1px solid var(–border);
+border-radius: 0.5rem;
+overflow: hidden;
+background: rgba(13,18,8,0.9);
+backdrop-filter: blur(12px);
+max-width: 800px;
+}
+.ai-window-bar {
+background: var(–leaf);
+padding: 0.8rem 1.5rem;
+display: flex; align-items: center; gap: 0.5rem;
+border-bottom: 1px solid var(–border);
+}
+.dot-r { width: 10px; height: 10px; border-radius: 50%; background: #ff5f57; }
+.dot-y { width: 10px; height: 10px; border-radius: 50%; background: #febc2e; }
+.dot-g { width: 10px; height: 10px; border-radius: 50%; background: #28c840; }
+.ai-window-title {
+margin-left: auto; margin-right: auto;
+font-size: 0.62rem; letter-spacing: 0.12em;
+text-transform: uppercase; color: var(–muted);
+}
+.ai-window-body { padding: 2rem; }
+.ai-line {
+display: flex; gap: 1rem; margin-bottom: 1.2rem;
+font-size: 0.75rem; line-height: 1.7;
+opacity: 0;
+animation: fadeIn 0.5s forwards;
+}
+.ai-line:nth-child(1) { animation-delay: 0.2s; }
+.ai-line:nth-child(2) { animation-delay: 0.9s; }
+.ai-line:nth-child(3) { animation-delay: 1.8s; }
+.ai-line:nth-child(4) { animation-delay: 2.7s; }
+.ai-line:nth-child(5) { animation-delay: 3.5s; }
+.ai-prompt { color: var(–lime); flex-shrink: 0; }
+.ai-text { color: var(–text); }
+.ai-alert { color: var(–amber); }
+.ai-action { color: var(–glow); }
+.cursor-blink {
+display: inline-block; width: 7px; height: 1em;
+background: var(–glow); vertical-align: text-bottom;
+animation: blink 1s infinite;
+}
+
+/* TECH STACK */
+.tech-grid {
+display: grid; grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+gap: 1px; background: var(–border);
+margin-top: 4rem;
+}
+.tech-item {
+background: var(–deep);
+padding: 2rem;
+transition: background 0.3s;
+display: flex; flex-direction: column; gap: 0.6rem;
+}
+.tech-item:hover { background: var(–leaf); }
+.tech-name {
+font-family: ‘Syne’, sans-serif;
+font-weight: 700; font-size: 0.9rem;
+color: var(–cream);
+}
+.tech-role {
+font-size: 0.65rem; color: var(–muted);
+line-height: 1.6;
+}
+.tech-dot {
+width: 6px; height: 6px; border-radius: 50%;
+background: var(–glow);
+}
+
+/* FOOTER */
+footer {
+position: relative; z-index: 2;
+border-top: 1px solid var(–border);
+padding: 4rem;
+display: grid; grid-template-columns: 1fr 1fr;
+gap: 4rem;
+background: var(–deep);
+}
+.footer-brand {
+font-family: ‘Syne’, sans-serif;
+font-weight: 800; font-size: 2.5rem;
+color: var(–cream);
+line-height: 1;
+margin-bottom: 1rem;
+}
+.footer-brand span { color: var(–glow); }
+.footer-tagline {
+font-size: 0.75rem; color: var(–muted); line-height: 1.8;
+max-width: 40ch;
+}
+.footer-contact-label {
+font-size: 0.6rem; letter-spacing: 0.2em;
+text-transform: uppercase; color: var(–lime);
+margin-bottom: 0.8rem;
+}
+.footer-email {
+font-family: ‘Cormorant Garamond’, serif;
+font-size: 1.4rem; font-weight: 300;
+color: var(–cream);
+text-decoration: none;
+border-bottom: 1px solid var(–border);
+padding-bottom: 0.3rem;
+transition: color 0.3s, border-color 0.3s;
+display: inline-block;
+}
+.footer-email:hover { color: var(–glow); border-color: var(–glow); }
+.footer-meta {
+margin-top: 2rem;
+font-size: 0.62rem; color: var(–muted);
+display: flex; flex-direction: column; gap: 0.4rem;
+}
+.footer-bottom {
+grid-column: 1 / -1;
+border-top: 1px solid var(–border);
+padding-top: 2rem;
+display: flex; justify-content: space-between; align-items: center;
+}
+.footer-copy {
+font-size: 0.6rem; letter-spacing: 0.1em;
+color: var(–muted);
+}
+.footer-domain {
+font-family: ‘Syne’, sans-serif;
+font-weight: 700; font-size: 0.8rem;
+color: var(–amber);
+letter-spacing: 0.05em;
+}
+
+/* DIVIDER */
+.divider {
+position: relative; z-index: 2;
+height: 1px; background: var(–border);
+margin: 0 4rem;
+}
+
+/* STATUS BAR */
+.status-bar {
+position: relative; z-index: 2;
+background: var(–leaf);
+padding: 0.6rem 4rem;
+display: flex; align-items: center; gap: 2rem;
+font-size: 0.6rem; letter-spacing: 0.12em;
+text-transform: uppercase; color: var(–muted);
+overflow: hidden;
+}
+.status-item {
+display: flex; align-items: center; gap: 0.5rem;
+flex-shrink: 0;
+}
+.status-dot {
+width: 5px; height: 5px; border-radius: 50%;
+background: var(–lime);
+animation: pulse 2s infinite;
+}
+
+/* KEYFRAMES */
+@keyframes fadeUp {
+from { opacity: 0; transform: translateY(24px); }
+to { opacity: 1; transform: translateY(0); }
+}
+@keyframes fadeIn {
+from { opacity: 0; }
+to { opacity: 1; }
+}
+@keyframes blink {
+0%, 100% { opacity: 1; }
+50% { opacity: 0; }
+}
+@keyframes pulse {
+0%, 100% { opacity: 1; transform: scale(1); }
+50% { opacity: 0.4; transform: scale(1.5); }
+}
+@keyframes marquee {
+from { transform: translateX(0); }
+to { transform: translateX(-50%); }
+}
+.marquee-track {
+display: flex; animation: marquee 30s linear infinite;
+width: max-content;
+}
+.marquee-track span { margin-right: 4rem; }
+
+/* SCROLL REVEAL */
+.reveal {
+opacity: 0; transform: translateY(30px);
+transition: opacity 0.8s, transform 0.8s;
+}
+.reveal.visible {
+opacity: 1; transform: translateY(0);
+}
+
+@media (max-width: 768px) {
+nav { padding: 1.2rem 1.5rem; }
+.nav-links, .nav-badge { display: none; }
+.hero, section, .countdown-section, footer { padding-left: 1.5rem; padding-right: 1.5rem; }
+.hero-title { font-size: 3.5rem; }
+.impact-grid { grid-template-columns: 1fr; }
+.tech-grid { grid-template-columns: 1fr 1fr; }
+footer { grid-template-columns: 1fr; gap: 2rem; }
+.divider { margin: 0 1.5rem; }
+.status-bar { padding: 0.6rem 1.5rem; }
+.countdown-grid { grid-template-columns: repeat(2, 1fr); }
+}
+</style>
+
+</head>
+<body>
+
+<div class="cursor" id="cursor"></div>
+<div class="cursor-ring" id="cursor-ring"></div>
+<canvas id="field-canvas"></canvas>
+
+<!-- NAV -->
+
+<nav>
+  <a href="#" class="nav-logo">AGRI<span>SYNC</span></a>
+  <ul class="nav-links">
+    <li><a href="#about">About</a></li>
+    <li><a href="#pipeline">How It Works</a></li>
+    <li><a href="#ai">AI Engine</a></li>
+    <li><a href="#impact">Impact</a></li>
+    <li><a href="#contact">Contact</a></li>
+  </ul>
+  <div class="nav-badge">⬤&nbsp; In Development</div>
+</nav>
+
+<!-- STATUS BAR -->
+
+<div class="status-bar" style="margin-top:0; padding-top:0.6rem; padding-bottom:0.6rem;">
+  <div style="overflow:hidden; width:100%;">
+    <div class="marquee-track">
+      <span class="status-item"><span class="status-dot"></span> LoRa Network Design — Active</span>
+      <span class="status-item"><span class="status-dot"></span> Sensor Node Prototyping — Active</span>
+      <span class="status-item"><span class="status-dot"></span> Cloud Host Architecture — Planning</span>
+      <span class="status-item"><span class="status-dot"></span> AI Model Training — Pending</span>
+      <span class="status-item"><span class="status-dot"></span> Web Platform — In Progress</span>
+      <span class="status-item"><span class="status-dot"></span> agrisync.tech — Registered</span>
+    </div>
+  </div>
+</div>
+
+<!-- HERO -->
+
+<section class="hero" id="about">
+  <div class="hero-tag">Agriculture Intelligence Platform &nbsp;·&nbsp; Est. 2026 &nbsp;·&nbsp; Rural India</div>
+  <h1 class="hero-title">
+    The <span class="highlight">field</span> finally<br>
+    speaks <span class="highlight-gold">data.</span>
+  </h1>
+  <p class="hero-sub">
+    AgriSync is a full-stack precision agriculture system — from soil sensors buried in a village field to an AI that predicts disease outbreaks 12 hours before they happen. Built with minimum resources. Maximum resolve.
+  </p>
+  <div class="hero-meta">
+    <a href="#pipeline" class="hero-cta">
+      See How It Works
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
+    </a>
+    <div class="hero-origin">
+      <span>Origin</span>
+      <strong>Village Field, India</strong>
+    </div>
+    <div class="hero-origin">
+      <span>Domain</span>
+      <strong>agrisync.tech</strong>
+    </div>
+  </div>
+  <div class="scroll-hint">Scroll to explore</div>
+</section>
+
+<!-- COUNTDOWN -->
+
+<div class="countdown-section reveal" id="countdown-section">
+  <div class="countdown-label">Launch Countdown — November 2026</div>
+  <div class="countdown-grid">
+    <div class="countdown-unit">
+      <div class="countdown-num" id="cd-days">000</div>
+      <div class="countdown-lbl">Days</div>
+    </div>
+    <div class="countdown-unit">
+      <div class="countdown-num" id="cd-hours">00</div>
+      <div class="countdown-lbl">Hours</div>
+    </div>
+    <div class="countdown-unit">
+      <div class="countdown-num" id="cd-mins">00</div>
+      <div class="countdown-lbl">Minutes</div>
+    </div>
+    <div class="countdown-unit">
+      <div class="countdown-num" id="cd-secs">00</div>
+      <div class="countdown-lbl">Seconds</div>
+    </div>
+  </div>
+  <p class="deadline-note">Target deadline: <span>November 1, 2026</span> — built solo, from a village, on an iPad.</p>
+</div>
+
+<div class="divider"></div>
+
+<!-- PIPELINE -->
+
+<section id="pipeline">
+  <div class="section-tag reveal">System Architecture</div>
+  <h2 class="section-title reveal">From soil<br>to screen — <em style="font-style:italic;color:var(--glow)">every layer.</em></h2>
+  <p class="section-body reveal">A complete end-to-end data pipeline spanning sensor nodes in the field, wireless LoRa transmission, edge computing on Raspberry Pi, cloud infrastructure on Cloud, and a real-time web dashboard.</p>
+
+  <div class="pipeline">
+
+```
+<div class="pipeline-step reveal">
+  <div class="pipeline-index"><div class="pipeline-dot"></div></div>
+  <div class="pipeline-card">
+    <div class="pipeline-card-head">
+      <div class="pipeline-card-title">🌱 Field Sensor Nodes (×2–3)</div>
+      <div class="pipeline-card-badge">Layer 01</div>
+    </div>
+    <p>Each node sits in the soil and continuously reads key agronomic parameters. A microcontroller onboard processes and packages the readings before wireless transmission.</p>
+    <div class="pipeline-card-tags">
+      <span class="tag">Soil Moisture</span>
+      <span class="tag">Soil Temperature</span>
+      <span class="tag">Soil pH</span>
+      <span class="tag">NPK Levels</span>
+      <span class="tag">Microcontroller</span>
+    </div>
+  </div>
+</div>
+
+<div class="pipeline-step reveal">
+  <div class="pipeline-index"><div class="pipeline-dot"></div></div>
+  <div class="pipeline-card">
+    <div class="pipeline-card-head">
+      <div class="pipeline-card-title">🌤️ Environmental Sensor Node</div>
+      <div class="pipeline-card-badge">Layer 02</div>
+    </div>
+    <p>A dedicated ambient node captures external conditions from the field area — temperature, humidity, light, and atmospheric pressure — giving the AI a full picture of the local environment.</p>
+    <div class="pipeline-card-tags">
+      <span class="tag">Air Temperature</span>
+      <span class="tag">Humidity</span>
+      <span class="tag">Barometric Pressure</span>
+      <span class="tag">Light Intensity</span>
+    </div>
+  </div>
+</div>
+
+<div class="pipeline-step reveal">
+  <div class="pipeline-index"><div class="pipeline-dot"></div></div>
+  <div class="pipeline-card">
+    <div class="pipeline-card-head">
+      <div class="pipeline-card-title">📡 LoRa Wireless Transmission</div>
+      <div class="pipeline-card-badge">Layer 03</div>
+    </div>
+    <p>All nodes communicate via LoRa (Long Range radio), which provides kilometer-scale range on minimal power — perfect for remote fields with no cellular or Wi-Fi coverage. Data hops from the field to home with zero infrastructure.</p>
+    <div class="pipeline-card-tags">
+      <span class="tag">LoRa 825-853MHz</span>
+      <span class="tag">Low Power</span>
+      <span class="tag">Long Range</span>
+      <span class="tag">Mesh Capable</span>
+    </div>
+  </div>
+</div>
+
+<div class="pipeline-step reveal">
+  <div class="pipeline-index"><div class="pipeline-dot"></div></div>
+  <div class="pipeline-card">
+    <div class="pipeline-card-head">
+      <div class="pipeline-card-title">🖥️ Raspberry Pi Gateway</div>
+      <div class="pipeline-card-badge">Layer 04</div>
+    </div>
+    <p>A Raspberry Pi at home acts as the LoRa gateway and edge processor. It receives packets, decodes them, and pushes cleaned, structured data upstream to Cloud. Coded entirely on Raspberry Pi and iPad.</p>
+    <div class="pipeline-card-tags">
+      <span class="tag">Raspberry Pi</span>
+      <span class="tag">Python</span>
+      <span class="tag">MQTT / HTTP</span>
+      <span class="tag">Edge Processing</span>
+    </div>
+  </div>
+</div>
+
+<div class="pipeline-step reveal">
+  <div class="pipeline-index"><div class="pipeline-dot"></div></div>
+  <div class="pipeline-card">
+    <div class="pipeline-card-head">
+      <div class="pipeline-card-title">☁️ Cloud Infrastructure</div>
+      <div class="pipeline-card-badge">Layer 05</div>
+    </div>
+    <p>Data lands in Cloud servie where it is stored, indexed, and made available for real-time queries. IoT Core ingests the stream, DynamoDB or S3 stores the historical record, and Lambda functions handle processing and AI triggers.</p>
+    <div class="pipeline-card-tags">
+      <span class="tag">Cloud IoT Core</span>
+      <span class="tag">DynamoDB</span>
+      <span class="tag">Lambda</span>
+      <span class="tag">S3</span>
+      <span class="tag">API Gateway</span>
+    </div>
+  </div>
+</div>
+
+<div class="pipeline-step reveal">
+  <div class="pipeline-index"><div class="pipeline-dot"></div></div>
+  <div class="pipeline-card">
+    <div class="pipeline-card-head">
+      <div class="pipeline-card-title">🤖 AI Prediction Engine</div>
+      <div class="pipeline-card-badge">Layer 06</div>
+    </div>
+    <p>A machine learning model trained on simulated historical field data checks current sensor readings against known risk patterns. It generates a 12-hour lookahead forecast — alerting farmers to potential disease outbreaks, pest conditions, or nutrient stress before they occur, with actionable recommendations.</p>
+    <div class="pipeline-card-tags">
+      <span class="tag">Synthetic Training Data</span>
+      <span class="tag">12-Hour Forecast</span>
+      <span class="tag">Disease Detection</span>
+      <span class="tag">Fertilizer Recs</span>
+      <span class="tag">Pest Alerts</span>
+    </div>
+  </div>
+</div>
+
+<div class="pipeline-step reveal">
+  <div class="pipeline-index"><div class="pipeline-dot"></div></div>
+  <div class="pipeline-card">
+    <div class="pipeline-card-head">
+      <div class="pipeline-card-title">🌐 agrisync.tech Dashboard</div>
+      <div class="pipeline-card-badge">Layer 07</div>
+    </div>
+    <p>The public-facing web platform at agrisync.tech presents live field data, AI alerts, historical trends, and recommendations in a clean, accessible interface — built for farmers, agronomists, and researchers.</p>
+    <div class="pipeline-card-tags">
+      <span class="tag">Live Dashboard</span>
+      <span class="tag">Alert System</span>
+      <span class="tag">Data Viz</span>
+      <span class="tag">Mobile Friendly</span>
+    </div>
+  </div>
+</div>
+```
+
+  </div>
+</section>
+
+<div class="divider"></div>
+
+<!-- AI ENGINE -->
+
+<section id="ai">
+  <div class="section-tag reveal">Predictive Intelligence</div>
+  <h2 class="section-title reveal">12 hours ahead<br>of the <em style="color:var(--amber);font-style:italic">outbreak.</em></h2>
+  <p class="section-body reveal">AgriSync's AI doesn't just report what's happening in your field — it tells you what's about to happen. By comparing live sensor data against trained historical patterns of crop diseases and stress conditions, it gives you a 12-hour action window.</p>
+
+  <div class="ai-window reveal">
+    <div class="ai-window-bar">
+      <div class="dot-r"></div><div class="dot-y"></div><div class="dot-g"></div>
+      <div class="ai-window-title">agrisync-ai — prediction engine v0.1</div>
+    </div>
+    <div class="ai-window-body">
+      <div class="ai-line">
+        <span class="ai-prompt">$</span>
+        <span class="ai-text">Fetching live sensor data from Node-01, Node-02, Node-ENV...</span>
+      </div>
+      <div class="ai-line">
+        <span class="ai-prompt">→</span>
+        <span class="ai-text">Soil moisture: <span class="ai-alert">82%</span> | Temp: 28.4°C | Humidity: <span class="ai-alert">91%</span> | pH: 6.2</span>
+      </div>
+      <div class="ai-line">
+        <span class="ai-prompt">⚠</span>
+        <span class="ai-alert">ALERT: Conditions match early-stage Late Blight onset pattern (confidence: 87%)</span>
+      </div>
+      <div class="ai-line">
+        <span class="ai-prompt">⏱</span>
+        <span class="ai-text">Predicted window: <span class="ai-alert">~10–12 hours</span> before visible symptoms appear</span>
+      </div>
+      <div class="ai-line">
+        <span class="ai-prompt">✓</span>
+        <span class="ai-action">Recommendation: Apply copper-based fungicide spray at dawn. Consider reducing irrigation for 48h. Natural alt: Neem oil solution 3% concentration.</span>
+      </div>
+      <div class="ai-line" style="animation-delay:4.2s">
+        <span class="ai-prompt">$</span>
+        <span class="ai-text">Next scan in 30 minutes &nbsp;<span class="cursor-blink"></span></span>
+      </div>
+    </div>
+  </div>
+</section>
+
+<div class="divider"></div>
+
+<!-- IMPACT -->
+
+<section id="impact">
+  <div class="section-tag reveal">Why It Matters</div>
+  <h2 class="section-title reveal">Built from a village.<br>Designed for <em style="color:var(--glow);font-style:italic">millions.</em></h2>
+  <p class="section-body reveal">India has over 600,000 villages. Most farmers have no access to real-time field data or early disease warnings. AgriSync is proof that precision agriculture can be built with minimal resources — and scaled to every field.</p>
+
+  <div class="impact-grid">
+    <div class="impact-card reveal">
+      <div class="impact-icon">🌾</div>
+      <div class="impact-num">60%</div>
+      <div class="impact-label">of India's workforce is in agriculture</div>
+      <p class="impact-desc">Yet most operate without any real-time data on soil health or crop conditions. AgriSync bridges this gap with affordable IoT.</p>
+    </div>
+    <div class="impact-card reveal">
+      <div class="impact-icon">📉</div>
+      <div class="impact-num">₹3T+</div>
+      <div class="impact-label">Crop losses per year to disease & stress</div>
+      <p class="impact-desc">Early prediction and timely intervention can dramatically reduce these losses — 12 hours is all it takes to act before damage spreads.</p>
+    </div>
+    <div class="impact-card reveal">
+      <div class="impact-icon">🔋</div>
+      <div class="impact-num">1 iPad</div>
+      <div class="impact-label">The entire platform built on one device</div>
+      <p class="impact-desc">No laptop. No office. Just an iPad, a Raspberry Pi, a LoRa module, and the resolve to solve a real problem from where it actually exists.</p>
+    </div>
+  </div>
+</section>
+
+<div class="divider"></div>
+
+<!-- TECH STACK -->
+
+<section>
+  <div class="section-tag reveal">Technology Stack</div>
+  <h2 class="section-title reveal">Every tool,<br>chosen with <em style="color:var(--glow);font-style:italic">purpose.</em></h2>
+
+  <div class="tech-grid reveal">
+    <div class="tech-item">
+      <div class="tech-dot"></div>
+      <div class="tech-name">LoRa / LoRaWAN</div>
+      <div class="tech-role">Long-range, low-power wireless protocol for field-to-home data transmission</div>
+    </div>
+    <div class="tech-item">
+      <div class="tech-dot"></div>
+      <div class="tech-name">Raspberry Pi</div>
+      <div class="tech-role">Edge gateway and development machine — running the entire backend pipeline</div>
+    </div>
+    <div class="tech-item">
+      <div class="tech-dot"></div>
+      <div class="tech-name">Cloud IoT Core</div>
+      <div class="tech-role">Cloud ingestion for real-time sensor data streams from the field</div>
+    </div>
+    <div class="tech-item">
+      <div class="tech-dot"></div>
+      <div class="tech-name">Python / MicroPython</div>
+      <div class="tech-role">Core language for microcontroller firmware, Pi scripts, and AI model training</div>
+    </div>
+    <div class="tech-item">
+      <div class="tech-dot"></div>
+      <div class="tech-name">Machine Learning</div>
+      <div class="tech-role">Scikit-learn / TensorFlow Lite for disease prediction on constrained hardware</div>
+    </div>
+    <div class="tech-item">
+      <div class="tech-dot"></div>
+      <div class="tech-name">agrisync.tech</div>
+      <div class="tech-role">Custom domain — the public-facing platform delivering insights to farmers</div>
+    </div>
+  </div>
+</section>
+
+<!-- FOOTER -->
+
+<footer id="contact">
+  <div>
+    <div class="footer-brand">AGRI<span>SYNC</span></div>
+    <p class="footer-tagline">Field intelligence, redefined. A solo precision agriculture project built from a village in India — proving that the most important technology is the kind that solves real problems, for real people, with whatever you have.</p>
+  </div>
+  <div>
+    <div class="footer-contact-label">Get in touch</div>
+    <a href="mailto:nikhildsiddh@outlook.com" class="footer-email">nikhildsiddh@outlook.com</a>
+    <div class="footer-meta">
+      <span>📍 Village Field, India</span>
+      <span>🌐 agrisync.tech</span>
+      <span>📅 Target Launch: November 2026</span>
+      <span>🛠️ Built solo — iPad + Raspberry Pi</span>
+    </div>
+  </div>
+  <div class="footer-bottom">
+    <span class="footer-copy">© 2026 AgriSync. Designed & developed solo.</span>
+    <span class="footer-domain">agrisync.tech</span>
+  </div>
+</footer>
+
+<script>
+  // CURSOR
+  const cursor = document.getElementById('cursor');
+  const ring = document.getElementById('cursor-ring');
+  let mx = 0, my = 0, rx = 0, ry = 0;
+  document.addEventListener('mousemove', e => { mx = e.clientX; my = e.clientY; });
+  (function animCursor() {
+    rx += (mx - rx) * 0.12;
+    ry += (my - ry) * 0.12;
+    cursor.style.transform = `translate(${mx - 4}px, ${my - 4}px)`;
+    ring.style.transform = `translate(${rx - 16}px, ${ry - 16}px)`;
+    requestAnimationFrame(animCursor);
+  })();
+
+  // CANVAS — floating data particles
+  const canvas = document.getElementById('field-canvas');
+  const ctx = canvas.getContext('2d');
+  let W, H, particles = [];
+  function resize() {
+    W = canvas.width = window.innerWidth;
+    H = canvas.height = window.innerHeight;
+  }
+  resize();
+  window.addEventListener('resize', resize);
+
+  class Particle {
+    constructor() { this.reset(); }
+    reset() {
+      this.x = Math.random() * W;
+      this.y = Math.random() * H;
+      this.vx = (Math.random() - 0.5) * 0.3;
+      this.vy = -Math.random() * 0.5 - 0.1;
+      this.alpha = Math.random() * 0.5 + 0.1;
+      this.size = Math.random() * 2 + 0.5;
+      this.color = Math.random() > 0.7 ? '#d4a843' : '#7ec850';
+    }
+    update() {
+      this.x += this.vx; this.y += this.vy;
+      this.alpha -= 0.0008;
+      if (this.y < -10 || this.alpha <= 0) this.reset();
+    }
+    draw() {
+      ctx.save();
+      ctx.globalAlpha = this.alpha;
+      ctx.fillStyle = this.color;
+      ctx.beginPath();
+      ctx.arc(this.x, this.y, this.size, 0, Math.PI * 2);
+      ctx.fill();
+      ctx.restore();
+    }
+  }
+
+  for (let i = 0; i < 120; i++) particles.push(new Particle());
+
+  function drawGrid() {
+    ctx.clearRect(0, 0, W, H);
+    // faint grid
+    ctx.strokeStyle = 'rgba(74,124,63,0.06)';
+    ctx.lineWidth = 1;
+    const gSize = 60;
+    for (let x = 0; x < W; x += gSize) {
+      ctx.beginPath(); ctx.moveTo(x, 0); ctx.lineTo(x, H); ctx.stroke();
+    }
+    for (let y = 0; y < H; y += gSize) {
+      ctx.beginPath(); ctx.moveTo(0, y); ctx.lineTo(W, y); ctx.stroke();
+    }
+    particles.forEach(p => { p.update(); p.draw(); });
+    requestAnimationFrame(drawGrid);
+  }
+  drawGrid();
+
+  // COUNTDOWN
+  function updateCountdown() {
+    const target = new Date('2026-11-01T23:59:59');
+    const now = new Date();
+    const diff = target - now;
+    if (diff <= 0) {
+      document.getElementById('cd-days').textContent = '000';
+      document.getElementById('cd-hours').textContent = '00';
+      document.getElementById('cd-mins').textContent = '00';
+      document.getElementById('cd-secs').textContent = '00';
+      return;
+    }
+    const days = Math.floor(diff / 86400000);
+    const hours = Math.floor((diff % 86400000) / 3600000);
+    const mins = Math.floor((diff % 3600000) / 60000);
+    const secs = Math.floor((diff % 60000) / 1000);
+    document.getElementById('cd-days').textContent = String(days).padStart(3, '0');
+    document.getElementById('cd-hours').textContent = String(hours).padStart(2, '0');
+    document.getElementById('cd-mins').textContent = String(mins).padStart(2, '0');
+    document.getElementById('cd-secs').textContent = String(secs).padStart(2, '0');
+  }
+  updateCountdown();
+  setInterval(updateCountdown, 1000);
+
+  // SCROLL REVEAL
+  const reveals = document.querySelectorAll('.reveal');
+  const observer = new IntersectionObserver(entries => {
+    entries.forEach(e => {
+      if (e.isIntersecting) { e.target.classList.add('visible'); observer.unobserve(e.target); }
+    });
+  }, { threshold: 0.1 });
+  reveals.forEach(el => observer.observe(el));
+</script>
+
+</body>
+</html>
