@@ -1,0 +1,388 @@
+
+    <!DOCTYPE html>
+    <html lang="en">
+      <head>
+        <meta charset="UTF-8" />
+        <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+        <style>
+          /* Base reset */
+          * { box-sizing: border-box; }
+          /* User CSS */
+          
+        </style>
+        <script>
+            // Capture console.log to display in parent (Optional future enhancement, currently just preventing errors)
+            window.onerror = function(message, source, lineno, colno, error) {
+                console.error('Preview Error:', message);
+            };
+        </script>
+      </head>
+      <body>
+        <!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>HTMLRunner</title>
+  <style>
+    /* CSS Styling */
+    body {
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      background-color: #f0f4f8;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      min-height: 100vh;
+      margin: 0;
+      color: #333;
+    }
+
+    .card {
+      background: white;
+      border-radius: 12px;
+      box-shadow: 0 10px 25px rgba(0,0,0,0.1);
+      width: 100%;
+      max-width: 500px;
+      overflow: hidden;
+      border: 1px solid #e1e8ed;
+    }
+
+    .header {
+      background: linear-gradient(135deg, #4A90E2, #2196F3);
+      color: white;
+      padding: 24px;
+      position: relative;
+    }
+
+    h1 {
+      margin: 0;
+      font-size: 24px;
+      font-weight: 600;
+    }
+
+    .badge {
+      background: rgba(255,255,255,0.2);
+      padding: 4px 10px;
+      border-radius: 20px;
+      font-size: 12px;
+      position: absolute;
+      top: 16px;
+      right: 16px;
+      font-weight: bold;
+    }
+
+    .content {
+      padding: 24px;
+    }
+
+    ul {
+      padding-left: 20px;
+      line-height: 1.6;
+      color: #555;
+    }
+
+    .primary-btn {
+      background-color: #4A90E2;
+      color: white;
+      border: none;
+      padding: 10px 20px;
+      border-radius: 6px;
+      cursor: pointer;
+      font-size: 16px;
+      transition: background 0.2s;
+      display: block;
+      width: 100%;
+      margin-top: 20px;
+    }
+
+    .primary-btn:hover {
+      background-color: #357ABD;
+    }
+
+    .output-text {
+      margin-top: 16px;
+      font-weight: 500;
+      color: #2196F3;
+      text-align: center;
+      min-height: 24px;
+    }
+  </style>
+</head>
+<body>
+  <!-- HTML Structure -->
+  <div class="card">
+    <div class="header">
+      <h1>Welcome to HTMLRunner</h1>
+      <div class="badge">Live Preview</div>
+    </div>
+    
+    <div class="content">
+      <p>This is a live code editor designed for rapid prototyping.</p>
+      <ul>
+        <li>View In New Browser Tab Feature to View realtime</li>
+        <li>Style it with CSS in the second tab</li>
+        <li>Add interactivity with JS in the third tab</li>
+      </ul>
+      
+      <button id="actionBtn" class="primary-btn">Click Me!</button>
+      <p id="output" class="output-text"></p>
+    </div>
+  </div>
+
+  <script>
+    // JavaScript Logic
+    const button = document.getElementById('actionBtn');
+    const output = document.getElementById('output');
+    let count = 0;
+
+    button.addEventListener('click', () => {
+      count++;
+      
+      // Update the output text with animation
+      output.style.opacity = 0;
+      
+      setTimeout(() => {
+        output.textContent = `You clicked the button ${count} times!`;
+        output.style.transition = 'opacity 0.3s ease';
+        output.style.opacity = 1;
+      }, 150);
+      
+      // Change button text temporarily
+      const originalText = button.textContent;
+      button.textContent = 'Clicked!';
+      
+      setTimeout(() => {
+        button.textContent = originalText;
+      }, 500);
+    });
+
+    console.log('HTMLRunner environment ready.');
+  </script>
+</body>
+</html><!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Agricultural AI Project | Telemetry</title>
+    <style>
+        :root {
+            --bg-base: #0a0c10;
+            --bg-surface: #11141a;
+            --border-color: #21262d;
+            --text-primary: #e6edf3;
+            --text-secondary: #848d97;
+            --accent-color: #238636;
+            --accent-glow: rgba(35, 134, 54, 0.2);
+            --font-main: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+            --font-mono: "SFMono-Regular", Consolas, "Liberation Mono", Menlo, monospace;
+        }
+
+        body {
+            font-family: var(--font-main);
+            line-height: 1.6;
+            margin: 0;
+            padding: 0;
+            background-color: var(--bg-base);
+            color: var(--text-primary);
+            -webkit-font-smoothing: antialiased;
+        }
+
+        header {
+            padding: 5rem 2rem 3rem;
+            text-align: center;
+            border-bottom: 1px solid var(--border-color);
+            background-color: var(--bg-surface);
+        }
+
+        header h1 {
+            margin: 0;
+            font-size: 2.5rem;
+            font-weight: 600;
+            letter-spacing: -0.5px;
+        }
+
+        header p {
+            font-size: 1.1rem;
+            color: var(--text-secondary);
+            margin-top: 0.5rem;
+            font-weight: 400;
+        }
+
+        .container {
+            max-width: 760px;
+            margin: 3rem auto;
+            padding: 0 1.5rem;
+        }
+
+        .card {
+            background: var(--bg-surface);
+            padding: 2.5rem;
+            border-radius: 8px;
+            border: 1px solid var(--border-color);
+            margin-bottom: 2rem;
+            transition: border-color 0.2s ease;
+        }
+
+        .card:hover {
+            border-color: #30363d;
+        }
+
+        h2 {
+            font-size: 1.25rem;
+            font-weight: 600;
+            margin-top: 0;
+            margin-bottom: 1rem;
+            color: var(--text-primary);
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        h2::before {
+            content: "";
+            display: inline-block;
+            width: 8px;
+            height: 8px;
+            background-color: var(--accent-color);
+            border-radius: 50%;
+            box-shadow: 0 0 8px var(--accent-glow);
+        }
+
+        p {
+            color: var(--text-secondary);
+            margin-bottom: 0;
+        }
+
+        .countdown-container {
+            text-align: center;
+            padding: 2rem 0;
+            border-color: var(--accent-color);
+            background: linear-gradient(180deg, rgba(35,134,54,0.05) 0%, rgba(17,20,26,1) 100%);
+        }
+
+        .countdown-container h2::before {
+            display: none;
+        }
+
+        .countdown-container h2 {
+            justify-content: center;
+            color: var(--text-secondary);
+            font-size: 0.85rem;
+            text-transform: uppercase;
+            letter-spacing: 1.5px;
+        }
+
+        .countdown-timer {
+            font-family: var(--font-mono);
+            font-size: 3rem;
+            font-weight: 600;
+            color: var(--text-primary);
+            letter-spacing: -1px;
+            margin: 1rem 0;
+        }
+
+        .placeholder {
+            background: var(--bg-base);
+            border: 1px solid var(--border-color);
+            padding: 3rem 2rem;
+            text-align: center;
+            border-radius: 6px;
+            color: var(--text-secondary);
+            margin-top: 1.5rem;
+            font-family: var(--font-mono);
+            font-size: 0.85rem;
+        }
+
+        footer {
+            text-align: center;
+            padding: 3rem 2rem;
+            color: var(--text-secondary);
+            font-size: 0.85rem;
+            border-top: 1px solid var(--border-color);
+            margin-top: 4rem;
+            font-family: var(--font-mono);
+        }
+    </style>
+</head>
+<body>
+
+    <header>
+        <h1>SoilSync</h1>
+        <p>Optimizing crop yields through AI and live sensor data.</p>
+    </header>
+
+    <div class="container">
+
+        <div class="card countdown-container">
+            <h2>Milestone Target: Nov 1, 2026</h2>
+            <div id="clock" class="countdown-timer">--:--:--:--</div>
+        </div>
+        
+        <div class="card">
+            <h2>The Mission</h2>
+            <p>This is a live record of an actively developing agricultural AI platform. By integrating ground-level hardware sensors with artificial intelligence, the objective is to precisely optimize the application of fertilizers and pesticides. The focus is on reducing chemical waste, lowering operational costs, and improving farm efficiency at scale.</p>
+        </div>
+
+        <div class="card">
+            <h2>Development Log</h2>
+            <p>The entire build is being documented from month zero. Weekly video updates covering the hardware assembly, sensor calibration, and software integration are cataloged below.</p>
+            <div class="placeholder">
+                [ YOUTUBE_EMBED_CONTAINER ]
+            </div>
+        </div>
+
+        <div class="card">
+            <h2>Live Sensor Telemetry</h2>
+            <p>Once the local hardware prototype is fully operational, live readings from the soil and environmental sensors will be piped directly to this interface. This section will transition into a real-time data dashboard.</p>
+            <div class="placeholder">
+                [ TELEMETRY_DATA_STREAM_PENDING ]
+            </div>
+        </div>
+
+    </div>
+
+    <footer>
+        SYS.LOG // &copy; 2026 // BUILDING IN PUBLIC
+    </footer>
+
+    <script>
+        const countDownDate = new Date("Nov 1, 2026 00:00:00").getTime();
+        const clockElement = document.getElementById("clock");
+
+        const updateTimer = setInterval(function() {
+            const now = new Date().getTime();
+            const distance = countDownDate - now;
+
+            if (distance < 0) {
+                clearInterval(updateTimer);
+                clockElement.innerHTML = "TARGET_REACHED";
+                clockElement.style.color = "var(--accent-color)";
+                return;
+            }
+
+            const days = Math.floor(distance / (1000 * 60 * 60 * 24));
+            const hours = Math.floor((distance % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
+            const minutes = Math.floor((distance % (1000 * 60 * 60)) / (1000 * 60));
+            const seconds = Math.floor((distance % (1000 * 60)) / 1000);
+
+            const format = (num) => num.toString().padStart(2, '0');
+            
+            clockElement.innerHTML = `${format(days)}d ${format(hours)}h ${format(minutes)}m ${format(seconds)}s`;
+        }, 1000);
+    </script>
+
+</body>
+</html>
+
+        <script>
+          try {
+            
+          } catch (err) {
+            console.error('Runtime Error:', err);
+            document.body.innerHTML += '<div style="color:red; background:#ffe6e6; padding:10px; margin-top:20px; border-radius:4px; border:1px solid red;"><strong>Runtime Error:</strong> ' + err.message + '</div>';
+          }
+        </script>
+      </body>
+    </html>
+  
