@@ -1,10 +1,12 @@
 "use client";
 
-import { Canvas, useFrame, useThree } from "@react-three/fiber";
-import { PointMaterial } from "@react-three/drei";
+import { Canvas, useFrame } from "@react-three/fiber";
+import { PerspectiveCamera, PointMaterial } from "@react-three/drei";
 import { useMotionValueEvent, useScroll, useSpring } from "framer-motion";
-import { useEffect, useMemo, useRef } from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
 import * as THREE from "three";
+
+const MOBILE_BREAKPOINT = 768;
 
 function Terrain() {
   const geometry = useMemo(() => {
@@ -62,6 +64,10 @@ function SensorNode() {
 
 function CropDataParticles() {
   const particleCount = 380;
+  const pseudoRandom = (seed: number) => {
+    const value = Math.sin(seed * 12.9898) * 43758.5453;
+    return value - Math.floor(value);
+  };
 
   const { positions, colors } = useMemo(() => {
     const p = new Float32Array(particleCount * 3);
@@ -69,9 +75,9 @@ function CropDataParticles() {
 
     for (let i = 0; i < particleCount; i += 1) {
       const i3 = i * 3;
-      const x = (Math.random() - 0.5) * 24;
-      const z = (Math.random() - 0.5) * 24;
-      const y = Math.sin(x * 0.28) * 0.05 + Math.cos(z * 0.24) * 0.05 + (Math.random() - 0.5) * 0.12;
+      const x = (pseudoRandom(i + 1) - 0.5) * 24;
+      const z = (pseudoRandom(i + 301) - 0.5) * 24;
+      const y = Math.sin(x * 0.28) * 0.05 + Math.cos(z * 0.24) * 0.05 + (pseudoRandom(i + 701) - 0.5) * 0.12;
 
       p[i3] = x;
       p[i3 + 1] = y;
@@ -99,16 +105,15 @@ function CropDataParticles() {
   return (
     <points ref={pointsRef} position={[0, 0, 0]}>
       <bufferGeometry>
-        <bufferAttribute attach="attributes-position" array={positions} count={positions.length / 3} itemSize={3} />
-        <bufferAttribute attach="attributes-color" array={colors} count={colors.length / 3} itemSize={3} />
+        <bufferAttribute attach="attributes-position" args={[positions, 3]} />
+        <bufferAttribute attach="attributes-color" args={[colors, 3]} />
       </bufferGeometry>
       <PointMaterial vertexColors transparent size={0.07} sizeAttenuation depthWrite={false} />
     </points>
   );
 }
 
-function CameraRig() {
-  const { camera, size } = useThree();
+function CameraRig({ cameraRef }: { cameraRef: React.RefObject<THREE.PerspectiveCamera | null> }) {
   const { scrollYProgress } = useScroll();
   const progressSpring = useSpring(scrollYProgress, {
     damping: 24,
@@ -121,14 +126,9 @@ function CameraRig() {
     progressRef.current = latest;
   });
 
-  useEffect(() => {
-    const cam = camera as THREE.PerspectiveCamera;
-    cam.fov = size.width < 768 ? 68 : 54;
-    cam.updateProjectionMatrix();
-  }, [camera, size.width]);
-
   useFrame(() => {
-    const cam = camera as THREE.PerspectiveCamera;
+    const cam = cameraRef.current;
+    if (!cam) return;
     const t = progressRef.current;
     const target = new THREE.Vector3(0, 0.55, 0);
 
@@ -142,9 +142,21 @@ function CameraRig() {
 }
 
 export function SceneBackground() {
+  const cameraRef = useRef<THREE.PerspectiveCamera>(null);
+  const [isMobile, setIsMobile] = useState(() =>
+    typeof window !== "undefined" ? window.innerWidth < MOBILE_BREAKPOINT : false
+  );
+
+  useEffect(() => {
+    const onResize = () => setIsMobile(window.innerWidth < MOBILE_BREAKPOINT);
+    window.addEventListener("resize", onResize);
+    return () => window.removeEventListener("resize", onResize);
+  }, []);
+
   return (
     <div className="fixed inset-0 -z-10 pointer-events-none">
-      <Canvas shadows dpr={[1, 1.5]} camera={{ position: [0.6, 6.4, 17.5], fov: 54 }}>
+      <Canvas shadows dpr={[1, 1.5]}>
+        <PerspectiveCamera ref={cameraRef} makeDefault position={[0.6, 6.4, 17.5]} fov={isMobile ? 68 : 54} />
         <color attach="background" args={["#0A0A0A"]} />
         <ambientLight intensity={0.22} />
         <directionalLight
@@ -158,7 +170,7 @@ export function SceneBackground() {
         <Terrain />
         <SensorNode />
         <CropDataParticles />
-        <CameraRig />
+        <CameraRig cameraRef={cameraRef} />
       </Canvas>
     </div>
   );

@@ -1,3 +1,5 @@
+"use client";
+
 import { motion } from "framer-motion";
 
 export function HeroSection() {
@@ -14,9 +16,12 @@ export function HeroSection() {
         <p className="mx-auto mt-6 max-w-2xl text-pretty text-base text-zinc-300 md:text-lg">
           Autonomous sensor networks mapping soil health for localized fertilizer and pesticide deployment.
         </p>
-        <button className="mt-10 rounded-full border border-[#00FF41] px-7 py-3 font-semibold text-[#00FF41] transition-colors hover:bg-[#00FF41] hover:text-black">
+        <a
+          href="#waitlist"
+          className="mt-10 inline-flex rounded-full border border-[#00FF41] px-7 py-3 font-semibold text-[#00FF41] transition-colors hover:bg-[#00FF41] hover:text-black"
+        >
           Deploy the System
-        </button>
+        </a>
       </motion.div>
     </section>
   );

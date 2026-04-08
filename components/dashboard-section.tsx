@@ -36,7 +36,11 @@ export function DashboardSection() {
             <p className="mt-5 text-sm text-zinc-400">Crop Yield Prediction</p>
             <div className="mt-4 flex h-24 items-end gap-1.5">
               {yieldBars.map((bar, index) => (
-                <div key={index} style={{ height: `${bar}%` }} className="w-full rounded-sm bg-gradient-to-t from-[#00FF41]/30 to-[#00FF41]" />
+                <div
+                  key={`yield-${bar}-${index}`}
+                  style={{ height: `${bar}%` }}
+                  className="w-full rounded-sm bg-gradient-to-t from-[#00FF41]/30 to-[#00FF41]"
+                />
               ))}
             </div>
           </article>
