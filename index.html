@@ -144,13 +144,13 @@ body {
   
 #dust-canvas {
     position: absolute;
+    inset: 0; /* Pins to top, bottom, left, and right of the parent */
     width: 100%;
     height: 100%;
-    top: 0;
-    left: 0;
-    z-index: 5; /* Moves particles above section backgrounds */
+    z-index: 5;
     pointer-events: none;
 }
+
         
 .section-content {
     position: relative;
@@ -245,7 +245,7 @@ section, footer, main {
 <p class="font-instrument italic text-4xl md:text-6xl text-on-surface leading-tight max-w-3xl">From soil to screen: A 7-layer architecture for absolute precision.</p>
 </div>
 </div>
-<div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-x-8 gap-y-12">
+<div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-x-8 gap-y-12 section-content">
 <div class="flex flex-col gap-4 p-6 bg-surface-container-low rounded-2xl border border-outline-variant/10 transition-all duration-500 hover:-translate-y-2 hover:shadow-2xl hover:border-outline/30">
 <span class="font-barlow font-bold text-outline-variant text-sm">01 / Sensing</span>
 <h4 class="font-barlow font-bold text-xl text-on-surface">Capacitive Probes</h4>
@@ -474,23 +474,24 @@ section, footer, main {
     let lastWidth = window.innerWidth;
 
     function resize() {
-        const currentWidth = window.innerWidth;
-        // Ignore vertical resizes caused by mobile address bars hiding/showing
-        if (particles.length > 0 && currentWidth === lastWidth) return;
-        lastWidth = currentWidth;
+    const currentWidth = window.innerWidth;
+    if (particles.length > 0 && currentWidth === lastWidth) return;
+    lastWidth = currentWidth;
 
-        const dpr = window.devicePixelRatio || 1;
-        const rect = container.getBoundingClientRect();
+    const dpr = window.devicePixelRatio || 1;
+    // We target the offsetHeight to get the full scrollable height of the container
+    const fullHeight = container.offsetHeight;
+    const fullWidth = container.offsetWidth;
 
-        canvas.width = rect.width * dpr;
-        canvas.height = rect.height * dpr;
+    canvas.width = fullWidth * dpr;
+    canvas.height = fullHeight * dpr;
 
-        ctx.scale(dpr, dpr);
-        canvas.style.width = `${rect.width}px`;
-        canvas.style.height = `${rect.height}px`;
+    ctx.scale(dpr, dpr);
+    canvas.style.width = `${fullWidth}px`;
+    canvas.style.height = `${fullHeight}px`;
 
-        initParticles(rect.width, rect.height);
-    }
+    initParticles(fullWidth, fullHeight);
+}
 
     // Rely exclusively on window resize. No ResizeObserver.
     window.addEventListener('resize', resize);
@@ -538,7 +539,7 @@ section, footer, main {
 
     function initParticles(cw, ch) {
         particles = [];
-        const numParticles = Math.floor((cw * ch) / 6000);
+        const numParticles = Math.floor((cw * ch) / 4000);
         for (let i = 0; i < numParticles; i++) {
             particles.push(new Spore(cw, ch));
         }
