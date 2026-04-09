@@ -109,7 +109,7 @@
             border: 1px solid rgba(255, 255, 255, 0.4);
         }
         
-        #particles-js {
+        #bubble-canvas {
             position: absolute;
             width: 100%;
             height: 100%;
@@ -144,7 +144,7 @@
         }
     </style>
 <!-- Use a lighter version of particles or keep current but optimize init -->
-<script src="https://cdn.jsdelivr.net/particles.js/2.0.0/particles.min.js"></script>
+ <!-- <script src="https://cdn.jsdelivr.net/particles.js/2.0.0/particles.min.js"></script> --!>
         <!-- Google tag (gtag.js) -->
 <script async src="https://www.googletagmanager.com/gtag/js?id=G-XX2TLR35NH"></script>
 <script>
@@ -203,7 +203,7 @@
 </main>
 <!-- Global Particles Container -->
 <div class="relative" id="content-with-particles">
-<div id="particles-js"></div>
+<canvas id="bubble-canvas"></canvas>
 <!-- 7-Layer Architecture Section -->
 <section class="bg-surface py-32 px-8 scroll-mt-24" id="architecture">
 <div class="max-w-6xl mx-auto section-content">
@@ -427,7 +427,148 @@
 </footer>
 </div>
 <script>
-        // Optimize Particles Initialization
+        // Liquid Glass Bubble Engine
+(function () {
+    const canvas = document.getElementById('bubble-canvas');
+    const container = document.getElementById('content-with-particles');
+    const ctx = canvas.getContext('2d');
+    let bubbles = [];
+
+    function resize() {
+        canvas.width  = container.offsetWidth;
+        canvas.height = container.offsetHeight;
+    }
+    resize();
+    if (window.ResizeObserver) {
+        new ResizeObserver(resize).observe(container);
+    }
+    window.addEventListener('resize', resize);
+
+    function rand(a, b) { return a + Math.random() * (b - a); }
+
+    function makeBubble(spreadY) {
+        const r = rand(7, 26);
+        return {
+            x:         rand(r, canvas.width - r),
+            y:         spreadY !== undefined ? rand(0, canvas.height) : canvas.height + r + rand(0, 80),
+            r:         r,
+            vx:        rand(-0.25, 0.25),
+            vy:        rand(-0.35, -0.75),
+            opacity:   spreadY !== undefined ? rand(0.15, 0.55) : 0,
+            phase:     spreadY !== undefined ? 'floating' : 'growing',
+            wobble:    rand(0, Math.PI * 2),
+            wobbleSpd: rand(0.018, 0.045),
+            burstRing: 0,
+        };
+    }
+
+    for (let i = 0; i < 28; i++) bubbles.push(makeBubble(true));
+
+    function drawBubble(b) {
+        const { x, y, r, opacity } = b;
+        if (opacity <= 0) return;
+        ctx.save();
+        ctx.globalAlpha = opacity;
+
+        const fill = ctx.createRadialGradient(x - r * 0.28, y - r * 0.28, r * 0.08, x, y, r);
+        fill.addColorStop(0,    'rgba(255,255,255,0.07)');
+        fill.addColorStop(0.55, 'rgba(225,238,234,0.04)');
+        fill.addColorStop(0.82, 'rgba(171,210,200,0.10)');
+        fill.addColorStop(1,    'rgba(255,255,255,0.20)');
+        ctx.beginPath();
+        ctx.arc(x, y, r, 0, Math.PI * 2);
+        ctx.fillStyle = fill;
+        ctx.fill();
+
+        ctx.beginPath();
+        ctx.arc(x, y, r, 0, Math.PI * 2);
+        ctx.strokeStyle = 'rgba(255,255,255,0.50)';
+        ctx.lineWidth = 1.2;
+        ctx.stroke();
+
+        ctx.beginPath();
+        ctx.arc(x, y, r * 0.80, 0, Math.PI * 2);
+        ctx.strokeStyle = 'rgba(171,180,179,0.13)';
+        ctx.lineWidth = 0.5;
+        ctx.stroke();
+
+        const hl = ctx.createRadialGradient(x - r * 0.36, y - r * 0.36, 0, x - r * 0.36, y - r * 0.36, r * 0.42);
+        hl.addColorStop(0,   'rgba(255,255,255,0.75)');
+        hl.addColorStop(0.5, 'rgba(255,255,255,0.18)');
+        hl.addColorStop(1,   'rgba(255,255,255,0)');
+        ctx.beginPath();
+        ctx.arc(x - r * 0.26, y - r * 0.26, r * 0.36, 0, Math.PI * 2);
+        ctx.fillStyle = hl;
+        ctx.fill();
+
+        ctx.beginPath();
+        ctx.arc(x + r * 0.34, y + r * 0.34, r * 0.13, 0, Math.PI * 2);
+        ctx.fillStyle = 'rgba(255,255,255,0.18)';
+        ctx.fill();
+
+        const tint = ctx.createRadialGradient(x, y + r * 0.35, 0, x, y + r * 0.35, r * 0.65);
+        tint.addColorStop(0, 'rgba(95,161,133,0.09)');
+        tint.addColorStop(1, 'rgba(95,161,133,0)');
+        ctx.beginPath();
+        ctx.arc(x, y, r, 0, Math.PI * 2);
+        ctx.fillStyle = tint;
+        ctx.fill();
+
+        ctx.restore();
+
+        if (b.phase === 'bursting' && b.burstRing > 0) {
+            ctx.save();
+            ctx.globalAlpha = Math.max(0, (1 - b.burstRing) * 0.55);
+            ctx.beginPath();
+            ctx.arc(x, y, r + b.burstRing * r * 2.4, 0, Math.PI * 2);
+            ctx.strokeStyle = 'rgba(255,255,255,0.65)';
+            ctx.lineWidth = 0.9;
+            ctx.stroke();
+            for (let i = 0; i < 6; i++) {
+                const angle = (i / 6) * Math.PI * 2 + b.burstRing * 2.5;
+                const dist  = r * (1 + b.burstRing * 2.2);
+                ctx.beginPath();
+                ctx.arc(x + Math.cos(angle) * dist, y + Math.sin(angle) * dist, Math.max(0.5, 2 * (1 - b.burstRing)), 0, Math.PI * 2);
+                ctx.fillStyle = 'rgba(255,255,255,0.55)';
+                ctx.fill();
+            }
+            ctx.restore();
+        }
+    }
+
+    function update() {
+        bubbles.forEach(b => {
+            b.wobble += b.wobbleSpd;
+            b.x += b.vx + Math.sin(b.wobble) * 0.18;
+            b.y += b.vy;
+
+            if (b.phase === 'growing') {
+                b.opacity += 0.014;
+                if (b.opacity >= 0.52) { b.opacity = 0.52; b.phase = 'floating'; }
+            }
+            if (b.phase === 'floating') {
+                if (b.y < -b.r || Math.random() < 0.0007) b.phase = 'bursting';
+            }
+            if (b.phase === 'bursting') {
+                b.opacity   -= 0.055;
+                b.burstRing += 0.07;
+                if (b.opacity <= 0) Object.assign(b, makeBubble());
+            }
+        });
+    }
+
+    function loop() {
+        ctx.clearRect(0, 0, canvas.width, canvas.height);
+        update();
+        bubbles.forEach(drawBubble);
+        requestAnimationFrame(loop);
+    }
+
+    loop();
+})();
+
+        // Optimize Particles Initialization 
+        /*
         document.addEventListener('DOMContentLoaded', () => {
             particlesJS("particles-js", {
               "particles": {
@@ -453,6 +594,7 @@
               "retina_detect": true
             });
         });
+        */
 
        // Optimized Parallax with requestAnimationFrame
         /*
