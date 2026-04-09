@@ -424,7 +424,7 @@ section, footer, main {
 </footer>
 </div>
 <script>
-// Floating Data Spores Engine (Smooth Ambient & Scroll Wind)
+// Floating Data Spores Engine (Ultra-Fluid Fix)
 (function () {
     const canvas = document.getElementById('dust-canvas');
     const container = document.getElementById('content-with-particles');
@@ -435,8 +435,14 @@ section, footer, main {
     let targetWind = 0;
     let currentWind = 0;
     let lastScrollY = window.scrollY;
+    let lastWidth = window.innerWidth;
 
     function resize() {
+        const currentWidth = window.innerWidth;
+        // Ignore vertical resizes caused by mobile address bars hiding/showing
+        if (particles.length > 0 && currentWidth === lastWidth) return;
+        lastWidth = currentWidth;
+
         const dpr = window.devicePixelRatio || 1;
         const rect = container.getBoundingClientRect();
 
@@ -450,17 +456,14 @@ section, footer, main {
         initParticles(rect.width, rect.height);
     }
 
+    // Rely exclusively on window resize. No ResizeObserver.
     window.addEventListener('resize', resize);
-    if (window.ResizeObserver) {
-        new ResizeObserver(resize).observe(container);
-    }
 
-    // Calculate a horizontal wind target based on scroll speed
     window.addEventListener('scroll', () => {
         const currentScrollY = window.scrollY;
         const delta = currentScrollY - lastScrollY;
-        // Cap the wind speed so it never looks chaotic
-        targetWind = Math.min(Math.max(delta * 0.05, -1.5), 1.5);
+        // Softer wind cap for high-velocity momentum scrolling on touch devices
+        targetWind = Math.min(Math.max(delta * 0.03, -1.0), 1.0);
         lastScrollY = currentScrollY;
     });
 
@@ -470,23 +473,18 @@ section, footer, main {
             this.ch = ch;
             this.x = Math.random() * cw;
             this.y = Math.random() * ch;
-            // Slow horizontal ambient drift
-            this.vx = (Math.random() - 0.5) * 0.3;
-            // Consistent upward float like pollen
-            this.vy = (Math.random() * -0.4) - 0.1; 
+            this.vx = (Math.random() - 0.5) * 0.2;
+            this.vy = (Math.random() * -0.3) - 0.1; 
             this.radius = Math.random() * 1.5 + 0.5;
             
-            // AgriSync Color Palette: Mixed tech greys and sage greens
             const colors = ['rgba(116, 124, 124, ', 'rgba(90, 97, 83, ', 'rgba(200, 210, 180, '];
             this.colorBase = colors[Math.floor(Math.random() * colors.length)];
             this.baseAlpha = Math.random() * 0.6 + 0.2;
         }
         update() {
-            // Apply ambient movement plus the current scroll wind
             this.x += this.vx + currentWind;
             this.y += this.vy;
 
-            // Seamless edge wrapping
             if (this.x < -this.radius) this.x = this.cw + this.radius;
             if (this.x > this.cw + this.radius) this.x = -this.radius;
             if (this.y < -this.radius) this.y = this.ch + this.radius;
@@ -513,10 +511,9 @@ section, footer, main {
         const logicalHeight = parseFloat(canvas.style.height);
         ctx.clearRect(0, 0, logicalWidth, logicalHeight);
 
-        // Linear interpolation for perfect smoothness
-        currentWind += (targetWind - currentWind) * 0.05;
-        // Slowly decay the wind back to zero when scrolling stops
-        targetWind *= 0.9; 
+        // Slowed down interpolation for a heavier, fluid reaction
+        currentWind += (targetWind - currentWind) * 0.03;
+        targetWind *= 0.85; 
 
         for (let i = 0; i < particles.length; i++) {
             particles[i].update();
@@ -529,9 +526,6 @@ section, footer, main {
     resize();
     animate();
 })();
-
-
-
 
         // Ensure clean document height for scroll triggers
         window.addEventListener('load', () => {
