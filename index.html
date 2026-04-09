@@ -110,7 +110,7 @@
         }
         
   
-#network-canvas {
+#dust-canvas {
     position: absolute;
     width: 100%;
     height: 100%;
@@ -200,7 +200,7 @@ section, footer, main {
 </main>
 <!-- Global Particles Container -->
 <div class="relative" id="content-with-particles">
-<canvas id="network-canvas"></canvas>
+<canvas id="dust-canvas"></canvas>
 <!-- 7-Layer Architecture Section -->
 <section class="bg-surface py-32 px-8 scroll-mt-24" id="architecture">
 <div class="max-w-6xl mx-auto section-content">
@@ -424,22 +424,17 @@ section, footer, main {
 </footer>
 </div>
 <script>
-// Network Nodes Engine (Smooth High-DPI Parallax)
+// Floating Dust Engine (Ultra-Fluid with Scroll Wind)
 (function () {
-    const canvas = document.getElementById('network-canvas');
+    const canvas = document.getElementById('dust-canvas');
     const container = document.getElementById('content-with-particles');
     if (!canvas || !container) return;
     
     const ctx = canvas.getContext('2d');
     let particles = [];
-    let mouse = { x: null, y: null };
-    
-    // Smooth scroll tracking variables
-    let targetScrollY = window.scrollY;
-    let smoothScrollY = window.scrollY;
-    let scrollDelta = 0;
+    let scrollVelocity = 0;
+    let lastScrollY = window.scrollY;
 
-    // Retina/High-DPI Canvas scaling for sharp rendering
     function resize() {
         const dpr = window.devicePixelRatio || 1;
         const rect = container.getBoundingClientRect();
@@ -448,7 +443,6 @@ section, footer, main {
         canvas.height = rect.height * dpr;
         
         ctx.scale(dpr, dpr);
-        
         canvas.style.width = `${rect.width}px`;
         canvas.style.height = `${rect.height}px`;
 
@@ -460,42 +454,39 @@ section, footer, main {
         new ResizeObserver(resize).observe(container);
     }
 
-    container.addEventListener('mousemove', (e) => {
-        const rect = container.getBoundingClientRect();
-        mouse.x = e.clientX - rect.left;
-        mouse.y = e.clientY - rect.top;
-    });
-    
-    container.addEventListener('mouseleave', () => {
-        mouse.x = null;
-        mouse.y = null;
-    });
-
-    // Only update the target position in the event listener
+    // Capture raw velocity for the wind stimulus
     window.addEventListener('scroll', () => {
-        targetScrollY = window.scrollY;
+        const currentScrollY = window.scrollY;
+        scrollVelocity = currentScrollY - lastScrollY;
+        lastScrollY = currentScrollY;
     });
 
-    class Particle {
+    class DustParticle {
         constructor(cw, ch) {
             this.cw = cw;
             this.ch = ch;
             this.x = Math.random() * cw;
             this.y = Math.random() * ch;
-            this.vx = (Math.random() - 0.5) * 0.4; 
-            this.vy = (Math.random() - 0.5) * 0.4;
-            this.radius = Math.random() * 1.5 + 1;
+            this.vx = (Math.random() - 0.5) * 0.3; 
+            this.vy = (Math.random() - 0.5) * 0.3;
+            // Variable sizes and opacity for depth of field
+            this.radius = Math.random() * 1.5 + 0.5; 
+            this.baseAlpha = Math.random() * 0.5 + 0.1; 
         }
         update() {
+            // Standard ambient drift
             this.x += this.vx;
             this.y += this.vy;
             
-            // Apply smoothed scroll momentum
-            if (scrollDelta !== 0) {
-                this.y -= scrollDelta * (this.radius * 0.4); 
+            // Scroll Stimulus: Wind and Parallax
+            if (Math.abs(scrollVelocity) > 0.1) {
+                // Larger particles move faster (parallax depth)
+                this.y -= scrollVelocity * (this.radius * 0.3);
+                // Horizontal wind drift based on scroll speed
+                this.x += scrollVelocity * 0.15; 
             }
             
-            // Seamless wrap around edges
+            // Clean edge wrapping
             if (this.x < -this.radius) this.x = this.cw + this.radius;
             if (this.x > this.cw + this.radius) this.x = -this.radius;
             if (this.y < -this.radius) this.y = this.ch + this.radius;
@@ -504,16 +495,17 @@ section, footer, main {
         draw() {
             ctx.beginPath();
             ctx.arc(this.x, this.y, this.radius, 0, Math.PI * 2);
-            ctx.fillStyle = '#747c7c';
+            ctx.fillStyle = `rgba(116, 124, 124, ${this.baseAlpha})`;
             ctx.fill();
         }
     }
 
     function initParticles(cw, ch) {
         particles = [];
-        const numParticles = Math.floor((cw * ch) / 16000);
+        // High density is safe here due to O(n) rendering
+        const numParticles = Math.floor((cw * ch) / 5000);
         for (let i = 0; i < numParticles; i++) {
-            particles.push(new Particle(cw, ch));
+            particles.push(new DustParticle(cw, ch));
         }
     }
 
@@ -522,47 +514,14 @@ section, footer, main {
         const logicalHeight = parseFloat(canvas.style.height);
         ctx.clearRect(0, 0, logicalWidth, logicalHeight);
         
-        // Interpolate the scroll position frame-by-frame (Lerp)
-        smoothScrollY += (targetScrollY - smoothScrollY) * 0.08;
-        scrollDelta = smoothScrollY - (window.lastSmoothScrollY || smoothScrollY);
-        window.lastSmoothScrollY = smoothScrollY;
-
-        // Nullify micro-movements to save processing power
-        if (Math.abs(scrollDelta) < 0.01) scrollDelta = 0;
+        // Decay the wind stimulus smoothly (Friction)
+        scrollVelocity *= 0.92;
         
         for (let i = 0; i < particles.length; i++) {
             particles[i].update();
             particles[i].draw();
-            
-            for (let j = i; j < particles.length; j++) {
-                const dx = particles[i].x - particles[j].x;
-                const dy = particles[i].y - particles[j].y;
-                const distance = Math.sqrt(dx * dx + dy * dy);
-                
-                if (distance < 130) {
-                    ctx.beginPath();
-                    ctx.strokeStyle = `rgba(116, 124, 124, ${0.4 - distance/325})`; 
-                    ctx.lineWidth = 0.6;
-                    ctx.moveTo(particles[i].x, particles[i].y);
-                    ctx.lineTo(particles[j].x, particles[j].y);
-                    ctx.stroke();
-                }
-            }
-            
-            if (mouse.x != null && mouse.y != null) {
-                const dx = particles[i].x - mouse.x;
-                const dy = particles[i].y - mouse.y;
-                const distance = Math.sqrt(dx * dx + dy * dy);
-                if (distance < 160) {
-                    ctx.beginPath();
-                    ctx.strokeStyle = `rgba(90, 97, 83, ${0.6 - distance/266})`;
-                    ctx.lineWidth = 1;
-                    ctx.moveTo(particles[i].x, particles[i].y);
-                    ctx.lineTo(mouse.x, mouse.y);
-                    ctx.stroke();
-                }
-            }
         }
+        
         requestAnimationFrame(animate);
     }
 
