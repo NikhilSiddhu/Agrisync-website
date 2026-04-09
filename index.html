@@ -140,17 +140,20 @@ body {
     height: 100%;
     top: 0;
     left: 0;
-    z-index: 1;
+    z-index: 5; /* Moves particles above section backgrounds */
     pointer-events: none;
+}
+        
+.section-content {
+    position: relative;
+    z-index: 10; /* Keeps text and buttons on top of particles */
 }
         
 section, footer, main {
     position: relative;
+    z-index: 1; /* Keeps background colors at the bottom layer */
 }
-        .section-content {
-            position: relative;
-            z-index: 2;
-        }
+
 
         /* Fix whitespace issues */
         #content-with-particles {
@@ -227,15 +230,15 @@ section, footer, main {
 <div class="relative" id="content-with-particles">
 <canvas id="dust-canvas"></canvas>
 <!-- 7-Layer Architecture Section -->
-<section class="py-24 px-8 relative bg-surface z-10 rounded-[3rem] overflow-hidden scroll-mt-24" id="architecture">
+<section class="py-24 px-8 relative bg-surface z-1 rounded-[3rem] overflow-hidden scroll-mt-24" id="architecture">
 <div class="max-w-6xl mx-auto section-content">
 <div class="mb-20 flex flex-col items-center text-center">
 <h2 class="font-barlow font-bold text-xs uppercase tracking-[0.3em] text-outline mb-4">The AgriSync Pipeline</h2>
 <p class="font-instrument italic text-4xl md:text-6xl text-on-surface leading-tight max-w-3xl">From soil to screen: A 7-layer architecture for absolute precision.</p>
 </div>
 </div>
-<div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-x-8 gap-y-12 transition-all duration-500 hover:-translate-y-2 hover:shadow-2xl hover:border-outline/30">
-<div class="flex flex-col gap-4 p-6 bg-surface-container-low rounded-2xl border border-outline-variant/10">
+<div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-x-8 gap-y-12">
+<div class="flex flex-col gap-4 p-6 bg-surface-container-low rounded-2xl border border-outline-variant/10 transition-all duration-500 hover:-translate-y-2 hover:shadow-2xl hover:border-outline/30">
 <span class="font-barlow font-bold text-outline-variant text-sm">01 / Sensing</span>
 <h4 class="font-barlow font-bold text-xl text-on-surface">Capacitive Probes</h4>
 <p class="font-barlow text-sm text-on-surface-variant leading-relaxed">Direct measurement of volumetric water content and NPK chemical levels at the root zone.</p>
@@ -380,7 +383,7 @@ section, footer, main {
 </div>
 </section>
 <!-- Technology Stack Section -->
-<section class="bg-on-surface text-surface py-32 px-8 rounded-[4rem] mx-4 md:mx-8 mb-8 md:mb-12 z-10 scroll-mt-24" id="tech-stack">
+<section class="bg-on-surface text-surface py-32 px-8 rounded-[4rem] mx-4 md:mx-8 mb-8 md:mb-12 z-20 scroll-mt-24" id="tech-stack">
 <div class="max-w-6xl mx-auto section-content">
 <div class="mb-20 text-center">
 <h2 class="font-barlow font-bold text-xs uppercase tracking-[0.3em] opacity-40 mb-4">Under the Hood</h2>
@@ -502,9 +505,11 @@ section, footer, main {
             this.vy = (Math.random() * -0.3) - 0.1; 
             this.radius = Math.random() * 1.5 + 0.5;
             
-            const colors = ['rgba(116, 124, 124, ', 'rgba(90, 97, 83, ', 'rgba(200, 210, 180, '];
+            // Darker AgriSync Spore Palette for high contrast
+            const colors = ['rgba(74, 87, 71, ', 'rgba(59, 71, 56, ', 'rgba(44, 52, 52, '];
             this.colorBase = colors[Math.floor(Math.random() * colors.length)];
-            this.baseAlpha = Math.random() * 0.6 + 0.2;
+            this.baseAlpha = Math.random() * 0.4 + 0.3; // Higher minimum opacity
+
         }
         update() {
             this.x += this.vx + currentWind;
