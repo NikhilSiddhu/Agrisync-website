@@ -110,7 +110,7 @@
         }
         
         #particles-js {
-            position: absolute;
+            position: fixed;
             width: 100%;
             height: 100%;
             top: 0;
@@ -118,7 +118,7 @@
             z-index: 1;
             pointer-events: none;
             /* Using will-change only on the active element to prevent layer explosion */
-            will-change: transform;
+            
         }
         
         section, footer, main {
@@ -443,7 +443,7 @@
                 "line_linked": { "enable": true, "distance": 150, "color": "#5f5e5e", "opacity": 0.08, "width": 1 },
                 "move": { "enable": true, "speed": 0.8, "direction": "none", "random": true, "straight": false, "out_mode": "out", "bounce": false }
               },
-              "interactivity": {
+           "interactivity": {
                 "detect_on": "canvas",
                 "events": { "onhover": { "enable": true, "mode": "bubble" }, "resize": true },
                 "modes": { "bubble": { "distance": 200, "size": 10, "duration": 2, "opacity": 0.3, "speed": 3 } }
@@ -452,7 +452,8 @@
             });
         });
 
-        // Optimized Parallax with requestAnimationFrame
+       // Optimized Parallax with requestAnimationFrame
+        /*
         let lastKnownScrollPosition = 0;
         let ticking = false;
 
@@ -473,7 +474,7 @@
                 });
                 ticking = true;
             }
-        });
+        });*/
 
         // Ensure clean document height for scroll triggers
         window.addEventListener('load', () => {
