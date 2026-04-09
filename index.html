@@ -424,69 +424,69 @@ section, footer, main {
 </footer>
 </div>
 <script>
-// Floating Dust Engine (Ultra-Fluid with Scroll Wind)
+// Floating Data Spores Engine (Smooth Ambient & Scroll Wind)
 (function () {
     const canvas = document.getElementById('dust-canvas');
     const container = document.getElementById('content-with-particles');
     if (!canvas || !container) return;
-    
+
     const ctx = canvas.getContext('2d');
     let particles = [];
-    let scrollVelocity = 0;
+    let targetWind = 0;
+    let currentWind = 0;
     let lastScrollY = window.scrollY;
 
     function resize() {
         const dpr = window.devicePixelRatio || 1;
         const rect = container.getBoundingClientRect();
-        
+
         canvas.width = rect.width * dpr;
         canvas.height = rect.height * dpr;
-        
+
         ctx.scale(dpr, dpr);
         canvas.style.width = `${rect.width}px`;
         canvas.style.height = `${rect.height}px`;
 
         initParticles(rect.width, rect.height);
     }
-    
+
     window.addEventListener('resize', resize);
     if (window.ResizeObserver) {
         new ResizeObserver(resize).observe(container);
     }
 
-    // Capture raw velocity for the wind stimulus
+    // Calculate a horizontal wind target based on scroll speed
     window.addEventListener('scroll', () => {
         const currentScrollY = window.scrollY;
-        scrollVelocity = currentScrollY - lastScrollY;
+        const delta = currentScrollY - lastScrollY;
+        // Cap the wind speed so it never looks chaotic
+        targetWind = Math.min(Math.max(delta * 0.05, -1.5), 1.5);
         lastScrollY = currentScrollY;
     });
 
-    class DustParticle {
+    class Spore {
         constructor(cw, ch) {
             this.cw = cw;
             this.ch = ch;
             this.x = Math.random() * cw;
             this.y = Math.random() * ch;
-            this.vx = (Math.random() - 0.5) * 0.3; 
-            this.vy = (Math.random() - 0.5) * 0.3;
-            // Variable sizes and opacity for depth of field
-            this.radius = Math.random() * 1.5 + 0.5; 
-            this.baseAlpha = Math.random() * 0.5 + 0.1; 
+            // Slow horizontal ambient drift
+            this.vx = (Math.random() - 0.5) * 0.3;
+            // Consistent upward float like pollen
+            this.vy = (Math.random() * -0.4) - 0.1; 
+            this.radius = Math.random() * 1.5 + 0.5;
+            
+            // AgriSync Color Palette: Mixed tech greys and sage greens
+            const colors = ['rgba(116, 124, 124, ', 'rgba(90, 97, 83, ', 'rgba(200, 210, 180, '];
+            this.colorBase = colors[Math.floor(Math.random() * colors.length)];
+            this.baseAlpha = Math.random() * 0.6 + 0.2;
         }
         update() {
-            // Standard ambient drift
-            this.x += this.vx;
+            // Apply ambient movement plus the current scroll wind
+            this.x += this.vx + currentWind;
             this.y += this.vy;
-            
-            // Scroll Stimulus: Wind and Parallax
-            if (Math.abs(scrollVelocity) > 0.1) {
-                // Larger particles move faster (parallax depth)
-                this.y -= scrollVelocity * (this.radius * 0.3);
-                // Horizontal wind drift based on scroll speed
-                this.x += scrollVelocity * 0.15; 
-            }
-            
-            // Clean edge wrapping
+
+            // Seamless edge wrapping
             if (this.x < -this.radius) this.x = this.cw + this.radius;
             if (this.x > this.cw + this.radius) this.x = -this.radius;
             if (this.y < -this.radius) this.y = this.ch + this.radius;
@@ -495,17 +495,16 @@ section, footer, main {
         draw() {
             ctx.beginPath();
             ctx.arc(this.x, this.y, this.radius, 0, Math.PI * 2);
-            ctx.fillStyle = `rgba(116, 124, 124, ${this.baseAlpha})`;
+            ctx.fillStyle = this.colorBase + this.baseAlpha + ')';
             ctx.fill();
         }
     }
 
     function initParticles(cw, ch) {
         particles = [];
-        // High density is safe here due to O(n) rendering
-        const numParticles = Math.floor((cw * ch) / 5000);
+        const numParticles = Math.floor((cw * ch) / 6000);
         for (let i = 0; i < numParticles; i++) {
-            particles.push(new DustParticle(cw, ch));
+            particles.push(new Spore(cw, ch));
         }
     }
 
@@ -513,21 +512,24 @@ section, footer, main {
         const logicalWidth = parseFloat(canvas.style.width);
         const logicalHeight = parseFloat(canvas.style.height);
         ctx.clearRect(0, 0, logicalWidth, logicalHeight);
-        
-        // Decay the wind stimulus smoothly (Friction)
-        scrollVelocity *= 0.92;
-        
+
+        // Linear interpolation for perfect smoothness
+        currentWind += (targetWind - currentWind) * 0.05;
+        // Slowly decay the wind back to zero when scrolling stops
+        targetWind *= 0.9; 
+
         for (let i = 0; i < particles.length; i++) {
             particles[i].update();
             particles[i].draw();
         }
-        
+
         requestAnimationFrame(animate);
     }
 
     resize();
     animate();
 })();
+
 
 
 
