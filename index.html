@@ -424,7 +424,7 @@ section, footer, main {
 </footer>
 </div>
 <script>
-// Network Nodes Engine
+// Network Nodes Engine (High-DPI & Scroll Parallax)
 (function () {
     const canvas = document.getElementById('network-canvas');
     const container = document.getElementById('content-with-particles');
@@ -433,11 +433,24 @@ section, footer, main {
     const ctx = canvas.getContext('2d');
     let particles = [];
     let mouse = { x: null, y: null };
+    let scrollDelta = 0;
+    let lastScrollY = window.scrollY;
 
+    // Retina/High-DPI Canvas scaling for sharp rendering
     function resize() {
-        canvas.width = container.offsetWidth;
-        canvas.height = container.offsetHeight;
-        initParticles();
+        const dpr = window.devicePixelRatio || 1;
+        const rect = container.getBoundingClientRect();
+        
+        canvas.width = rect.width * dpr;
+        canvas.height = rect.height * dpr;
+        
+        // Normalize coordinate system to use CSS pixels
+        ctx.scale(dpr, dpr);
+        
+        canvas.style.width = `${rect.width}px`;
+        canvas.style.height = `${rect.height}px`;
+
+        initParticles(rect.width, rect.height);
     }
     
     window.addEventListener('resize', resize);
@@ -445,7 +458,6 @@ section, footer, main {
         new ResizeObserver(resize).observe(container);
     }
 
-    // Track mouse relative to the container for interactive nodes
     container.addEventListener('mousemove', (e) => {
         const rect = container.getBoundingClientRect();
         mouse.x = e.clientX - rect.left;
@@ -457,11 +469,20 @@ section, footer, main {
         mouse.y = null;
     });
 
+    // Track scroll for parallax effect
+    window.addEventListener('scroll', () => {
+        const currentScrollY = window.scrollY;
+        // Calculate difference and apply sensitivity multiplier
+        scrollDelta = (currentScrollY - lastScrollY) * 0.4; 
+        lastScrollY = currentScrollY;
+    });
+
     class Particle {
-        constructor() {
-            this.x = Math.random() * canvas.width;
-            this.y = Math.random() * canvas.height;
-            // Slow, deliberate movement to avoid visual chaos
+        constructor(cw, ch) {
+            this.cw = cw;
+            this.ch = ch;
+            this.x = Math.random() * cw;
+            this.y = Math.random() * ch;
             this.vx = (Math.random() - 0.5) * 0.4; 
             this.vy = (Math.random() - 0.5) * 0.4;
             this.radius = Math.random() * 1.5 + 1;
@@ -470,35 +491,46 @@ section, footer, main {
             this.x += this.vx;
             this.y += this.vy;
             
-            // Bounce off edges seamlessly
-            if (this.x < 0 || this.x > canvas.width) this.vx = -this.vx;
-            if (this.y < 0 || this.y > canvas.height) this.vy = -this.vy;
+            // Apply scroll momentum based on particle size (parallax depth)
+            if (scrollDelta !== 0) {
+                this.y -= scrollDelta * (this.radius * 0.6);
+            }
+            
+            // Seamless wrap around edges instead of bouncing
+            if (this.x < -this.radius) this.x = this.cw + this.radius;
+            if (this.x > this.cw + this.radius) this.x = -this.radius;
+            if (this.y < -this.radius) this.y = this.ch + this.radius;
+            if (this.y > this.ch + this.radius) this.y = -this.radius;
         }
         draw() {
             ctx.beginPath();
             ctx.arc(this.x, this.y, this.radius, 0, Math.PI * 2);
-            ctx.fillStyle = '#747c7c'; // Tailwind 'outline' hex
+            ctx.fillStyle = '#747c7c';
             ctx.fill();
         }
     }
 
-    function initParticles() {
+    function initParticles(cw, ch) {
         particles = [];
-        // Calculate density based on container size
-        const numParticles = Math.floor((canvas.width * canvas.height) / 18000);
+        // Determine density
+        const numParticles = Math.floor((cw * ch) / 16000);
         for (let i = 0; i < numParticles; i++) {
-            particles.push(new Particle());
+            particles.push(new Particle(cw, ch));
         }
     }
 
     function animate() {
-        ctx.clearRect(0, 0, canvas.width, canvas.height);
+        const logicalWidth = parseFloat(canvas.style.width);
+        const logicalHeight = parseFloat(canvas.style.height);
+        ctx.clearRect(0, 0, logicalWidth, logicalHeight);
+        
+        // Decay the scroll momentum smoothly
+        scrollDelta *= 0.85;
         
         for (let i = 0; i < particles.length; i++) {
             particles[i].update();
             particles[i].draw();
             
-            // Connect nearby nodes
             for (let j = i; j < particles.length; j++) {
                 const dx = particles[i].x - particles[j].x;
                 const dy = particles[i].y - particles[j].y;
@@ -507,21 +539,20 @@ section, footer, main {
                 if (distance < 130) {
                     ctx.beginPath();
                     ctx.strokeStyle = `rgba(116, 124, 124, ${0.4 - distance/325})`; 
-                    ctx.lineWidth = 0.5;
+                    ctx.lineWidth = 0.6; // Slightly thicker for high-DPI
                     ctx.moveTo(particles[i].x, particles[i].y);
                     ctx.lineTo(particles[j].x, particles[j].y);
                     ctx.stroke();
                 }
             }
             
-            // Connect nodes to mouse position
             if (mouse.x != null && mouse.y != null) {
                 const dx = particles[i].x - mouse.x;
                 const dy = particles[i].y - mouse.y;
                 const distance = Math.sqrt(dx * dx + dy * dy);
                 if (distance < 160) {
                     ctx.beginPath();
-                    ctx.strokeStyle = `rgba(90, 97, 83, ${0.6 - distance/266})`; // Tailwind 'secondary' hex
+                    ctx.strokeStyle = `rgba(90, 97, 83, ${0.6 - distance/266})`;
                     ctx.lineWidth = 1;
                     ctx.moveTo(particles[i].x, particles[i].y);
                     ctx.lineTo(mouse.x, mouse.y);
@@ -532,10 +563,10 @@ section, footer, main {
         requestAnimationFrame(animate);
     }
 
-    // Initialize
     resize();
     animate();
 })();
+
 
         // Ensure clean document height for scroll triggers
         window.addEventListener('load', () => {
