@@ -147,19 +147,20 @@ body {
     inset: 0;
     width: 100%;
     height: 100%;
-    z-index: 5; /* Middle Layer */
+    z-index: 5 !important; /* Particles in the middle */
     pointer-events: none;
 }
         
 .section-content {
     position: relative;
-    z-index: 10; /* Top Layer */
+    z-index: 20 !important; /* Content explicitly on top of particles */
 }
         
 section, footer, main {
     position: relative;
-    z-index: 1; /* Bottom Layer */
+    z-index: 1; /* Backgrounds at the absolute bottom */
 }
+
 
 
         /* Fix whitespace issues */
@@ -472,13 +473,14 @@ section, footer, main {
     let lastScrollY = window.scrollY;
     let lastWidth = window.innerWidth;
 
-        function resize() {
+            function resize() {
         const currentWidth = window.innerWidth;
         if (particles.length > 0 && currentWidth === lastWidth) return;
         lastWidth = currentWidth;
 
         const dpr = window.devicePixelRatio || 1;
-        // We must use offsetHeight to get the full height of the entire scrolling area
+        
+        // Use offsetHeight to capture the full vertical height of the entire page content
         const fullHeight = container.offsetHeight;
         const fullWidth = container.offsetWidth;
 
@@ -491,6 +493,7 @@ section, footer, main {
 
         initParticles(fullWidth, fullHeight);
     }
+
 
 
     // Rely exclusively on window resize. No ResizeObserver.
@@ -539,7 +542,7 @@ section, footer, main {
 
     function initParticles(cw, ch) {
         particles = [];
-        const numParticles = Math.floor((cw * ch) / 4000);
+        const numParticles = Math.floor((cw * ch) / 2000);
         for (let i = 0; i < numParticles; i++) {
             particles.push(new Spore(cw, ch));
         }
