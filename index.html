@@ -93,6 +93,14 @@ body {
     to { opacity: 1; }
 }
 
+        .glass-pill {
+    background: rgba(255, 255, 255, 0.45) !important;
+    backdrop-filter: blur(20px) !important;
+    -webkit-backdrop-filter: blur(20px) !important;
+    border: 1px solid rgba(255, 255, 255, 0.5) !important;
+    box-shadow: 0 4px 30px rgba(0, 0, 0, 0.03);
+}
+
         /* Custom Premium Scrollbar */
 ::-webkit-scrollbar {
     width: 8px;
@@ -182,9 +190,9 @@ section, footer, main {
 <body class="bg-surface text-on-surface font-inter antialiased selection:bg-primary selection:text-on-primary cursor-default select-none">
 <!-- Header Navigation Shell -->
 <header class="fixed top-6 left-1/2 -translate-x-1/2 w-[95%] max-w-5xl z-50 flex items-center justify-between px-6 py-4 bg-white/40 backdrop-blur-xl border border-white/50 rounded-full shadow-sm">
-<a class="flex items-center gap-2 hover:opacity-80 transition-opacity" href="#top">
-<span class="material-symbols-outlined text-stone-900 dark:text-stone-100" data-icon="eco">eco</span>
-<span class="font-['Barlow'] font-bold text-xl text-stone-900 dark:text-stone-100">AgriSync</span>
+<a class="flex items-center gap-2 px-3 py-1.5 rounded-full hover:bg-black/5 transition-all active:scale-95" href="#top">
+    <span class="material-symbols-outlined text-stone-900" data-icon="eco">eco</span>
+    <span class="font-['Barlow'] font-bold text-xl text-stone-900">AgriSync</span>
 </a>
 <nav class="hidden md:flex items-center gap-8">
 <a class="text-stone-900 dark:text-stone-100 font-bold hover:opacity-70 font-['Barlow'] text-xs uppercase tracking-widest transition-opacity duration-300" href="#architecture">Architecture</a>
@@ -268,7 +276,7 @@ section, footer, main {
 <h4 class="font-barlow font-bold text-xl text-on-surface">Predictive Logic</h4>
 <p class="font-barlow text-sm text-on-surface-variant leading-relaxed">Deep learning models identifying stress patterns 12 hours before physical symptoms appear.</p>
 </div>
-<div class="flex flex-col gap-4 p-6 bg-on-surface text-surface rounded-2xl border border-outline-variant/10 shadow-xl lg:col-span-2 transition-all duration-500 hover:-translate-y-2 hover:shadow-2xl hover:border-outline/30">
+<div class="flex flex-col gap-4 p-6 bg-on-surface text-surface rounded-2xl border border-outline-variant/10 shadow-xl md:col-span-2 lg:col-span-2 transition-all duration-500 hover:-translate-y-2 hover:shadow-2xl hover:border-outline/30">
 <span class="font-barlow font-bold opacity-60 text-sm">07 / Visualization</span>
 <h4 class="font-barlow font-bold text-2xl">The Agronomist Dashboard</h4>
 <p class="font-barlow text-sm opacity-80 leading-relaxed max-w-md">End-user interface providing actionable intelligence, remote valve control, and early-warning alerts via WhatsApp and Webhook.</p>
@@ -438,17 +446,17 @@ section, footer, main {
 </div>
 </section>
 <!-- Footer Shell -->
-<footer class="bg-background w-full flex flex-col md:flex-row justify-between items-center px-12 py-12">
-<div class="flex flex-col gap-2 mb-8 md:mb-0 section-content">
-<a class="font-['Barlow'] font-bold text-lg text-stone-900 dark:text-stone-100 hover:opacity-70 transition-opacity" href="#">AgriSync</a>
-<p class="font-['Barlow'] text-sm text-stone-500 dark:text-stone-400">© 2026 AgriSync. All rights reserved.</p>
-</div>
-<div class="flex gap-8 section-content">
-<a class="text-stone-500 dark:text-stone-400 font-['Barlow'] text-sm hover:text-stone-900 dark:hover:text-stone-100 transition-colors" href="#architecture">Architecture</a>
-<a class="text-stone-500 dark:text-stone-400 font-['Barlow'] text-sm hover:text-stone-900 dark:hover:text-stone-100 transition-colors" href="#ai-engine">AI Engine</a>
-<a class="text-stone-500 dark:text-stone-400 font-['Barlow'] text-sm hover:text-stone-900 dark:hover:text-stone-100 transition-colors" href="#about">About</a>
-<a class="text-stone-500 dark:text-stone-400 font-['Barlow'] text-sm hover:text-stone-900 dark:hover:text-stone-100 transition-colors" href="#">Impact</a>
-</div>
+<footer class="bg-background w-full flex flex-col items-center text-center px-12 py-16 gap-10">
+    <div class="flex flex-col items-center gap-3 section-content">
+        <a class="font-['Barlow'] font-bold text-2xl text-stone-900 hover:opacity-70 transition-opacity" href="#">AgriSync</a>
+        <p class="font-['Barlow'] text-sm text-stone-500">© 2026 AgriSync. All rights reserved.</p>
+    </div>
+    <div class="flex flex-wrap justify-center gap-x-12 gap-y-4 section-content">
+        <a class="text-stone-500 font-['Barlow'] text-sm font-bold uppercase tracking-widest hover:text-stone-900 transition-colors" href="#architecture">Architecture</a>
+        <a class="text-stone-500 font-['Barlow'] text-sm font-bold uppercase tracking-widest hover:text-stone-900 transition-colors" href="#ai-engine">AI Engine</a>
+        <a class="text-stone-500 font-['Barlow'] text-sm font-bold uppercase tracking-widest hover:text-stone-900 transition-colors" href="#about">About</a>
+        <a class="text-stone-500 font-['Barlow'] text-sm font-bold uppercase tracking-widest hover:text-stone-900 transition-colors" href="#">Impact</a>
+    </div>
 </footer>
 </div>
 <script>
