@@ -159,8 +159,6 @@ body {
             margin-bottom: 0 !important;
         }
     </style>
-<!-- Use a lighter version of particles or keep current but optimize init -->
- <!-- <script src="https://cdn.jsdelivr.net/particles.js/2.0.0/particles.min.js"></script> --!>
         <!-- Google tag (gtag.js) -->
 <script async src="https://www.googletagmanager.com/gtag/js?id=G-XX2TLR35NH"></script>
 <script>
@@ -181,26 +179,72 @@ body {
         
         <!-- Header Navigation Shell -->
 <header class="fixed top-6 left-1/2 -translate-x-1/2 w-[95%] max-w-5xl z-50 flex items-center justify-between px-6 py-4 bg-white/40 backdrop-blur-xl border border-white/50 rounded-full shadow-sm">
-<a class="flex items-center gap-2 px-3 py-1.5 rounded-full hover:bg-black/5 transition-all active:scale-95" href="#top">
+  <a class="flex items-center gap-2 px-3 py-1.5 rounded-full hover:bg-black/5 transition-all active:scale-95" href="#top">
     <span class="material-symbols-outlined text-stone-900" data-icon="eco">eco</span>
     <span class="font-['Barlow'] font-bold text-xl text-stone-900">AgriSync</span>
-</a>
-<nav class="hidden md:flex items-center gap-8">
-<a class="text-stone-900 dark:text-stone-100 font-bold hover:opacity-70 font-['Barlow'] text-xs uppercase tracking-widest transition-opacity duration-300" href="#architecture">Architecture</a>
-<a class="text-stone-900 dark:text-stone-100 font-bold hover:opacity-70 font-['Barlow'] text-xs uppercase tracking-widest transition-opacity duration-300" href="#ai-engine">AI Engine</a>
-<a class="text-stone-900 dark:text-stone-100 font-bold hover:opacity-70 font-['Barlow'] text-xs uppercase tracking-widest transition-opacity duration-300" href="#about">About</a>
-<a class="text-stone-900 dark:text-stone-100 font-bold hover:opacity-70 font-['Barlow'] text-xs uppercase tracking-widest transition-opacity duration-300" href="#tech-stack">Stack</a>
-</nav>
-
-<a class="bg-white/50 backdrop-blur-md border border-white/60 text-stone-900 px-6 py-2.5 rounded-full flex items-center gap-2 font-['Barlow'] font-bold text-xs uppercase tracking-widest transition-all hover:bg-white/70 hover:scale-105 active:scale-95 shadow-sm" href="#connect">
-            Contact <span class="material-symbols-outlined text-lg rotate-45" data-icon="arrow_forward">arrow_forward</span>
-</a>
+  </a>
+  <nav class="hidden md:flex items-center gap-8">
+    <a class="text-stone-900 font-bold hover:opacity-70 font-['Barlow'] text-xs uppercase tracking-widest transition-opacity duration-300" href="#architecture">Architecture</a>
+    <a class="text-stone-900 font-bold hover:opacity-70 font-['Barlow'] text-xs uppercase tracking-widest transition-opacity duration-300" href="#ai-engine">AI Engine</a>
+    <a class="text-stone-900 font-bold hover:opacity-70 font-['Barlow'] text-xs uppercase tracking-widest transition-opacity duration-300" href="#about">About</a>
+    <a class="text-stone-900 font-bold hover:opacity-70 font-['Barlow'] text-xs uppercase tracking-widest transition-opacity duration-300" href="#tech-stack">Stack</a>
+  </nav>
+  <a class="hidden md:flex bg-white/50 backdrop-blur-md border border-white/60 text-stone-900 px-6 py-2.5 rounded-full items-center gap-2 font-['Barlow'] font-bold text-xs uppercase tracking-widest transition-all hover:bg-white/70 hover:scale-105 active:scale-95 shadow-sm" href="#connect">
+    Contact <span class="material-symbols-outlined text-lg rotate-45" data-icon="arrow_forward">arrow_forward</span>
+  </a>
+  <!-- Mobile Hamburger -->
+  <button class="md:hidden flex flex-col gap-1.5 p-2 rounded-full hover:bg-black/5 transition-all" id="menu-toggle" aria-label="Open menu">
+    <span class="w-5 h-0.5 bg-stone-900 transition-all duration-300" id="bar1"></span>
+    <span class="w-5 h-0.5 bg-stone-900 transition-all duration-300" id="bar2"></span>
+    <span class="w-5 h-0.5 bg-stone-900 transition-all duration-300" id="bar3"></span>
+  </button>
 </header>
+
+<!-- Mobile Menu Overlay -->
+<div class="fixed inset-0 z-40 bg-white/95 backdrop-blur-xl flex flex-col items-center justify-center gap-10 transition-all duration-300 opacity-0 pointer-events-none" id="mobile-menu">
+  <a class="font-['Barlow'] font-bold text-3xl text-stone-900 uppercase tracking-widest hover:opacity-50 transition-opacity" href="#architecture" onclick="closeMobileMenu()">Architecture</a>
+  <a class="font-['Barlow'] font-bold text-3xl text-stone-900 uppercase tracking-widest hover:opacity-50 transition-opacity" href="#ai-engine" onclick="closeMobileMenu()">AI Engine</a>
+  <a class="font-['Barlow'] font-bold text-3xl text-stone-900 uppercase tracking-widest hover:opacity-50 transition-opacity" href="#about" onclick="closeMobileMenu()">About</a>
+  <a class="font-['Barlow'] font-bold text-3xl text-stone-900 uppercase tracking-widest hover:opacity-50 transition-opacity" href="#tech-stack" onclick="closeMobileMenu()">Stack</a>
+  <a class="mt-4 bg-stone-900 text-white px-10 py-4 rounded-full font-['Barlow'] font-bold text-sm uppercase tracking-widest" href="#connect" onclick="closeMobileMenu()">Contact</a>
+</div>
+
+<script>
+  const toggle = document.getElementById('menu-toggle');
+  const menu = document.getElementById('mobile-menu');
+  const bar1 = document.getElementById('bar1');
+  const bar2 = document.getElementById('bar2');
+  const bar3 = document.getElementById('bar3');
+  let open = false;
+
+  toggle.addEventListener('click', () => {
+    open = !open;
+    menu.style.opacity = open ? '1' : '0';
+    menu.style.pointerEvents = open ? 'all' : 'none';
+    bar1.style.transform = open ? 'translateY(8px) rotate(45deg)' : '';
+    bar2.style.opacity = open ? '0' : '1';
+    bar3.style.transform = open ? 'translateY(-8px) rotate(-45deg)' : '';
+  });
+
+  function closeMobileMenu() {
+    open = false;
+    menu.style.opacity = '0';
+    menu.style.pointerEvents = 'none';
+    bar1.style.transform = '';
+    bar2.style.opacity = '1';
+    bar3.style.transform = '';
+  }
+</script>
+
 <!-- Hero Section -->
 <main class="relative flex flex-col items-center justify-center overflow-hidden h-screen min-h-[800px]" id="top">
-<video autoplay="" class="absolute inset-0 w-full h-full object-cover z-0" loop="" muted="" playsinline="" style="filter: brightness(0.85);">
-<source src="https://d8j0ntlcm91z4.cloudfront.net/user_38xzZboKViGWJOttwIXH07lWA1P/hf_20260228_065522_522e2295-ba22-457e-8fdb-fbcd68109c73.mp4" type="video/mp4"/>
+<video autoplay loop muted playsinline class="absolute inset-0 w-full h-full object-cover z-0" style="filter: brightness(0.85);"
+  onerror="this.style.display='none'; document.getElementById('hero-fallback').style.display='block';">
+  <source src="hero-bg.mp4" type="video/mp4"/>
+  <source src="https://d8j0ntlcm91z4.cloudfront.net/user_38xzZboKViGWJOttwIXH07lWA1P/hf_20260228_065522_522e2295-ba22-457e-8fdb-fbcd68109c73.mp4" type="video/mp4"/>
 </video>
+<!-- Fallback if video fails -->
+<div id="hero-fallback" class="absolute inset-0 w-full h-full z-0" style="display:none; background: linear-gradient(135deg, #2c3a2c 0%, #3b4738 50%, #1a2a1a 100%);"></div>
 <div class="relative z-10 w-full max-w-4xl px-6 pt-24 text-center">
 <div class="mb-12 text-white">
 <h1 class="flex flex-col items-center gap-0">
@@ -283,10 +327,10 @@ body {
 <h3 class="font-barlow font-bold text-5xl text-on-surface tracking-tighter mb-8 leading-tight">The AgriSync AI<br/>Prediction Engine</h3>
 <p class="font-barlow text-lg text-on-surface-variant leading-relaxed mb-12">By cross-referencing soil moisture, ambient humidity, and leaf temperature gradients, our engine predicts fungal outbreaks with surgical precision.</p>
 <div class="grid grid-cols-2 gap-8">
-<div><span class="font-barlow font-bold text-4xl text-on-surface">12h</span><p class="font-instrument italic text-xl text-on-surface-variant">Early Warning</p></div>
-<div><span class="font-barlow font-bold text-4xl text-on-surface">85%<br/></span><p class="font-instrument italic text-xl text-on-surface-variant">Model Accuracy</p></div>
-<div><span class="font-barlow font-bold text-4xl text-on-surface">14B</span><p class="font-instrument italic text-xl text-on-surface-variant">Data Points</p></div>
-<div><span class="font-barlow font-bold text-4xl text-on-surface">30m</span><p class="font-instrument italic text-xl text-on-surface-variant">Next Scan</p></div>
+<div><span class="font-barlow font-bold text-4xl text-on-surface">12h</span><p class="font-instrument italic text-xl text-on-surface-variant">Target Warning Window</p></div>
+<div><span class="font-barlow font-bold text-4xl text-on-surface">85%</span><p class="font-instrument italic text-xl text-on-surface-variant">Projected Accuracy</p></div>
+<div><span class="font-barlow font-bold text-4xl text-on-surface">v0.1</span><p class="font-instrument italic text-xl text-on-surface-variant">Model in Training</p></div>
+<div><span class="font-barlow font-bold text-4xl text-on-surface">30m</span><p class="font-instrument italic text-xl text-on-surface-variant">Sensor Poll Rate</p></div>
 </div>
 </div>
 <div class="relative aspect-square bg-on-surface rounded-3xl overflow-hidden shadow-2xl flex items-center justify-center p-12">
@@ -300,7 +344,7 @@ body {
 <div class="absolute bottom-8 left-8 right-8 bg-surface/10 backdrop-blur-md p-4 rounded-xl border border-white/10 z-10">
 <div class="flex items-center gap-3">
 <div class="w-2 h-2 rounded-full bg-emerald-400 animate-pulse"></div>
-<span class="font-barlow text-[10px] text-surface uppercase font-bold tracking-widest">Real-time inference: 82.4ms</span>
+<span class="font-barlow text-[10px] text-surface uppercase font-bold tracking-widest">Model Training: Phase 1 Active</span>
 </div>
 </div>
 </div>
@@ -426,11 +470,26 @@ body {
 </a>
 </div>
 <div class="flex flex-col md:flex-row gap-8 items-center mt-8 opacity-60">
-<a class="font-barlow text-sm uppercase tracking-widest hover:text-white transition-colors" href="#">API Reference</a>
+<a class="font-barlow text-sm uppercase tracking-widest hover:text-white transition-colors cursor-pointer" onclick="showComingSoon(this, 'API Reference')">API Reference</a>
 <span class="hidden md:block w-1 h-1 bg-white rounded-full"></span>
-<a class="font-barlow text-sm uppercase tracking-widest hover:text-white transition-colors" href="#">Hardware Specs</a>
+<a class="font-barlow text-sm uppercase tracking-widest hover:text-white transition-colors cursor-pointer" onclick="showComingSoon(this, 'Hardware Specs')">Hardware Specs</a>
 <span class="hidden md:block w-1 h-1 bg-white rounded-full"></span>
-<a class="font-barlow text-sm uppercase tracking-widest hover:text-white transition-colors" href="#">Deployment Guide</a>
+<a class="font-barlow text-sm uppercase tracking-widest hover:text-white transition-colors cursor-pointer" onclick="showComingSoon(this, 'Deployment Guide')">Deployment Guide</a>
+
+<script>
+  function showComingSoon(el, name) {
+    const original = el.innerText;
+    el.innerText = 'Coming Nov 2026';
+    el.style.opacity = '0.5';
+    el.style.pointerEvents = 'none';
+    setTimeout(() => {
+      el.innerText = original;
+      el.style.opacity = '';
+      el.style.pointerEvents = '';
+    }, 2000);
+  }
+</script>
+
 </div>
 </div>
 </div>
