@@ -143,23 +143,25 @@ body {
         
   
 #dust-canvas {
-    position: absolute;
-    inset: 0;
-    width: 100%;
-    height: 100%;
-    z-index: 5 !important; /* Particles in the middle */
+    position: fixed; /* Pins to the camera viewport */
+    top: 0;
+    left: 0;
+    width: 100vw;
+    height: 100vh;
+    z-index: 5; /* Sits exactly in the middle */
     pointer-events: none;
 }
         
 .section-content {
     position: relative;
-    z-index: 20 !important; /* Content explicitly on top of particles */
+    z-index: 10; /* Lifts cards and text above particles */
 }
         
 section, footer, main {
     position: relative;
-    z-index: 1; /* Backgrounds at the absolute bottom */
+    /* z-index completely removed so backgrounds stay at the bottom layer */
 }
+
 
 
 
@@ -238,7 +240,7 @@ section, footer, main {
 <div class="relative" id="content-with-particles">
 <canvas id="dust-canvas"></canvas>
 <!-- 7-Layer Architecture Section -->
-<section class="py-24 px-8 relative bg-surface z-1 rounded-[3rem] overflow-hidden scroll-mt-24" id="architecture">
+<section class="py-24 px-8 relative bg-surface rounded-[3rem] overflow-hidden scroll-mt-24" id="architecture">
 <div class="max-w-6xl mx-auto section-content">
 <div class="mb-20 flex flex-col items-center text-center">
 <h2 class="font-barlow font-bold text-xs uppercase tracking-[0.3em] text-outline mb-4">The AgriSync Pipeline</h2>
@@ -473,16 +475,16 @@ section, footer, main {
     let lastScrollY = window.scrollY;
     let lastWidth = window.innerWidth;
 
-            function resize() {
+                function resize() {
         const currentWidth = window.innerWidth;
         if (particles.length > 0 && currentWidth === lastWidth) return;
         lastWidth = currentWidth;
 
         const dpr = window.devicePixelRatio || 1;
         
-        // Use offsetHeight to capture the full vertical height of the entire page content
-        const fullHeight = container.offsetHeight;
-        const fullWidth = container.offsetWidth;
+        // Use viewport dimensions to prevent browser memory crashes
+        const fullHeight = window.innerHeight;
+        const fullWidth = window.innerWidth;
 
         canvas.width = fullWidth * dpr;
         canvas.height = fullHeight * dpr;
