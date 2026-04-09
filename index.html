@@ -424,7 +424,7 @@ section, footer, main {
 </footer>
 </div>
 <script>
-// Network Nodes Engine (High-DPI & Scroll Parallax)
+// Network Nodes Engine (Smooth High-DPI Parallax)
 (function () {
     const canvas = document.getElementById('network-canvas');
     const container = document.getElementById('content-with-particles');
@@ -433,8 +433,11 @@ section, footer, main {
     const ctx = canvas.getContext('2d');
     let particles = [];
     let mouse = { x: null, y: null };
+    
+    // Smooth scroll tracking variables
+    let targetScrollY = window.scrollY;
+    let smoothScrollY = window.scrollY;
     let scrollDelta = 0;
-    let lastScrollY = window.scrollY;
 
     // Retina/High-DPI Canvas scaling for sharp rendering
     function resize() {
@@ -444,7 +447,6 @@ section, footer, main {
         canvas.width = rect.width * dpr;
         canvas.height = rect.height * dpr;
         
-        // Normalize coordinate system to use CSS pixels
         ctx.scale(dpr, dpr);
         
         canvas.style.width = `${rect.width}px`;
@@ -469,12 +471,9 @@ section, footer, main {
         mouse.y = null;
     });
 
-    // Track scroll for parallax effect
+    // Only update the target position in the event listener
     window.addEventListener('scroll', () => {
-        const currentScrollY = window.scrollY;
-        // Calculate difference and apply sensitivity multiplier
-        scrollDelta = (currentScrollY - lastScrollY) * 0.4; 
-        lastScrollY = currentScrollY;
+        targetScrollY = window.scrollY;
     });
 
     class Particle {
@@ -491,12 +490,12 @@ section, footer, main {
             this.x += this.vx;
             this.y += this.vy;
             
-            // Apply scroll momentum based on particle size (parallax depth)
+            // Apply smoothed scroll momentum
             if (scrollDelta !== 0) {
-                this.y -= scrollDelta * (this.radius * 0.6);
+                this.y -= scrollDelta * (this.radius * 0.4); 
             }
             
-            // Seamless wrap around edges instead of bouncing
+            // Seamless wrap around edges
             if (this.x < -this.radius) this.x = this.cw + this.radius;
             if (this.x > this.cw + this.radius) this.x = -this.radius;
             if (this.y < -this.radius) this.y = this.ch + this.radius;
@@ -512,7 +511,6 @@ section, footer, main {
 
     function initParticles(cw, ch) {
         particles = [];
-        // Determine density
         const numParticles = Math.floor((cw * ch) / 16000);
         for (let i = 0; i < numParticles; i++) {
             particles.push(new Particle(cw, ch));
@@ -524,8 +522,13 @@ section, footer, main {
         const logicalHeight = parseFloat(canvas.style.height);
         ctx.clearRect(0, 0, logicalWidth, logicalHeight);
         
-        // Decay the scroll momentum smoothly
-        scrollDelta *= 0.85;
+        // Interpolate the scroll position frame-by-frame (Lerp)
+        smoothScrollY += (targetScrollY - smoothScrollY) * 0.08;
+        scrollDelta = smoothScrollY - (window.lastSmoothScrollY || smoothScrollY);
+        window.lastSmoothScrollY = smoothScrollY;
+
+        // Nullify micro-movements to save processing power
+        if (Math.abs(scrollDelta) < 0.01) scrollDelta = 0;
         
         for (let i = 0; i < particles.length; i++) {
             particles[i].update();
@@ -539,7 +542,7 @@ section, footer, main {
                 if (distance < 130) {
                     ctx.beginPath();
                     ctx.strokeStyle = `rgba(116, 124, 124, ${0.4 - distance/325})`; 
-                    ctx.lineWidth = 0.6; // Slightly thicker for high-DPI
+                    ctx.lineWidth = 0.6;
                     ctx.moveTo(particles[i].x, particles[i].y);
                     ctx.lineTo(particles[j].x, particles[j].y);
                     ctx.stroke();
@@ -566,6 +569,7 @@ section, footer, main {
     resize();
     animate();
 })();
+
 
 
         // Ensure clean document height for scroll triggers
