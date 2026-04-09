@@ -84,6 +84,30 @@
         }
     </script>
 <style>
+        /* Prevent FOUC */
+body {
+    animation: fadeIn 0.8s ease-in-out forwards;
+    opacity: 0;
+}
+@keyframes fadeIn {
+    to { opacity: 1; }
+}
+
+        /* Custom Premium Scrollbar */
+::-webkit-scrollbar {
+    width: 8px;
+}
+::-webkit-scrollbar-track {
+    background: #eaefee; /* Matches your surface-container */
+}
+::-webkit-scrollbar-thumb {
+    background: #7b8c74; /* Muted sage green */
+    border-radius: 10px;
+}
+::-webkit-scrollbar-thumb:hover {
+    background: #3b4134; /* Darkens on hover */
+}
+
         /* Performance & Flash prevention */
         html { 
             visibility: visible; 
@@ -152,7 +176,7 @@ section, footer, main {
   gtag('config', 'G-XX2TLR35NH');
 </script>
         </head>
-<body class="bg-surface text-on-surface font-inter antialiased selection:bg-primary selection:text-on-primary cursor-default">
+<body class="bg-surface text-on-surface font-inter antialiased selection:bg-primary selection:text-on-primary cursor-default select-none">
 <!-- Header Navigation Shell -->
 <header class="fixed top-6 left-1/2 -translate-x-1/2 w-[95%] max-w-5xl z-50 flex items-center justify-between px-6 py-4 bg-white/40 backdrop-blur-xl border border-white/50 rounded-full shadow-sm">
 <a class="flex items-center gap-2 hover:opacity-80 transition-opacity" href="#top">
@@ -210,38 +234,38 @@ section, footer, main {
 <p class="font-instrument italic text-4xl md:text-6xl text-on-surface leading-tight max-w-3xl">From soil to screen: A 7-layer architecture for absolute precision.</p>
 </div>
 </div>
-<div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-x-8 gap-y-12">
+<div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-x-8 gap-y-12 transition-all duration-500 hover:-translate-y-2 hover:shadow-2xl hover:border-outline/30">
 <div class="flex flex-col gap-4 p-6 bg-surface-container-low rounded-2xl border border-outline-variant/10">
 <span class="font-barlow font-bold text-outline-variant text-sm">01 / Sensing</span>
 <h4 class="font-barlow font-bold text-xl text-on-surface">Capacitive Probes</h4>
 <p class="font-barlow text-sm text-on-surface-variant leading-relaxed">Direct measurement of volumetric water content and NPK chemical levels at the root zone.</p>
 </div>
-<div class="flex flex-col gap-4 p-6 bg-surface-container-low rounded-2xl border border-outline-variant/10">
+<div class="flex flex-col gap-4 p-6 bg-surface-container-low rounded-2xl border border-outline-variant/10 transition-all duration-500 hover:-translate-y-2 hover:shadow-2xl hover:border-outline/30">
 <span class="font-barlow font-bold text-outline-variant text-sm">02 / Edge Analytics</span>
 <h4 class="font-barlow font-bold text-xl text-on-surface">ESP32 Compute</h4>
 <p class="font-barlow text-sm text-on-surface-variant leading-relaxed">Local noise filtering and signal conditioning before transmission to minimize data packet size.</p>
 </div>
-<div class="flex flex-col gap-4 p-6 bg-surface-container-low rounded-2xl border border-outline-variant/10">
+<div class="flex flex-col gap-4 p-6 bg-surface-container-low rounded-2xl border border-outline-variant/10 transition-all duration-500 hover:-translate-y-2 hover:shadow-2xl hover:border-outline/30">
 <span class="font-barlow font-bold text-outline-variant text-sm">03 / Transmission</span>
 <h4 class="font-barlow font-bold text-xl text-on-surface">LoRaWAN Mesh</h4>
 <p class="font-barlow text-sm text-on-surface-variant leading-relaxed">Long-range, low-power telemetry capable of piercing dense canopy and traversing irregular terrain.</p>
 </div>
-<div class="flex flex-col gap-4 p-6 bg-surface-container-low rounded-2xl border border-outline-variant/10">
+<div class="flex flex-col gap-4 p-6 bg-surface-container-low rounded-2xl border border-outline-variant/10 transition-all duration-500 hover:-translate-y-2 hover:shadow-2xl hover:border-outline/30">
 <span class="font-barlow font-bold text-outline-variant text-sm">04 / Gateway</span>
 <h4 class="font-barlow font-bold text-xl text-on-surface">Backhaul Sync</h4>
 <p class="font-barlow text-sm text-on-surface-variant leading-relaxed">Centralized hub converting RF signals to secure MQTT packets for cloud ingestion.</p>
 </div>
-<div class="flex flex-col gap-4 p-6 bg-surface-container-low rounded-2xl border border-outline-variant/10">
+<div class="flex flex-col gap-4 p-6 bg-surface-container-low rounded-2xl border border-outline-variant/10 transition-all duration-500 hover:-translate-y-2 hover:shadow-2xl hover:border-outline/30">
 <span class="font-barlow font-bold text-outline-variant text-sm">05 / Ingestion</span>
 <h4 class="font-barlow font-bold text-xl text-on-surface">InfluxDB Storage</h4>
 <p class="font-barlow text-sm text-on-surface-variant leading-relaxed">High-throughput time-series database mapping billions of data points in real-time.</p>
 </div>
-<div class="flex flex-col gap-4 p-6 bg-surface-container-low rounded-2xl border border-outline-variant/10">
+<div class="flex flex-col gap-4 p-6 bg-surface-container-low rounded-2xl border border-outline-variant/10 transition-all duration-500 hover:-translate-y-2 hover:shadow-2xl hover:border-outline/30">
 <span class="font-barlow font-bold text-outline-variant text-sm">06 / AI Engine</span>
 <h4 class="font-barlow font-bold text-xl text-on-surface">Predictive Logic</h4>
 <p class="font-barlow text-sm text-on-surface-variant leading-relaxed">Deep learning models identifying stress patterns 12 hours before physical symptoms appear.</p>
 </div>
-<div class="flex flex-col gap-4 p-6 bg-on-surface text-surface rounded-2xl border border-outline-variant/10 shadow-xl lg:col-span-2">
+<div class="flex flex-col gap-4 p-6 bg-on-surface text-surface rounded-2xl border border-outline-variant/10 shadow-xl lg:col-span-2 transition-all duration-500 hover:-translate-y-2 hover:shadow-2xl hover:border-outline/30">
 <span class="font-barlow font-bold opacity-60 text-sm">07 / Visualization</span>
 <h4 class="font-barlow font-bold text-2xl">The Agronomist Dashboard</h4>
 <p class="font-barlow text-sm opacity-80 leading-relaxed max-w-md">End-user interface providing actionable intelligence, remote valve control, and early-warning alerts via WhatsApp and Webhook.</p>
