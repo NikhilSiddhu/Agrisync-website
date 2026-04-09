@@ -142,25 +142,7 @@ body {
         }
         
   
-#dust-canvas {
-    position: fixed; /* Pins to the camera viewport */
-    top: 0;
-    left: 0;
-    width: 100vw;
-    height: 100vh;
-    z-index: 5; /* Sits exactly in the middle */
-    pointer-events: none;
-}
-        
-.section-content {
-    position: relative;
-    z-index: 10; /* Lifts cards and text above particles */
-}
-        
-section, footer, main {
-    position: relative;
-    /* z-index completely removed so backgrounds stay at the bottom layer */
-}
+
 
 
 
@@ -190,7 +172,14 @@ section, footer, main {
 </script>
         </head>
 <body class="bg-surface text-on-surface font-inter antialiased selection:bg-primary selection:text-on-primary cursor-default select-none">
-<!-- Header Navigation Shell -->
+
+        <div class="fixed inset-0 pointer-events-none z-0 overflow-hidden">
+    <div class="absolute top-[-20%] left-[-10%] w-[50%] h-[50%] rounded-full bg-primary/5 blur-[120px]"></div>
+    <div class="absolute bottom-[-10%] right-[-10%] w-[60%] h-[60%] rounded-full bg-secondary/5 blur-[150px]"></div>
+</div>
+
+        
+        <!-- Header Navigation Shell -->
 <header class="fixed top-6 left-1/2 -translate-x-1/2 w-[95%] max-w-5xl z-50 flex items-center justify-between px-6 py-4 bg-white/40 backdrop-blur-xl border border-white/50 rounded-full shadow-sm">
 <a class="flex items-center gap-2 px-3 py-1.5 rounded-full hover:bg-black/5 transition-all active:scale-95" href="#top">
     <span class="material-symbols-outlined text-stone-900" data-icon="eco">eco</span>
@@ -237,8 +226,7 @@ section, footer, main {
 </div>
 </main>
 <!-- Global Particles Container -->
-<div class="relative" id="content-with-particles">
-<canvas id="dust-canvas"></canvas>
+<div class="relative">
 <!-- 7-Layer Architecture Section -->
 <section class="py-24 px-8 relative bg-surface rounded-[3rem] overflow-hidden scroll-mt-24" id="architecture">
 <div class="max-w-6xl mx-auto section-content">
@@ -461,120 +449,5 @@ section, footer, main {
     </div>
 </footer>
 </div>
-<script>
-// Floating Data Spores Engine (Ultra-Fluid Fix)
-(function () {
-    const canvas = document.getElementById('dust-canvas');
-    const container = document.getElementById('content-with-particles');
-    if (!canvas || !container) return;
-
-    const ctx = canvas.getContext('2d');
-    let particles = [];
-    let targetWind = 0;
-    let currentWind = 0;
-    let lastScrollY = window.scrollY;
-    let lastWidth = window.innerWidth;
-
-                function resize() {
-        const currentWidth = window.innerWidth;
-        if (particles.length > 0 && currentWidth === lastWidth) return;
-        lastWidth = currentWidth;
-
-        const dpr = window.devicePixelRatio || 1;
-        
-        // Use viewport dimensions to prevent browser memory crashes
-        const fullHeight = window.innerHeight;
-        const fullWidth = window.innerWidth;
-
-        canvas.width = fullWidth * dpr;
-        canvas.height = fullHeight * dpr;
-
-        ctx.scale(dpr, dpr);
-        canvas.style.width = `${fullWidth}px`;
-        canvas.style.height = `${fullHeight}px`;
-
-        initParticles(fullWidth, fullHeight);
-    }
-
-
-
-    // Rely exclusively on window resize. No ResizeObserver.
-    window.addEventListener('resize', resize);
-
-    window.addEventListener('scroll', () => {
-        const currentScrollY = window.scrollY;
-        const delta = currentScrollY - lastScrollY;
-        // Softer wind cap for high-velocity momentum scrolling on touch devices
-        targetWind = Math.min(Math.max(delta * 0.03, -1.0), 1.0);
-        lastScrollY = currentScrollY;
-    });
-
-    class Spore {
-        constructor(cw, ch) {
-            this.cw = cw;
-            this.ch = ch;
-            this.x = Math.random() * cw;
-            this.y = Math.random() * ch;
-            this.vx = (Math.random() - 0.5) * 0.2;
-            this.vy = (Math.random() * -0.3) - 0.1; 
-            this.radius = Math.random() * 1.5 + 0.5;
-            
-            // Darker AgriSync Spore Palette for high contrast
-            const colors = ['rgba(74, 87, 71, ', 'rgba(59, 71, 56, ', 'rgba(44, 52, 52, '];
-            this.colorBase = colors[Math.floor(Math.random() * colors.length)];
-            this.baseAlpha = Math.random() * 0.4 + 0.3; // Higher minimum opacity
-
-        }
-        update() {
-            this.x += this.vx + currentWind;
-            this.y += this.vy;
-
-            if (this.x < -this.radius) this.x = this.cw + this.radius;
-            if (this.x > this.cw + this.radius) this.x = -this.radius;
-            if (this.y < -this.radius) this.y = this.ch + this.radius;
-            if (this.y > this.ch + this.radius) this.y = -this.radius;
-        }
-        draw() {
-            ctx.beginPath();
-            ctx.arc(this.x, this.y, this.radius, 0, Math.PI * 2);
-            ctx.fillStyle = this.colorBase + this.baseAlpha + ')';
-            ctx.fill();
-        }
-    }
-
-    function initParticles(cw, ch) {
-        particles = [];
-        const numParticles = Math.floor((cw * ch) / 2000);
-        for (let i = 0; i < numParticles; i++) {
-            particles.push(new Spore(cw, ch));
-        }
-    }
-
-    function animate() {
-        const logicalWidth = parseFloat(canvas.style.width);
-        const logicalHeight = parseFloat(canvas.style.height);
-        ctx.clearRect(0, 0, logicalWidth, logicalHeight);
-
-        // Slowed down interpolation for a heavier, fluid reaction
-        currentWind += (targetWind - currentWind) * 0.03;
-        targetWind *= 0.85; 
-
-        for (let i = 0; i < particles.length; i++) {
-            particles[i].update();
-            particles[i].draw();
-        }
-
-        requestAnimationFrame(animate);
-    }
-
-    resize();
-    animate();
-})();
-
-        // Ensure clean document height for scroll triggers
-        window.addEventListener('load', () => {
-            // Force a slight resize trigger for particles.js canvas if needed
-            window.dispatchEvent(new Event('resize'));
-        });
-    </script>
-</body></html>
+</body>
+</html>
