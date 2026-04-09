@@ -205,10 +205,9 @@ section, footer, main {
 <!-- 7-Layer Architecture Section -->
 <section class="py-24 px-8 relative bg-surface z-10 rounded-[3rem] overflow-hidden scroll-mt-24" id="architecture">
 <div class="max-w-6xl mx-auto section-content">
-<div class="mb-20">
+<div class="mb-20 flex flex-col items-center text-center">
 <h2 class="font-barlow font-bold text-xs uppercase tracking-[0.3em] text-outline mb-4">The AgriSync Pipeline</h2>
-<div class="flex flex-col md:flex-row md:items-end justify-between gap-6">
-<p class="font-instrument italic text-4xl md:text-6xl text-on-surface leading-tight max-w-2xl">From soil to screen: A 7-layer architecture for absolute precision.</p>
+<p class="font-instrument italic text-4xl md:text-6xl text-on-surface leading-tight max-w-3xl">From soil to screen: A 7-layer architecture for absolute precision.</p>
 </div>
 </div>
 <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-x-8 gap-y-12">
@@ -292,21 +291,21 @@ section, footer, main {
 </div>
 <div class="grid grid-cols-1 md:grid-cols-3 gap-12">
 <div class="flex flex-col gap-6 group">
-<div class="w-16 h-16 rounded-full bg-surface-variant/60 backdrop-blur-md border border-outline-variant/50 shadow-sm flex items-center justify-center transition-all duration-300 group-hover:bg-surface-variant group-hover:scale-110 group-hover:shadow-md text-on-surface">
+<div class="w-16 h-16 rounded-full bg-on-surface/5 border border-on-surface/10 flex items-center justify-center transition-all duration-300 group-hover:bg-on-surface group-hover:scale-110 shadow-sm group-hover:shadow-lg text-on-surface group-hover:text-surface">
 <span class="material-symbols-outlined" data-icon="cottage">cottage</span>
 </div>
 <h4 class="font-barlow font-bold text-2xl text-on-surface">Hyper-local Roots</h4>
 <p class="font-barlow text-on-surface-variant leading-relaxed">Born from the practical needs of rural farming communities, where internet is a luxury and precision is a necessity for survival.</p>
 </div>
 <div class="flex flex-col gap-6 group">
-<div class="w-16 h-16 rounded-full bg-surface-variant/60 backdrop-blur-md border border-outline-variant/50 shadow-sm flex items-center justify-center transition-all duration-300 group-hover:bg-surface-variant group-hover:scale-110 group-hover:shadow-md text-on-surface">
+<div class="w-16 h-16 rounded-full bg-on-surface/5 border border-on-surface/10 flex items-center justify-center transition-all duration-300 group-hover:bg-on-surface group-hover:scale-110 shadow-sm group-hover:shadow-lg text-on-surface group-hover:text-surface">
 <span class="material-symbols-outlined" data-icon="language">language</span>
 </div>
 <h4 class="font-barlow font-bold text-2xl text-on-surface">Global Scalability</h4>
 <p class="font-barlow text-on-surface-variant leading-relaxed">A platform-agnostic architecture designed to scale from a single backyard plot to thousand-acre commercial plantations.</p>
 </div>
 <div class="flex flex-col gap-6 group">
-<div class="w-16 h-16 rounded-full bg-surface-variant/60 backdrop-blur-md border border-outline-variant/50 shadow-sm flex items-center justify-center transition-all duration-300 group-hover:bg-surface-variant group-hover:scale-110 group-hover:shadow-md text-on-surface">
+<div class="w-16 h-16 rounded-full bg-on-surface/5 border border-on-surface/10 flex items-center justify-center transition-all duration-300 group-hover:bg-on-surface group-hover:scale-110 shadow-sm group-hover:shadow-lg text-on-surface group-hover:text-surface">
 <span class="material-symbols-outlined" data-icon="handshake">handshake</span>
 </div>
 <h4 class="font-barlow font-bold text-2xl text-on-surface">Democratized Tech</h4>
@@ -393,19 +392,20 @@ section, footer, main {
 <span class="font-barlow font-bold text-sm tracking-widest uppercase">Raspberry Pi 5</span>
 </div>
 </div>
-<div class="mt-24 pt-24 border-t border-white/10 flex flex-col md:flex-row justify-between gap-12" id="connect">
-<div class="max-w-md">
-<h4 class="font-instrument italic text-3xl mb-6">Ready to sync your field?</h4>
-<p class="font-barlow text-surface/60 text-sm leading-relaxed mb-8">Join the movement of digital agronomists transforming global food security through data-driven resolve.</p>
-<a class="inline-block liquid-glass text-stone-900 px-8 py-3 rounded-full font-barlow font-bold text-sm uppercase tracking-widest hover:scale-105 active:scale-95 transition-all shadow-xl text-center" href="mailto:nikhildsiddhu@outlook.com">CONNECT</a>
+<div class="mt-24 pt-24 border-t border-white/10 flex flex-col items-center text-center gap-10" id="connect">
+<div class="max-w-2xl flex flex-col items-center">
+<h4 class="font-instrument italic text-4xl mb-4">Ready to sync your field?</h4>
+<p class="font-barlow text-surface/60 text-base leading-relaxed mb-10 max-w-md">Join the movement of digital agronomists transforming global food security through data-driven resolve.</p>
+<a class="inline-flex bg-white text-on-surface px-10 py-4 rounded-full font-barlow font-bold text-sm uppercase tracking-widest hover:scale-105 active:scale-95 transition-all shadow-xl items-center gap-2" href="mailto:nikhildsiddhu@outlook.com">
+    CONNECT <span class="material-symbols-outlined text-lg" data-icon="arrow_forward">arrow_forward</span>
+</a>
 </div>
-<div class="flex flex-col gap-4">
-<span class="font-barlow font-bold text-xs uppercase tracking-[0.3em] opacity-40">Documentation</span>
-<ul class="flex flex-col gap-3">
-<li><a class="font-barlow text-sm hover:text-white/60 transition-colors" href="#">API Reference</a></li>
-<li><a class="font-barlow text-sm hover:text-white/60 transition-colors" href="#">Hardware Specs</a></li>
-<li><a class="font-barlow text-sm hover:text-white/60 transition-colors" href="#">Deployment Guide</a></li>
-</ul>
+<div class="flex flex-col md:flex-row gap-8 items-center mt-8 opacity-60">
+<a class="font-barlow text-sm uppercase tracking-widest hover:text-white transition-colors" href="#">API Reference</a>
+<span class="hidden md:block w-1 h-1 bg-white rounded-full"></span>
+<a class="font-barlow text-sm uppercase tracking-widest hover:text-white transition-colors" href="#">Hardware Specs</a>
+<span class="hidden md:block w-1 h-1 bg-white rounded-full"></span>
+<a class="font-barlow text-sm uppercase tracking-widest hover:text-white transition-colors" href="#">Deployment Guide</a>
 </div>
 </div>
 </div>
