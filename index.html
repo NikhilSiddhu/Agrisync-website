@@ -120,12 +120,12 @@
     pointer-events: none;
     mix-blend-mode: screen;
 }
-
         
-        section, footer, main {
-            position: relative;
-            z-index: 1;
-        }
+section, footer, main {
+    position: relative;
+    z-index: 1;
+}
+
         
         .section-content {
             position: relative;
@@ -204,7 +204,7 @@
 </main>
 <!-- Global Particles Container -->
 <div class="relative" id="content-with-particles">
-<canvas id="bubble-canvas"></canvas>
+<canvas id="network-canvas"></canvas>
 <!-- 7-Layer Architecture Section -->
 <section class="bg-surface py-32 px-8 scroll-mt-24" id="architecture">
 <div class="max-w-6xl mx-auto section-content">
@@ -428,43 +428,119 @@
 </footer>
 </div>
 <script>
-        // Liquid Glass Bubble Engine
+// Network Nodes Engine
 (function () {
-    const canvas = document.getElementById('bubble-canvas');
+    const canvas = document.getElementById('network-canvas');
     const container = document.getElementById('content-with-particles');
+    if (!canvas || !container) return;
+    
     const ctx = canvas.getContext('2d');
-    let bubbles = [];
+    let particles = [];
+    let mouse = { x: null, y: null };
 
     function resize() {
-        canvas.width  = container.offsetWidth;
+        canvas.width = container.offsetWidth;
         canvas.height = container.offsetHeight;
+        initParticles();
     }
-    resize();
+    
+    window.addEventListener('resize', resize);
     if (window.ResizeObserver) {
         new ResizeObserver(resize).observe(container);
     }
-    window.addEventListener('resize', resize);
 
-    function rand(a, b) { return a + Math.random() * (b - a); }
+    // Track mouse relative to the container for interactive nodes
+    container.addEventListener('mousemove', (e) => {
+        const rect = container.getBoundingClientRect();
+        mouse.x = e.clientX - rect.left;
+        mouse.y = e.clientY - rect.top;
+    });
+    
+    container.addEventListener('mouseleave', () => {
+        mouse.x = null;
+        mouse.y = null;
+    });
 
-function makeBubble(spreadY) {
-    const maxR = rand(4, 16);
-    return {
-        x:         rand(maxR, canvas.width - maxR),
-        y:         spreadY !== undefined ? rand(0, canvas.height) : canvas.height + maxR + rand(0, 120),
-        r:         spreadY !== undefined ? maxR : 1,
-        maxR:      maxR,
-        vx:        rand(-0.12, 0.12),
-        vy:        rand(-0.15, -0.40),
-        opacity:   spreadY !== undefined ? rand(0.30, 0.60) : 0,
-        phase:     spreadY !== undefined ? 'floating' : 'growing',
-        wobble:    rand(0, Math.PI * 2),
-        wobbleSpd: rand(0.010, 0.030),
-        burstRing: 0,
-        hue:       rand(145, 175),
-        sat:       rand(30, 55),
-    };
-}
+    class Particle {
+        constructor() {
+            this.x = Math.random() * canvas.width;
+            this.y = Math.random() * canvas.height;
+            // Slow, deliberate movement to avoid visual chaos
+            this.vx = (Math.random() - 0.5) * 0.4; 
+            this.vy = (Math.random() - 0.5) * 0.4;
+            this.radius = Math.random() * 1.5 + 1;
+        }
+        update() {
+            this.x += this.vx;
+            this.y += this.vy;
+            
+            // Bounce off edges seamlessly
+            if (this.x < 0 || this.x > canvas.width) this.vx = -this.vx;
+            if (this.y < 0 || this.y > canvas.height) this.vy = -this.vy;
+        }
+        draw() {
+            ctx.beginPath();
+            ctx.arc(this.x, this.y, this.radius, 0, Math.PI * 2);
+            ctx.fillStyle = '#747c7c'; // Tailwind 'outline' hex
+            ctx.fill();
+        }
+    }
+
+    function initParticles() {
+        particles = [];
+        // Calculate density based on container size
+        const numParticles = Math.floor((canvas.width * canvas.height) / 18000);
+        for (let i = 0; i < numParticles; i++) {
+            particles.push(new Particle());
+        }
+    }
+
+    function animate() {
+        ctx.clearRect(0, 0, canvas.width, canvas.height);
+        
+        for (let i = 0; i < particles.length; i++) {
+            particles[i].update();
+            particles[i].draw();
+            
+            // Connect nearby nodes
+            for (let j = i; j < particles.length; j++) {
+                const dx = particles[i].x - particles[j].x;
+                const dy = particles[i].y - particles[j].y;
+                const distance = Math.sqrt(dx * dx + dy * dy);
+                
+                if (distance < 130) {
+                    ctx.beginPath();
+                    ctx.strokeStyle = `rgba(116, 124, 124, ${0.4 - distance/325})`; 
+                    ctx.lineWidth = 0.5;
+                    ctx.moveTo(particles[i].x, particles[i].y);
+                    ctx.lineTo(particles[j].x, particles[j].y);
+                    ctx.stroke();
+                }
+            }
+            
+            // Connect nodes to mouse position
+            if (mouse.x != null && mouse.y != null) {
+                const dx = particles[i].x - mouse.x;
+                const dy = particles[i].y - mouse.y;
+                const distance = Math.sqrt(dx * dx + dy * dy);
+                if (distance < 160) {
+                    ctx.beginPath();
+                    ctx.strokeStyle = `rgba(90, 97, 83, ${0.6 - distance/266})`; // Tailwind 'secondary' hex
+                    ctx.lineWidth = 1;
+                    ctx.moveTo(particles[i].x, particles[i].y);
+                    ctx.lineTo(mouse.x, mouse.y);
+                    ctx.stroke();
+                }
+            }
+        }
+        requestAnimationFrame(animate);
+    }
+
+    // Initialize
+    resize();
+    animate();
+})();
+
         
     for (let i = 0; i < 40; i++) bubbles.push(makeBubble(true));
 function drawBubble(b) {
