@@ -109,17 +109,18 @@
             border: 1px solid rgba(255, 255, 255, 0.4);
         }
         
-        #bubble-canvas {
-            position: absolute;
-            width: 100%;
-            height: 100%;
-            top: 0;
-            left: 0;
-            z-index: 2;
-            pointer-events: none;
-            /* Using will-change only on the active element to prevent layer explosion */
-            
-        }
+  
+#bubble-canvas {
+    position: absolute;
+    width: 100%;
+    height: 100%;
+    top: 0;
+    left: 0;
+    z-index: 2;
+    pointer-events: none;
+    mix-blend-mode: screen;
+}
+
         
         section, footer, main {
             position: relative;
@@ -446,162 +447,126 @@
 
     function rand(a, b) { return a + Math.random() * (b - a); }
 
-    function makeBubble(spreadY) {
-    const maxR = rand(14, 32);
+function makeBubble(spreadY) {
+    const maxR = rand(4, 16);
     return {
         x:         rand(maxR, canvas.width - maxR),
-        y:         spreadY !== undefined ? rand(0, canvas.height) : canvas.height + maxR + rand(0, 80),
-        r:         spreadY !== undefined ? maxR : 1,   // starts tiny, grows
+        y:         spreadY !== undefined ? rand(0, canvas.height) : canvas.height + maxR + rand(0, 120),
+        r:         spreadY !== undefined ? maxR : 1,
         maxR:      maxR,
-        vx:        rand(-0.2, 0.2),
-        vy:        rand(-0.3, -0.65),
-        opacity:   spreadY !== undefined ? rand(0.55, 0.80) : 0,
+        vx:        rand(-0.12, 0.12),
+        vy:        rand(-0.15, -0.40),
+        opacity:   spreadY !== undefined ? rand(0.30, 0.60) : 0,
         phase:     spreadY !== undefined ? 'floating' : 'growing',
         wobble:    rand(0, Math.PI * 2),
-        wobbleSpd: rand(0.015, 0.04),
+        wobbleSpd: rand(0.010, 0.030),
         burstRing: 0,
-        hue:       rand(-8, 8),   // slight color variation per bubble
+        hue:       rand(145, 175),
+        sat:       rand(30, 55),
     };
 }
-
-
-    for (let i = 0; i < 28; i++) bubbles.push(makeBubble(true));
-
-    function drawBubble(b) {
+        
+    for (let i = 0; i < 40; i++) bubbles.push(makeBubble(true));
+function drawBubble(b) {
     const { x, y, r, opacity } = b;
-    if (opacity <= 0 || r <= 0) return;
+    if (opacity <= 0 || r <= 0.5) return;
+
     ctx.save();
     ctx.globalAlpha = opacity;
 
-    // --- Clip to circle so all layers stay inside bubble shape ---
+    // clip circle
     ctx.beginPath();
     ctx.arc(x, y, r, 0, Math.PI * 2);
     ctx.clip();
 
-    // --- Base: near-transparent glass interior ---
-    const base = ctx.createRadialGradient(x, y, 0, x, y, r);
-    base.addColorStop(0,    'rgba(240,248,245,0.06)');
-    base.addColorStop(0.6,  'rgba(220,238,232,0.04)');
-    base.addColorStop(0.88, 'rgba(200,225,218,0.18)');
-    base.addColorStop(1,    'rgba(255,255,255,0.30)');
+    // soft sage-green ambient fill
+    const fill = ctx.createRadialGradient(x, y, 0, x, y, r);
+    fill.addColorStop(0,    `hsla(${b.hue}, ${b.sat}%, 88%, 0.08)`);
+    fill.addColorStop(0.60, `hsla(${b.hue}, ${b.sat}%, 82%, 0.05)`);
+    fill.addColorStop(0.85, `hsla(${b.hue}, ${b.sat}%, 92%, 0.18)`);
+    fill.addColorStop(1,    'rgba(255,255,255,0.28)');
     ctx.beginPath();
     ctx.arc(x, y, r, 0, Math.PI * 2);
-    ctx.fillStyle = base;
+    ctx.fillStyle = fill;
     ctx.fill();
 
-    // --- Chromatic refraction band (thin rainbow-ish rim inside) ---
-    const refract = ctx.createRadialGradient(x, y, r * 0.72, x, y, r * 0.96);
-    refract.addColorStop(0,    'rgba(255,255,255,0)');
-    refract.addColorStop(0.3,  `hsla(${160 + b.hue},60%,80%,0.10)`);
-    refract.addColorStop(0.6,  `hsla(${200 + b.hue},55%,85%,0.08)`);
-    refract.addColorStop(0.85, `hsla(${140 + b.hue},50%,90%,0.12)`);
-    refract.addColorStop(1,    'rgba(255,255,255,0)');
+    // inner refraction band
+    const refract = ctx.createRadialGradient(x, y, r * 0.68, x, y, r * 0.98);
+    refract.addColorStop(0,   'rgba(255,255,255,0)');
+    refract.addColorStop(0.4, `hsla(${b.hue + 15}, 50%, 90%, 0.12)`);
+    refract.addColorStop(0.8, `hsla(${b.hue - 10}, 45%, 88%, 0.08)`);
+    refract.addColorStop(1,   'rgba(255,255,255,0)');
     ctx.beginPath();
     ctx.arc(x, y, r, 0, Math.PI * 2);
     ctx.fillStyle = refract;
     ctx.fill();
 
-    // --- Caustic light blob (internal light bending) ---
-    const caustic = ctx.createRadialGradient(
-        x + r * 0.1, y + r * 0.2, 0,
-        x + r * 0.1, y + r * 0.2, r * 0.55
-    );
-    caustic.addColorStop(0,   'rgba(255,255,255,0.10)');
-    caustic.addColorStop(0.5, 'rgba(210,240,230,0.05)');
-    caustic.addColorStop(1,   'rgba(255,255,255,0)');
-    ctx.beginPath();
-    ctx.arc(x, y, r, 0, Math.PI * 2);
-    ctx.fillStyle = caustic;
-    ctx.fill();
-
-    // --- Large soft primary highlight (top-left dome) ---
+    // primary dome highlight
     const dome = ctx.createRadialGradient(
-        x - r * 0.30, y - r * 0.32, 0,
-        x - r * 0.30, y - r * 0.32, r * 0.68
+        x - r * 0.28, y - r * 0.30, 0,
+        x - r * 0.28, y - r * 0.30, r * 0.62
     );
-    dome.addColorStop(0,    'rgba(255,255,255,0.60)');
-    dome.addColorStop(0.35, 'rgba(255,255,255,0.20)');
-    dome.addColorStop(0.70, 'rgba(255,255,255,0.05)');
+    dome.addColorStop(0,    'rgba(255,255,255,0.70)');
+    dome.addColorStop(0.40, 'rgba(255,255,255,0.22)');
+    dome.addColorStop(0.75, 'rgba(255,255,255,0.04)');
     dome.addColorStop(1,    'rgba(255,255,255,0)');
     ctx.beginPath();
     ctx.arc(x, y, r, 0, Math.PI * 2);
     ctx.fillStyle = dome;
     ctx.fill();
 
-    // --- Sharp small specular dot (top-left) ---
+    // sharp specular dot
     const spec = ctx.createRadialGradient(
-        x - r * 0.38, y - r * 0.40, 0,
-        x - r * 0.38, y - r * 0.40, r * 0.22
+        x - r * 0.36, y - r * 0.38, 0,
+        x - r * 0.36, y - r * 0.38, r * 0.18
     );
-    spec.addColorStop(0,   'rgba(255,255,255,0.95)');
-    spec.addColorStop(0.5, 'rgba(255,255,255,0.40)');
+    spec.addColorStop(0,   'rgba(255,255,255,1.0)');
+    spec.addColorStop(0.5, 'rgba(255,255,255,0.45)');
     spec.addColorStop(1,   'rgba(255,255,255,0)');
     ctx.beginPath();
-    ctx.arc(x - r * 0.38, y - r * 0.40, r * 0.22, 0, Math.PI * 2);
+    ctx.arc(x - r * 0.36, y - r * 0.38, r * 0.18, 0, Math.PI * 2);
     ctx.fillStyle = spec;
-    ctx.fill();
-
-    // --- Tiny secondary specular (bottom-right, dimmer) ---
-    ctx.beginPath();
-    ctx.arc(x + r * 0.38, y + r * 0.36, r * 0.09, 0, Math.PI * 2);
-    ctx.fillStyle = 'rgba(255,255,255,0.35)';
     ctx.fill();
 
     ctx.restore(); // end clip
 
-    // --- Outer rim stroke (outside clip so it's crisp) ---
+    // outer rim — crisp edge
     ctx.save();
-    ctx.globalAlpha = opacity;
+    ctx.globalAlpha = opacity * 0.85;
     ctx.beginPath();
     ctx.arc(x, y, r, 0, Math.PI * 2);
-    ctx.strokeStyle = 'rgba(255,255,255,0.65)';
-    ctx.lineWidth = 1.4;
+    ctx.strokeStyle = `hsla(${b.hue}, 40%, 92%, 0.75)`;
+    ctx.lineWidth = r > 10 ? 1.2 : 0.8;
     ctx.stroke();
 
-    // --- Very thin inner rim (depth / thickness of glass wall) ---
+    // subtle inner wall
     ctx.beginPath();
-    ctx.arc(x, y, r * 0.90, 0, Math.PI * 2);
-    ctx.strokeStyle = 'rgba(200,225,218,0.18)';
-    ctx.lineWidth = 0.6;
+    ctx.arc(x, y, r * 0.88, 0, Math.PI * 2);
+    ctx.strokeStyle = `hsla(${b.hue}, 35%, 88%, 0.14)`;
+    ctx.lineWidth = 0.5;
     ctx.stroke();
     ctx.restore();
 
-    // --- Burst ring + droplets ---
+    // burst: clean single expanding ring, no droplets (editorial)
     if (b.phase === 'bursting' && b.burstRing > 0) {
+        const fade = Math.max(0, 1 - b.burstRing);
         ctx.save();
-        const ringFade = Math.max(0, 1 - b.burstRing);
-        ctx.globalAlpha = ringFade * 0.65;
+        ctx.globalAlpha = fade * 0.55;
         ctx.beginPath();
-        ctx.arc(x, y, r + b.burstRing * r * 2.8, 0, Math.PI * 2);
-        ctx.strokeStyle = 'rgba(255,255,255,0.75)';
-        ctx.lineWidth = 1.0;
+        ctx.arc(x, y, r + b.burstRing * r * 3.0, 0, Math.PI * 2);
+        ctx.strokeStyle = `hsla(${b.hue}, 40%, 92%, 0.80)`;
+        ctx.lineWidth = 0.8;
         ctx.stroke();
-        // second faint outer ring
-        ctx.globalAlpha = ringFade * 0.25;
+        ctx.globalAlpha = fade * 0.20;
         ctx.beginPath();
-        ctx.arc(x, y, r + b.burstRing * r * 3.6, 0, Math.PI * 2);
-        ctx.strokeStyle = 'rgba(200,235,225,0.60)';
-        ctx.lineWidth = 0.6;
+        ctx.arc(x, y, r + b.burstRing * r * 4.2, 0, Math.PI * 2);
+        ctx.strokeStyle = 'rgba(255,255,255,0.50)';
+        ctx.lineWidth = 0.5;
         ctx.stroke();
-        // 8 micro-droplets
-        for (let i = 0; i < 8; i++) {
-            const angle = (i / 8) * Math.PI * 2 + b.burstRing * 1.8;
-            const dist  = r * (1 + b.burstRing * 2.6);
-            const dSize = Math.max(0.4, 2.5 * (1 - b.burstRing));
-            ctx.globalAlpha = ringFade * 0.70;
-            ctx.beginPath();
-            ctx.arc(
-                x + Math.cos(angle) * dist,
-                y + Math.sin(angle) * dist,
-                dSize, 0, Math.PI * 2
-            );
-            ctx.fillStyle = 'rgba(255,255,255,0.80)';
-            ctx.fill();
-        }
         ctx.restore();
     }
 }
-
+        
    function update() {
     bubbles.forEach(b => {
         b.wobble += b.wobbleSpd;
@@ -635,68 +600,37 @@
     });
 }
 
-    function loop() {
-        ctx.clearRect(0, 0, canvas.width, canvas.height);
-        update();
-        bubbles.forEach(drawBubble);
-        requestAnimationFrame(loop);
-    }
+/* REPLACE lines 605–636 with this: */
+function update() {
+    bubbles.forEach(b => {
+        b.wobble += b.wobbleSpd;
+        b.x += b.vx + Math.sin(b.wobble) * 0.10;
+        b.y += b.vy;
 
-    loop();
-})();
-
-        // Optimize Particles Initialization 
-        /*
-        document.addEventListener('DOMContentLoaded', () => {
-            particlesJS("particles-js", {
-              "particles": {
-                "number": { "value": 45, "density": { "enable": true, "value_area": 1200 } },
-                "color": { "value": ["#5f5e5e", "#747c7c", "#ffffff"] },
-                "shape": { "type": "circle" },
-                "opacity": {
-                  "value": 0.2, "random": true,
-                  "anim": { "enable": true, "speed": 0.5, "opacity_min": 0.05, "sync": false }
-                },
-                "size": {
-                  "value": 5, "random": true,
-                  "anim": { "enable": true, "speed": 1, "size_min": 1.5, "sync": false }
-                },
-                "line_linked": { "enable": true, "distance": 150, "color": "#5f5e5e", "opacity": 0.08, "width": 1 },
-                "move": { "enable": true, "speed": 0.8, "direction": "none", "random": true, "straight": false, "out_mode": "out", "bounce": false }
-              },
-           "interactivity": {
-                "detect_on": "canvas",
-                "events": { "onhover": { "enable": true, "mode": "bubble" }, "resize": true },
-                "modes": { "bubble": { "distance": 200, "size": 10, "duration": 2, "opacity": 0.3, "speed": 3 } }
-              },
-              "retina_detect": true
-            });
-        });
-        */
-
-       // Optimized Parallax with requestAnimationFrame
-        /*
-        let lastKnownScrollPosition = 0;
-        let ticking = false;
-
-        function updateParallax(scrollPos) {
-            const particlesContainer = document.getElementById('particles-js');
-            if (particlesContainer) {
-                // Limit the shift to keep it subtle and performant
-                particlesContainer.style.transform = `translate3d(0, ${scrollPos * 0.12}px, 0)`;
+        if (b.phase === 'growing') {
+            b.r       = Math.min(b.r + b.maxR * 0.022, b.maxR);
+            b.opacity = Math.min(b.opacity + 0.015, 0.60);
+            if (b.r >= b.maxR * 0.98) {
+                b.r = b.maxR;
+                b.phase = 'floating';
             }
         }
 
-        window.addEventListener('scroll', () => {
-            lastKnownScrollPosition = window.scrollY;
-            if (!ticking) {
-                window.requestAnimationFrame(() => {
-                    updateParallax(lastKnownScrollPosition);
-                    ticking = false;
-                });
-                ticking = true;
+        if (b.phase === 'floating') {
+            b.r = b.maxR + Math.sin(b.wobble * 0.5) * b.maxR * 0.015;
+            if (b.y < -b.maxR || Math.random() < 0.0005) {
+                b.phase = 'bursting';
+                b.r = b.maxR;
             }
-        });*/
+        }
+
+        if (b.phase === 'bursting') {
+            b.opacity   -= 0.038;
+            b.burstRing += 0.060;
+            if (b.opacity <= 0) Object.assign(b, makeBubble());
+        }
+    });
+}
 
         // Ensure clean document height for scroll triggers
         window.addEventListener('load', () => {
