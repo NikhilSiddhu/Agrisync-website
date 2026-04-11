@@ -4,7 +4,21 @@
 <meta charset="utf-8"/>
 <meta content="width=device-width, initial-scale=1.0" name="viewport"/>
 <title>AgriSync | The Digital Agronomist</title>
-<meta name="description" content="Optimize fertilizer and pesticide application with AgriSync. We integrate advanced sensors and artificial intelligence to maximize agricultural yield.">
+<meta name="description" content="AgriSync is a full-stack precision agriculture system — from soil sensors to an AI that predicts disease outbreaks 12 hours before they happen. Built with minimum resources. Maximum resolve."/>
+<meta name="theme-color" content="#2c3434"/>
+<link rel="canonical" href="https://agrisync.tech/"/>
+<link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🌿</text></svg>"/>
+<!-- Open Graph -->
+<meta property="og:type" content="website"/>
+<meta property="og:url" content="https://agrisync.tech/"/>
+<meta property="og:title" content="AgriSync | The Digital Agronomist"/>
+<meta property="og:description" content="Full-stack precision agriculture — soil sensors to AI disease prediction. 12-hour advance warning. Built from a village, designed for millions."/>
+<meta property="og:image" content="https://agrisync.tech/screen.png"/>
+<!-- Twitter Card -->
+<meta name="twitter:card" content="summary_large_image"/>
+<meta name="twitter:title" content="AgriSync | The Digital Agronomist"/>
+<meta name="twitter:description" content="Full-stack precision agriculture — soil sensors to AI disease prediction. 12-hour advance warning. Built from a village, designed for millions."/>
+<meta name="twitter:image" content="https://agrisync.tech/screen.png"/>
 <link href="https://fonts.googleapis.com" rel="preconnect"/>
 <link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect"/>
 <link href="https://fonts.googleapis.com/css2?family=Barlow:ital,wght@0,400;0,500;0,600;0,700;1,400&amp;family=Instrument+Serif:ital@0;1&amp;family=Inter:wght@400;500;600&amp;display=swap" rel="stylesheet"/>
@@ -169,7 +183,7 @@ body {
   gtag('config', 'G-XX2TLR35NH');
 </script>
         </head>
-<body class="bg-surface text-on-surface font-inter antialiased selection:bg-primary selection:text-on-primary cursor-default select-none">
+<body class="bg-surface text-on-surface font-inter antialiased selection:bg-primary selection:text-on-primary">
 
         <div class="fixed inset-0 pointer-events-none z-0 overflow-hidden">
     <div class="absolute top-[-20%] left-[-10%] w-[50%] h-[50%] rounded-full bg-primary/5 blur-[120px]"></div>
@@ -193,7 +207,7 @@ body {
     Contact <span class="material-symbols-outlined text-lg rotate-45" data-icon="arrow_forward">arrow_forward</span>
   </a>
   <!-- Mobile Hamburger -->
-  <button class="md:hidden flex flex-col gap-1.5 p-2 rounded-full hover:bg-black/5 transition-all" id="menu-toggle" aria-label="Open menu">
+  <button class="md:hidden flex flex-col gap-1.5 p-2 rounded-full hover:bg-black/5 transition-all" id="menu-toggle" aria-label="Open menu" aria-expanded="false" aria-controls="mobile-menu">
     <span class="w-5 h-0.5 bg-stone-900 transition-all duration-300" id="bar1"></span>
     <span class="w-5 h-0.5 bg-stone-900 transition-all duration-300" id="bar2"></span>
     <span class="w-5 h-0.5 bg-stone-900 transition-all duration-300" id="bar3"></span>
@@ -221,6 +235,8 @@ body {
     open = !open;
     menu.style.opacity = open ? '1' : '0';
     menu.style.pointerEvents = open ? 'all' : 'none';
+    toggle.setAttribute('aria-expanded', open ? 'true' : 'false');
+    toggle.setAttribute('aria-label', open ? 'Close menu' : 'Open menu');
     bar1.style.transform = open ? 'translateY(8px) rotate(45deg)' : '';
     bar2.style.opacity = open ? '0' : '1';
     bar3.style.transform = open ? 'translateY(-8px) rotate(-45deg)' : '';
@@ -230,6 +246,8 @@ body {
     open = false;
     menu.style.opacity = '0';
     menu.style.pointerEvents = 'none';
+    toggle.setAttribute('aria-expanded', 'false');
+    toggle.setAttribute('aria-label', 'Open menu');
     bar1.style.transform = '';
     bar2.style.opacity = '1';
     bar3.style.transform = '';
@@ -238,13 +256,14 @@ body {
 
 <!-- Hero Section -->
 <main class="relative flex flex-col items-center justify-center overflow-hidden h-screen min-h-[800px]" id="top">
-<video autoplay loop muted playsinline class="absolute inset-0 w-full h-full object-cover z-0" style="filter: brightness(0.85);"
-  onerror="this.style.display='none'; document.getElementById('hero-fallback').style.display='block';">
+<video autoplay loop muted playsinline preload="none" class="absolute inset-0 w-full h-full object-cover z-0" style="filter: brightness(0.85);"
+  oncanplay="document.getElementById('hero-fallback').style.display='none';"
+  onerror="this.style.display='none';">
   <source src="hero-bg.mp4" type="video/mp4"/>
   <source src="https://d8j0ntlcm91z4.cloudfront.net/user_38xzZboKViGWJOttwIXH07lWA1P/hf_20260228_065522_522e2295-ba22-457e-8fdb-fbcd68109c73.mp4" type="video/mp4"/>
 </video>
-<!-- Fallback if video fails -->
-<div id="hero-fallback" class="absolute inset-0 w-full h-full z-0" style="display:none; background: linear-gradient(135deg, #2c3a2c 0%, #3b4738 50%, #1a2a1a 100%);"></div>
+<!-- Fallback gradient — visible immediately, hidden once video plays -->
+<div id="hero-fallback" class="absolute inset-0 w-full h-full z-0" style="background: linear-gradient(135deg, #2c3a2c 0%, #3b4738 50%, #1a2a1a 100%);"></div>
 <div class="relative z-10 w-full max-w-4xl px-6 pt-24 text-center">
 <div class="mb-12 text-white">
 <h1 class="flex flex-col items-center gap-0">
@@ -256,7 +275,7 @@ body {
 <p class="font-barlow font-medium text-lg md:text-xl leading-relaxed text-white drop-shadow-[0_2px_4px_rgba(0,0,0,0.5)]">AgriSync is a full-stack precision agriculture system — from soil sensors buried in a village field to an AI that predicts disease outbreaks 12 hours before they happen. Built with minimum resources. Maximum resolve.</p>
 </div>
 <div class="flex justify-center">
-<button class="bg-white/40 backdrop-blur-xl border border-white/50 text-stone-900 px-8 py-4 rounded-full flex items-center gap-3 font-barlow font-bold text-lg shadow-[0_8px_30px_rgb(0,0,0,0.04)] transition-all hover:bg-white/60 hover:scale-105 active:scale-95 group" onclick="alert('AgriSync Dashboard is coming soon! Target launch: November 2026.')">
+<button class="bg-white/40 backdrop-blur-xl border border-white/50 text-stone-900 px-8 py-4 rounded-full flex items-center gap-3 font-barlow font-bold text-lg shadow-[0_8px_30px_rgb(0,0,0,0.04)] transition-all hover:bg-white/60 hover:scale-105 active:scale-95 group" onclick="showToast('Dashboard launching November 2026')">
 <div class="w-8 h-8 rounded-full border-2 border-stone-900/30 group-hover:border-stone-900/60 flex items-center justify-center transition-colors">
 <span class="material-symbols-outlined text-xl leading-none" data-icon="play_arrow" data-weight="fill" style="font-variation-settings: 'FILL' 1;">play_arrow</span>
 </div>
@@ -390,7 +409,7 @@ body {
 <div class="relative order-2 lg:order-1">
 <div class="aspect-[4/3] bg-surface-container rounded-3xl border border-outline-variant/20 shadow-2xl overflow-hidden flex items-center justify-center group relative">
 <div class="absolute inset-0 opacity-[0.03] pointer-events-none bg-[url('https://www.transparenttextures.com/patterns/carbon-fibre.png')]"></div>
-<svg class="w-4/5 h-4/5 text-on-surface-variant/10" fill="none" viewbox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+<svg class="w-4/5 h-4/5 text-on-surface-variant/10" fill="none" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
 <path d="M4 6a2 2 0 0 1 2-2h12a2 2 0 0 1 2 2v12a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2V6Z" stroke="currentColor" stroke-width="0.5"></path>
 <path d="M12 4v16M4 12h16M8 4v16M16 4v16M4 8h16M4 16h16" stroke="currentColor" stroke-dasharray="1 1" stroke-width="0.5"></path>
 <circle cx="12" cy="12" fill="currentColor" r="1.5"></circle>
@@ -475,8 +494,75 @@ body {
 <a class="font-barlow text-sm uppercase tracking-widest hover:text-white transition-colors cursor-pointer" onclick="showComingSoon(this, 'Hardware Specs')">Hardware Specs</a>
 <span class="hidden md:block w-1 h-1 bg-white rounded-full"></span>
 <a class="font-barlow text-sm uppercase tracking-widest hover:text-white transition-colors cursor-pointer" onclick="showComingSoon(this, 'Deployment Guide')">Deployment Guide</a>
-
+</div>
+</div>
+</div>
+</section>
 <script>
+  function showToast(message) {
+    const existing = document.getElementById('agrisync-toast');
+    if (existing) existing.remove();
+    const toast = document.createElement('div');
+    toast.id = 'agrisync-toast';
+    toast.textContent = message;
+    toast.style.cssText = [
+      'position:fixed', 'bottom:2rem', 'left:50%', 'transform:translateX(-50%) translateY(0)',
+      'background:rgba(44,52,52,0.95)', 'color:#f8faf9',
+      'padding:0.875rem 2rem', 'border-radius:9999px',
+      'font-family:Barlow,sans-serif', 'font-weight:700',
+      'font-size:0.75rem', 'letter-spacing:0.12em', 'text-transform:uppercase',
+      'z-index:9999', 'backdrop-filter:blur(20px)',
+      'border:1px solid rgba(255,255,255,0.15)',
+      'box-shadow:0 8px 40px rgba(0,0,0,0.25)',
+      'transition:opacity 0.4s ease, transform 0.4s ease',
+      'white-space:nowrap'
+    ].join(';');
+    document.body.appendChild(toast);
+    requestAnimationFrame(() => {
+      setTimeout(() => {
+        toast.style.opacity = '0';
+        toast.style.transform = 'translateX(-50%) translateY(0.5rem)';
+        setTimeout(() => toast.remove(), 400);
+      }, 2600);
+    });
+  }
+
+  // Scroll-spy: highlight active nav link based on visible section
+  (function initScrollSpy() {
+    const sections = ['architecture', 'ai-engine', 'about', 'tech-stack'];
+    const navLinks = document.querySelectorAll('nav a[href^="#"]');
+    const activeClass = ['opacity-100', '!opacity-100'];
+
+    function getActiveSection() {
+      const scrollY = window.scrollY + 120;
+      let active = null;
+      for (const id of sections) {
+        const el = document.getElementById(id);
+        if (el && el.offsetTop <= scrollY) active = id;
+      }
+      return active;
+    }
+
+    function updateNav() {
+      const active = getActiveSection();
+      navLinks.forEach(link => {
+        const href = link.getAttribute('href').slice(1);
+        if (href === active) {
+          link.style.opacity = '1';
+          link.style.borderBottom = '2px solid currentColor';
+          link.style.paddingBottom = '2px';
+        } else {
+          link.style.opacity = '';
+          link.style.borderBottom = '';
+          link.style.paddingBottom = '';
+        }
+      });
+    }
+
+    window.addEventListener('scroll', updateNav, { passive: true });
+    updateNav();
+  })();
+
   function showComingSoon(el, name) {
     const original = el.innerText;
     el.innerText = 'Coming Nov 2026';
@@ -490,10 +576,6 @@ body {
   }
 </script>
 
-</div>
-</div>
-</div>
-</section>
 <!-- Footer Shell -->
 <footer class="bg-background w-full flex flex-col items-center text-center px-12 py-16 gap-10">
     <div class="flex flex-col items-center gap-3 section-content">
