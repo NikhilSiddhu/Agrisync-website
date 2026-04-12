@@ -181,9 +181,9 @@
 
 <!-- Hero Section -->
 <main class="relative flex flex-col items-center justify-center overflow-hidden h-screen min-h-[800px]" id="top">
-<video autoplay loop muted playsinline preload="none" class="absolute inset-0 w-full h-full object-cover z-0" style="filter: brightness(0.85);"
+<video id="hero-video" autoplay loop muted playsinline preload="metadata" class="absolute inset-0 w-full h-full object-cover z-0" style="filter: brightness(0.85);"
   oncanplay="document.getElementById('hero-fallback').style.display='none';"
-  onerror="this.style.display='none';">
+  onerror="this.style.display='none'; document.getElementById('hero-fallback').style.display='block';">
   <source src="hero-bg.mp4" type="video/mp4"/>
   <source src="https://d8j0ntlcm91z4.cloudfront.net/user_38xzZboKViGWJOttwIXH07lWA1P/hf_20260228_065522_522e2295-ba22-457e-8fdb-fbcd68109c73.mp4" type="video/mp4"/>
 </video>
@@ -213,6 +213,33 @@
 <div class="w-[1px] h-12 bg-gradient-to-b from-white to-transparent"></div>
 </div>
 </main>
+<script>
+  (function () {
+    const video = document.getElementById('hero-video');
+    if (!video) return;
+
+    // Attempt autoplay as soon as the browser has enough data
+    function tryPlay() {
+      video.play().catch(function () {
+        // Autoplay blocked (e.g. strict browser policy) — leave fallback visible
+      });
+    }
+
+    if (video.readyState >= 2) {
+      // Already has data (cached)
+      tryPlay();
+    } else {
+      video.addEventListener('loadeddata', tryPlay, { once: true });
+    }
+
+    // Tapping anywhere on the hero resumes the video if it ever pauses
+    document.getElementById('top').addEventListener('click', function (e) {
+      // Don't intercept clicks on the Dashboard button
+      if (e.target.closest('button')) return;
+      if (video.paused) video.play().catch(function () {});
+    });
+  })();
+</script>
 <!-- Global Particles Container -->
 <div class="relative">
 <!-- 7-Layer Architecture Section -->
