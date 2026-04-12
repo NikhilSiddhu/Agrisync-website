@@ -181,13 +181,15 @@
 
 <!-- Hero Section -->
 <main class="relative flex flex-col items-center justify-center overflow-hidden h-screen min-h-[800px]" id="top">
+<!-- VIDEO DISABLED — uncomment when video playback issue is resolved
 <video id="hero-video" autoplay loop muted playsinline preload="metadata" class="absolute inset-0 w-full h-full object-cover z-0" style="filter: brightness(0.85);"
   oncanplay="document.getElementById('hero-fallback').style.display='none';"
   onerror="this.style.display='none'; document.getElementById('hero-fallback').style.display='block';">
   <source src="hero-bg.mp4" type="video/mp4"/>
   <source src="https://d8j0ntlcm91z4.cloudfront.net/user_38xzZboKViGWJOttwIXH07lWA1P/hf_20260228_065522_522e2295-ba22-457e-8fdb-fbcd68109c73.mp4" type="video/mp4"/>
 </video>
-<!-- Fallback gradient — visible immediately, hidden once video plays -->
+-->
+<!-- Fallback gradient (active while video is disabled) -->
 <div id="hero-fallback" class="absolute inset-0 w-full h-full z-0" style="background: linear-gradient(135deg, #2c3a2c 0%, #3b4738 50%, #1a2a1a 100%);"></div>
 <div class="relative z-10 w-full max-w-4xl px-6 pt-24 text-center">
 <div class="mb-12 text-white">
@@ -213,33 +215,29 @@
 <div class="w-[1px] h-12 bg-gradient-to-b from-white to-transparent"></div>
 </div>
 </main>
+<!-- VIDEO JS DISABLED — uncomment alongside the video element above
 <script>
   (function () {
     const video = document.getElementById('hero-video');
     if (!video) return;
 
-    // Attempt autoplay as soon as the browser has enough data
     function tryPlay() {
-      video.play().catch(function () {
-        // Autoplay blocked (e.g. strict browser policy) — leave fallback visible
-      });
+      video.play().catch(function () {});
     }
 
     if (video.readyState >= 2) {
-      // Already has data (cached)
       tryPlay();
     } else {
       video.addEventListener('loadeddata', tryPlay, { once: true });
     }
 
-    // Tapping anywhere on the hero resumes the video if it ever pauses
     document.getElementById('top').addEventListener('click', function (e) {
-      // Don't intercept clicks on the Dashboard button
       if (e.target.closest('button')) return;
       if (video.paused) video.play().catch(function () {});
     });
   })();
 </script>
+-->
 <!-- Global Particles Container -->
 <div class="relative">
 <!-- 7-Layer Architecture Section -->
