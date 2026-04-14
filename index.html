@@ -131,13 +131,13 @@ body {
 }
 
         /* Performance & Flash prevention */
-        html { 
-            visibility: visible; 
+        html {
+            visibility: visible;
             opacity: 1;
             scroll-behavior: smooth;
         }
-        body { 
-            font-family: 'Barlow', sans-serif; 
+        body {
+            font-family: 'Barlow', sans-serif;
             margin: 0;
             padding: 0;
             overflow-x: hidden;
@@ -154,8 +154,6 @@ body {
             -webkit-backdrop-filter: blur(24px);
             border: 1px solid rgba(255, 255, 255, 0.4);
         }
-        
-  
 
 
 
@@ -163,7 +161,7 @@ body {
 
         /* Fix whitespace issues */
         #content-with-particles {
-            position: relative; 
+            position: relative;
             display: flex;
             flex-direction: column;
            /*overflow: hidden; */
@@ -190,7 +188,7 @@ body {
     <div class="absolute bottom-[-10%] right-[-10%] w-[60%] h-[60%] rounded-full bg-secondary/5 blur-[150px]"></div>
 </div>
 
-        
+
         <!-- Header Navigation Shell -->
 <header class="fixed top-6 left-1/2 -translate-x-1/2 w-[95%] max-w-5xl z-50 flex items-center justify-between px-6 py-4 bg-white/40 backdrop-blur-xl border border-white/50 rounded-full shadow-sm">
   <a class="flex items-center gap-2 px-3 py-1.5 rounded-full hover:bg-black/5 transition-all active:scale-95" href="#top">
@@ -203,6 +201,12 @@ body {
     <a class="text-stone-900 font-bold hover:opacity-70 font-['Barlow'] text-xs uppercase tracking-widest transition-opacity duration-300" href="#about">About</a>
     <a class="text-stone-900 font-bold hover:opacity-70 font-['Barlow'] text-xs uppercase tracking-widest transition-opacity duration-300" href="#tech-stack">Stack</a>
   </nav>
+  <!-- Version Switcher -->
+  <div class="hidden md:flex items-center gap-1 bg-black/5 rounded-full p-1">
+    <a href="/v1.html" class="px-3 py-1 rounded-full font-['Barlow'] font-bold text-[10px] uppercase tracking-widest text-stone-600 border border-stone-400/40 hover:border-stone-600/60 transition-all">v1.0</a>
+    <a href="/v2.html" class="px-3 py-1 rounded-full font-['Barlow'] font-bold text-[10px] uppercase tracking-widest text-stone-600 border border-stone-400/40 hover:border-stone-600/60 transition-all">v2.0</a>
+    <span class="px-3 py-1 rounded-full font-['Barlow'] font-bold text-[10px] uppercase tracking-widest bg-emerald-500 text-stone-900">v3.0</span>
+  </div>
   <a class="hidden md:flex bg-white/50 backdrop-blur-md border border-white/60 text-stone-900 px-6 py-2.5 rounded-full items-center gap-2 font-['Barlow'] font-bold text-xs uppercase tracking-widest transition-all hover:bg-white/70 hover:scale-105 active:scale-95 shadow-sm" href="#connect">
     Contact <span class="material-symbols-outlined text-lg rotate-45" data-icon="arrow_forward">arrow_forward</span>
   </a>
@@ -265,22 +269,36 @@ body {
 <!-- Fallback gradient — visible immediately, hidden once video plays -->
 <div id="hero-fallback" class="absolute inset-0 w-full h-full z-0" style="background: linear-gradient(135deg, #2c3a2c 0%, #3b4738 50%, #1a2a1a 100%);"></div>
 <div class="relative z-10 w-full max-w-4xl px-6 pt-24 text-center">
-<div class="mb-12 text-white">
+<div class="mb-6 text-white">
 <h1 class="flex flex-col items-center gap-0">
 <span class="font-barlow font-bold tracking-[-2px] md:tracking-[-4px] uppercase block text-5xl md:text-7xl leading-[0.9] drop-shadow-md">The field finally</span>
 <span class="font-instrument italic leading-tight block text-[72px] md:text-[104px] -mt-2 md:-mt-4 drop-shadow-lg" style="color: #3b4738;">speaks data.</span>
 </h1>
+<p class="font-barlow font-semibold text-sm md:text-base uppercase tracking-widest text-white/70 mt-4 drop-shadow">AgriSync v3.0 — Field Digital Twin. Physics-Informed AI. 97% Accuracy Target.</p>
 </div>
-<div class="max-w-2xl mx-auto mb-10">
-<p class="font-barlow font-medium text-lg md:text-xl leading-relaxed text-white drop-shadow-[0_2px_4px_rgba(0,0,0,0.5)]">AgriSync is a full-stack precision agriculture system — from soil sensors buried in a village field to an AI that predicts disease outbreaks 12 hours before they happen. Built with minimum resources. Maximum resolve.</p>
+<div class="max-w-2xl mx-auto mb-8">
+<p class="font-barlow font-medium text-lg md:text-xl leading-relaxed text-white drop-shadow-[0_2px_4px_rgba(0,0,0,0.5)]">A full-stack precision agriculture system built for Banda Gobi (cabbage) fields in Uttar Pradesh. From a single sensor node at field centroid to a living digital twin of the entire field — predicting disease 72 hours before symptoms appear.</p>
+</div>
+<div class="grid grid-cols-2 md:grid-cols-4 gap-3 max-w-2xl mx-auto mb-6">
+  <div class="bg-white/15 backdrop-blur-md border border-white/20 rounded-2xl px-4 py-4 text-center">
+    <span class="font-barlow font-bold text-3xl text-white block">72h</span>
+    <span class="font-instrument italic text-sm text-white/70">Forecast Horizon</span>
+  </div>
+  <div class="bg-white/15 backdrop-blur-md border border-white/20 rounded-2xl px-4 py-4 text-center">
+    <span class="font-barlow font-bold text-3xl text-white block">97%+</span>
+    <span class="font-instrument italic text-sm text-white/70">Accuracy Target</span>
+  </div>
+  <div class="bg-white/15 backdrop-blur-md border border-white/20 rounded-2xl px-4 py-4 text-center">
+    <span class="font-barlow font-bold text-3xl text-white block">v3.0</span>
+    <span class="font-instrument italic text-sm text-white/70">Current Build</span>
+  </div>
+  <div class="bg-white/15 backdrop-blur-md border border-white/20 rounded-2xl px-4 py-4 text-center">
+    <span class="font-barlow font-bold text-3xl text-white block">10m</span>
+    <span class="font-instrument italic text-sm text-white/70">Spatial Resolution</span>
+  </div>
 </div>
 <div class="flex justify-center">
-<button class="bg-white/40 backdrop-blur-xl border border-white/50 text-stone-900 px-8 py-4 rounded-full flex items-center gap-3 font-barlow font-bold text-lg shadow-[0_8px_30px_rgb(0,0,0,0.04)] transition-all hover:bg-white/60 hover:scale-105 active:scale-95 group" onclick="showToast('Dashboard launching November 2026')">
-<div class="w-8 h-8 rounded-full border-2 border-stone-900/30 group-hover:border-stone-900/60 flex items-center justify-center transition-colors">
-<span class="material-symbols-outlined text-xl leading-none" data-icon="play_arrow" data-weight="fill" style="font-variation-settings: 'FILL' 1;">play_arrow</span>
-</div>
-                    Dashboard
-                </button>
+  <span class="inline-block border border-emerald-400/60 text-emerald-300 font-barlow font-bold text-xs uppercase tracking-widest px-5 py-2 rounded-full">Target Crop: Banda Gobi (Cabbage) — Harpur, UP</span>
 </div>
 </div>
 <div class="absolute bottom-12 left-1/2 -translate-x-1/2 flex flex-col items-center gap-2 opacity-50 text-white">
@@ -288,68 +306,70 @@ body {
 <div class="w-[1px] h-12 bg-gradient-to-b from-white to-transparent"></div>
 </div>
 </main>
+
 <!-- Global Particles Container -->
 <div class="relative">
-<!-- 7-Layer Architecture Section -->
+<!-- Pipeline Section -->
 <section class="py-24 px-8 relative bg-surface rounded-[3rem] overflow-hidden scroll-mt-24" id="architecture">
 <div class="max-w-6xl mx-auto section-content">
 <div class="mb-20 flex flex-col items-center text-center">
-<h2 class="font-barlow font-bold text-xs uppercase tracking-[0.3em] text-outline mb-4">The AgriSync Pipeline</h2>
-<p class="font-instrument italic text-4xl md:text-6xl text-on-surface leading-tight max-w-3xl">From soil to screen: A 7-layer architecture for absolute precision.</p>
+<h2 class="font-barlow font-bold text-xs uppercase tracking-[0.3em] text-outline mb-4">The AgriSync v3.0 Pipeline</h2>
+<p class="font-instrument italic text-4xl md:text-6xl text-on-surface leading-tight max-w-3xl">From soil to satellite to screen: a 6-layer intelligence architecture for 97%+ accuracy.</p>
 </div>
 </div>
-<div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-x-8 gap-y-12 section-content">
+<div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-x-8 gap-y-12 max-w-6xl mx-auto section-content">
 <div class="flex flex-col gap-4 p-6 bg-surface-container-low rounded-2xl border border-outline-variant/10 transition-all duration-500 hover:-translate-y-2 hover:shadow-2xl hover:border-outline/30">
+<span class="material-symbols-outlined text-2xl text-outline-variant" data-icon="sensors">sensors</span>
 <span class="font-barlow font-bold text-outline-variant text-sm">01 / Sensing</span>
-<h4 class="font-barlow font-bold text-xl text-on-surface">Capacitive Probes</h4>
-<p class="font-barlow text-sm text-on-surface-variant leading-relaxed">Direct measurement of volumetric water content and NPK chemical levels at the root zone.</p>
+<h4 class="font-barlow font-bold text-xl text-on-surface">Multi-Modal Field Node</h4>
+<p class="font-barlow text-sm text-on-surface-variant leading-relaxed">7-in-1 RS485 soil sensor measuring NPK, pH, EC, moisture, and soil temperature. BME680 atmospheric sensor for temp, humidity, pressure, and VOC. Leaf wetness sensor, tipping bucket rain gauge, MEMS acoustic microphone for pest detection, and ESP32-CAM for visual leaf inspection. All from a single node at the field centroid.</p>
 </div>
 <div class="flex flex-col gap-4 p-6 bg-surface-container-low rounded-2xl border border-outline-variant/10 transition-all duration-500 hover:-translate-y-2 hover:shadow-2xl hover:border-outline/30">
-<span class="font-barlow font-bold text-outline-variant text-sm">02 / Edge Analytics</span>
-<h4 class="font-barlow font-bold text-xl text-on-surface">ESP32 Compute</h4>
-<p class="font-barlow text-sm text-on-surface-variant leading-relaxed">Local noise filtering and signal conditioning before transmission to minimize data packet size.</p>
+<span class="material-symbols-outlined text-2xl text-outline-variant" data-icon="settings_input_antenna">settings_input_antenna</span>
+<span class="font-barlow font-bold text-outline-variant text-sm">02 / Transmission</span>
+<h4 class="font-barlow font-bold text-xl text-on-surface">Jio 5G via SIM7600G</h4>
+<p class="font-barlow text-sm text-on-surface-variant leading-relaxed">Direct cellular uplink with no LoRa gateway and no WiFi dependency. SIM7600G module transmits MQTT JSON payloads over Jio 5G directly to Azure IoT Hub. ESP32 buffers readings locally during any connectivity gaps.</p>
 </div>
 <div class="flex flex-col gap-4 p-6 bg-surface-container-low rounded-2xl border border-outline-variant/10 transition-all duration-500 hover:-translate-y-2 hover:shadow-2xl hover:border-outline/30">
-<span class="font-barlow font-bold text-outline-variant text-sm">03 / Transmission</span>
-<h4 class="font-barlow font-bold text-xl text-on-surface">LoRaWAN Mesh</h4>
-<p class="font-barlow text-sm text-on-surface-variant leading-relaxed">Long-range, low-power telemetry capable of piercing dense canopy and traversing irregular terrain.</p>
+<span class="material-symbols-outlined text-2xl text-outline-variant" data-icon="satellite">satellite</span>
+<span class="font-barlow font-bold text-outline-variant text-sm">03 / Satellite Fusion</span>
+<h4 class="font-barlow font-bold text-xl text-on-surface">Multi-Source Data Assimilation</h4>
+<p class="font-barlow text-sm text-on-surface-variant leading-relaxed">Sentinel-2 NDVI and crop health at 10m every 5 days. Sentinel-1 SAR soil moisture through cloud cover at 10m every 6 days. NASA POWER API for solar radiation and ET0. MODIS for land surface temperature. IMD for live rainfall and district forecast. All fused with ground sensor data via Extended Kalman Filter.</p>
 </div>
 <div class="flex flex-col gap-4 p-6 bg-surface-container-low rounded-2xl border border-outline-variant/10 transition-all duration-500 hover:-translate-y-2 hover:shadow-2xl hover:border-outline/30">
-<span class="font-barlow font-bold text-outline-variant text-sm">04 / Gateway</span>
-<h4 class="font-barlow font-bold text-xl text-on-surface">Backhaul Sync</h4>
-<p class="font-barlow text-sm text-on-surface-variant leading-relaxed">Centralized hub converting RF signals to secure MQTT packets for cloud ingestion.</p>
+<span class="material-symbols-outlined text-2xl text-outline-variant" data-icon="grid_on">grid_on</span>
+<span class="font-barlow font-bold text-outline-variant text-sm">04 / Field Digital Twin</span>
+<h4 class="font-barlow font-bold text-xl text-on-surface">10m × 10m Spatial Intelligence</h4>
+<p class="font-barlow text-sm text-on-surface-variant leading-relaxed">SRTM DEM topographic model divides the field into a 10m grid. Slope, drainage accumulation, and aspect assign a static risk profile to every cell. Kriging Gaussian Process interpolation extends the single node reading across the entire field. One sensor becomes a virtual sensor grid.</p>
 </div>
 <div class="flex flex-col gap-4 p-6 bg-surface-container-low rounded-2xl border border-outline-variant/10 transition-all duration-500 hover:-translate-y-2 hover:shadow-2xl hover:border-outline/30">
-<span class="font-barlow font-bold text-outline-variant text-sm">05 / Ingestion</span>
-<h4 class="font-barlow font-bold text-xl text-on-surface">InfluxDB Storage</h4>
-<p class="font-barlow text-sm text-on-surface-variant leading-relaxed">High-throughput time-series database mapping billions of data points in real-time.</p>
+<span class="material-symbols-outlined text-2xl text-outline-variant" data-icon="psychology">psychology</span>
+<span class="font-barlow font-bold text-outline-variant text-sm">05 / Physics + AI Ensemble</span>
+<h4 class="font-barlow font-bold text-xl text-on-surface">Confidence-Gated ML Stack</h4>
+<p class="font-barlow text-sm text-on-surface-variant leading-relaxed">DSSAT-lite phenology model tracks cabbage growth stage daily. Temporal Transformer TiDE forecasts 72 hours ahead. Crop-stage-aware XGBoost classifies disease risk per zone. MobileNetV2 CNN detects leaf disease from camera images. INMP441 acoustic classifier detects pests on the ESP32 chip itself. All models vote through a confidence-gated ensemble — alert fires only when 2 or more signals agree AND model historical accuracy exceeds 85%.</p>
 </div>
-<div class="flex flex-col gap-4 p-6 bg-surface-container-low rounded-2xl border border-outline-variant/10 transition-all duration-500 hover:-translate-y-2 hover:shadow-2xl hover:border-outline/30">
-<span class="font-barlow font-bold text-outline-variant text-sm">06 / AI Engine</span>
-<h4 class="font-barlow font-bold text-xl text-on-surface">Predictive Logic</h4>
-<p class="font-barlow text-sm text-on-surface-variant leading-relaxed">Deep learning models identifying stress patterns 12 hours before physical symptoms appear.</p>
-</div>
-<div class="flex flex-col gap-4 p-6 bg-on-surface text-surface rounded-2xl border border-outline-variant/10 shadow-xl md:col-span-2 lg:col-span-2 transition-all duration-500 hover:-translate-y-2 hover:shadow-2xl hover:border-outline/30">
-<span class="font-barlow font-bold opacity-60 text-sm">07 / Visualization</span>
-<h4 class="font-barlow font-bold text-2xl">The Agronomist Dashboard</h4>
-<p class="font-barlow text-sm opacity-80 leading-relaxed max-w-md">End-user interface providing actionable intelligence, remote valve control, and early-warning alerts via WhatsApp and Webhook.</p>
-</div>
+<div class="flex flex-col gap-4 p-6 bg-on-surface text-surface rounded-2xl border border-outline-variant/10 shadow-xl transition-all duration-500 hover:-translate-y-2 hover:shadow-2xl hover:border-outline/30">
+<span class="material-symbols-outlined text-2xl opacity-60" data-icon="notifications_active">notifications_active</span>
+<span class="font-barlow font-bold opacity-60 text-sm">06 / Output</span>
+<h4 class="font-barlow font-bold text-2xl">WhatsApp + Dashboard + SMS</h4>
+<p class="font-barlow text-sm opacity-80 leading-relaxed">WhatsApp Business API sends rich alerts with ESP32-CAM zone images attached. Farmer replies Y/N or sends a photo for AI re-verification, feeding directly into monthly model retraining. Public dashboard shows per-zone field heat map and 72-hour forecast. Fast2SMS as plain SMS fallback for non-WhatsApp farmers.</p>
 </div>
 </div>
 </section>
-<!-- AI Prediction Engine Section -->
+
+<!-- AI Intelligence Stack Section -->
 <section class="py-32 px-8 overflow-hidden bg-surface scroll-mt-24" id="ai-engine">
 <div class="max-w-6xl mx-auto section-content">
-<div class="grid grid-cols-1 lg:grid-cols-2 gap-20 items-center">
+<div class="grid grid-cols-1 lg:grid-cols-2 gap-20 items-center mb-20">
 <div>
-<h2 class="font-barlow font-bold text-xs uppercase tracking-[0.3em] text-outline mb-6">Prediction v01</h2>
-<h3 class="font-barlow font-bold text-5xl text-on-surface tracking-tighter mb-8 leading-tight">The AgriSync AI<br/>Prediction Engine</h3>
-<p class="font-barlow text-lg text-on-surface-variant leading-relaxed mb-12">By cross-referencing soil moisture, ambient humidity, and leaf temperature gradients, our engine predicts fungal outbreaks with surgical precision.</p>
+<h2 class="font-barlow font-bold text-xs uppercase tracking-[0.3em] text-outline mb-6">Prediction v3.0</h2>
+<h3 class="font-barlow font-bold text-5xl text-on-surface tracking-tighter mb-8 leading-tight">The AgriSync<br/>Intelligence Stack</h3>
+<p class="font-barlow text-lg text-on-surface-variant leading-relaxed mb-12">Six independent signal types fused through a confidence-gated ensemble. Disease risk predicted per 10m field zone, 72 hours ahead, with crop-stage awareness built in.</p>
 <div class="grid grid-cols-2 gap-8">
-<div><span class="font-barlow font-bold text-4xl text-on-surface">12h</span><p class="font-instrument italic text-xl text-on-surface-variant">Target Warning Window</p></div>
-<div><span class="font-barlow font-bold text-4xl text-on-surface">85%</span><p class="font-instrument italic text-xl text-on-surface-variant">Projected Accuracy</p></div>
-<div><span class="font-barlow font-bold text-4xl text-on-surface">v0.1</span><p class="font-instrument italic text-xl text-on-surface-variant">Model in Training</p></div>
-<div><span class="font-barlow font-bold text-4xl text-on-surface">30m</span><p class="font-instrument italic text-xl text-on-surface-variant">Sensor Poll Rate</p></div>
+<div><span class="font-barlow font-bold text-4xl text-on-surface">72h</span><p class="font-instrument italic text-xl text-on-surface-variant">Forecast Horizon</p></div>
+<div><span class="font-barlow font-bold text-4xl text-on-surface">97%+</span><p class="font-instrument italic text-xl text-on-surface-variant">Accuracy Target</p></div>
+<div><span class="font-barlow font-bold text-4xl text-on-surface">10m×10m</span><p class="font-instrument italic text-xl text-on-surface-variant">Spatial Resolution</p></div>
+<div><span class="font-barlow font-bold text-4xl text-on-surface">6</span><p class="font-instrument italic text-xl text-on-surface-variant">Model Types</p></div>
 </div>
 </div>
 <div class="relative aspect-square bg-on-surface rounded-3xl overflow-hidden shadow-2xl flex items-center justify-center p-12">
@@ -358,18 +378,91 @@ body {
 </div>
 <div class="text-center relative z-10">
 <span class="material-symbols-outlined text-[120px] text-surface mb-6 opacity-80" data-icon="neurology">neurology</span>
-<p class="font-barlow font-bold text-surface tracking-widest uppercase text-xs">Neural Network Active</p>
+<p class="font-barlow font-bold text-surface tracking-widest uppercase text-xs">Confidence-Gated Ensemble Active</p>
 </div>
 <div class="absolute bottom-8 left-8 right-8 bg-surface/10 backdrop-blur-md p-4 rounded-xl border border-white/10 z-10">
 <div class="flex items-center gap-3">
 <div class="w-2 h-2 rounded-full bg-emerald-400 animate-pulse"></div>
-<span class="font-barlow text-[10px] text-surface uppercase font-bold tracking-widest">Model Training: Phase 1 Active</span>
+<span class="font-barlow text-[10px] text-surface uppercase font-bold tracking-widest">6 Models · Voting Active · v3.0</span>
 </div>
 </div>
+</div>
+</div>
+<!-- 6 Model Cards -->
+<div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+<div class="flex flex-col gap-4 p-6 bg-surface-container-low rounded-2xl border border-outline-variant/10 transition-all duration-500 hover:-translate-y-2 hover:shadow-2xl hover:border-outline/30">
+<span class="font-barlow font-bold text-outline-variant text-sm uppercase tracking-widest">Model 01</span>
+<h4 class="font-barlow font-bold text-xl text-on-surface">Temporal Transformer (TiDE)</h4>
+<p class="font-barlow text-sm text-on-surface-variant leading-relaxed">72-hour weather and soil time-series forecasting. Retains full-season patterns across the 90-120 day cabbage growing cycle. Replaces LSTM.</p>
+</div>
+<div class="flex flex-col gap-4 p-6 bg-surface-container-low rounded-2xl border border-outline-variant/10 transition-all duration-500 hover:-translate-y-2 hover:shadow-2xl hover:border-outline/30">
+<span class="font-barlow font-bold text-outline-variant text-sm uppercase tracking-widest">Model 02</span>
+<h4 class="font-barlow font-bold text-xl text-on-surface">XGBoost Stage-Aware</h4>
+<p class="font-barlow text-sm text-on-surface-variant leading-relaxed">Disease risk classification per micro-zone. Activates disease rules only at the correct crop growth stage from the DSSAT-lite phenology model.</p>
+</div>
+<div class="flex flex-col gap-4 p-6 bg-surface-container-low rounded-2xl border border-outline-variant/10 transition-all duration-500 hover:-translate-y-2 hover:shadow-2xl hover:border-outline/30">
+<span class="font-barlow font-bold text-outline-variant text-sm uppercase tracking-widest">Model 03</span>
+<h4 class="font-barlow font-bold text-xl text-on-surface">MobileNetV2 CNN</h4>
+<p class="font-barlow text-sm text-on-surface-variant leading-relaxed">Leaf disease detection from ESP32-CAM images. Pre-trained on 54,000+ PlantVillage Brassica disease photos. Runs on Pi 5.</p>
+</div>
+<div class="flex flex-col gap-4 p-6 bg-surface-container-low rounded-2xl border border-outline-variant/10 transition-all duration-500 hover:-translate-y-2 hover:shadow-2xl hover:border-outline/30">
+<span class="font-barlow font-bold text-outline-variant text-sm uppercase tracking-widest">Model 04</span>
+<h4 class="font-barlow font-bold text-xl text-on-surface">Acoustic Classifier</h4>
+<p class="font-barlow text-sm text-on-surface-variant leading-relaxed">Runs on ESP32 chip directly via TF Lite Micro. Detects Cabbage Looper and Diamondback Moth feeding frequencies weeks before visible damage.</p>
+</div>
+<div class="flex flex-col gap-4 p-6 bg-surface-container-low rounded-2xl border border-outline-variant/10 transition-all duration-500 hover:-translate-y-2 hover:shadow-2xl hover:border-outline/30">
+<span class="font-barlow font-bold text-outline-variant text-sm uppercase tracking-widest">Model 05</span>
+<h4 class="font-barlow font-bold text-xl text-on-surface">Kriging / Gaussian Process</h4>
+<p class="font-barlow text-sm text-on-surface-variant leading-relaxed">Spatial uncertainty mapping across the entire field grid from one sensor anchor point using SRTM drainage structure.</p>
+</div>
+<div class="flex flex-col gap-4 p-6 bg-surface-container-low rounded-2xl border border-outline-variant/10 transition-all duration-500 hover:-translate-y-2 hover:shadow-2xl hover:border-outline/30">
+<span class="font-barlow font-bold text-outline-variant text-sm uppercase tracking-widest">Model 06</span>
+<h4 class="font-barlow font-bold text-xl text-on-surface">DSSAT-lite Phenology</h4>
+<p class="font-barlow text-sm text-on-surface-variant leading-relaxed">Tracks cabbage growth stage day-by-day from transplant date. Context layer that makes all other models crop-stage aware.</p>
 </div>
 </div>
 </div>
 </section>
+
+<!-- Built for Banda Gobi Section -->
+<section class="bg-surface py-32 px-8 overflow-hidden">
+<div class="max-w-6xl mx-auto section-content">
+<div class="text-center mb-16">
+<h2 class="font-barlow font-bold text-xs uppercase tracking-[0.3em] text-outline mb-6">Crop Intelligence</h2>
+<h3 class="font-instrument italic text-5xl md:text-7xl text-on-surface leading-tight mb-6">Built for Banda Gobi</h3>
+<p class="font-barlow font-bold text-xl text-on-surface-variant max-w-2xl mx-auto mb-4">Cabbage-specific disease intelligence from ICAR-IIVR Varanasi and NHB research</p>
+<p class="font-barlow text-on-surface-variant leading-relaxed max-w-2xl mx-auto">AgriSync v3.0 is the first version optimised for a specific crop. Ten disease and stress conditions are encoded as rule-based synthetic training data, giving the AI disease knowledge from Day 1.</p>
+</div>
+<div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+<div class="flex flex-col gap-4 p-6 bg-surface-container-low rounded-2xl border border-outline-variant/10 transition-all duration-500 hover:-translate-y-2 hover:shadow-2xl hover:border-outline/30">
+<span class="inline-block self-start font-barlow font-bold text-[10px] uppercase tracking-widest px-3 py-1 rounded-full border border-outline-variant/40 text-outline-variant">Peronospora parasitica</span>
+<h4 class="font-barlow font-bold text-xl text-on-surface">Downy Mildew</h4>
+<p class="font-barlow text-sm text-on-surface-variant leading-relaxed">Night temp 8-16°C + RH above 85% + leaf wet + fog. 48-hour alert window.</p>
+</div>
+<div class="flex flex-col gap-4 p-6 bg-surface-container-low rounded-2xl border border-outline-variant/10 transition-all duration-500 hover:-translate-y-2 hover:shadow-2xl hover:border-outline/30">
+<span class="inline-block self-start font-barlow font-bold text-[10px] uppercase tracking-widest px-3 py-1 rounded-full border border-outline-variant/40 text-outline-variant">Xanthomonas campestris</span>
+<h4 class="font-barlow font-bold text-xl text-on-surface">Black Rot (Xcc)</h4>
+<p class="font-barlow text-sm text-on-surface-variant leading-relaxed">Warm humid conditions + rain splash + temp above 25°C. 24-48 hour alert window.</p>
+</div>
+<div class="flex flex-col gap-4 p-6 bg-surface-container-low rounded-2xl border border-outline-variant/10 transition-all duration-500 hover:-translate-y-2 hover:shadow-2xl hover:border-outline/30">
+<span class="inline-block self-start font-barlow font-bold text-[10px] uppercase tracking-widest px-3 py-1 rounded-full border border-outline-variant/40 text-outline-variant">Rhizoctonia / Pythium</span>
+<h4 class="font-barlow font-bold text-xl text-on-surface">Damping Off</h4>
+<p class="font-barlow text-sm text-on-surface-variant leading-relaxed">Cool cloudy + RH above 90% + wet compact soil. Seedling stage only.</p>
+</div>
+<div class="flex flex-col gap-4 p-6 bg-surface-container-low rounded-2xl border border-outline-variant/10 transition-all duration-500 hover:-translate-y-2 hover:shadow-2xl hover:border-outline/30">
+<span class="inline-block self-start font-barlow font-bold text-[10px] uppercase tracking-widest px-3 py-1 rounded-full border border-outline-variant/40 text-outline-variant">Physiological Stress</span>
+<h4 class="font-barlow font-bold text-xl text-on-surface">Tipburn</h4>
+<p class="font-barlow text-sm text-on-surface-variant leading-relaxed">Temp spike above 28°C + RH below 50% + rapid head fill phase. 12-hour window.</p>
+</div>
+<div class="flex flex-col gap-4 p-6 bg-surface-container-low rounded-2xl border border-outline-variant/10 transition-all duration-500 hover:-translate-y-2 hover:shadow-2xl hover:border-outline/30">
+<span class="inline-block self-start font-barlow font-bold text-[10px] uppercase tracking-widest px-3 py-1 rounded-full border border-outline-variant/40 text-outline-variant">DBM &amp; Cabbage Looper</span>
+<h4 class="font-barlow font-bold text-xl text-on-surface">Pest Alert</h4>
+<p class="font-barlow text-sm text-on-surface-variant leading-relaxed">Acoustic feeding signal + NDVI edge degradation. Immediate alert, weeks before visible damage.</p>
+</div>
+</div>
+</div>
+</section>
+
 <!-- Why It Matters Section / Solo Resolve Story -->
 <section class="bg-surface py-32 px-8 overflow-hidden scroll-mt-24" id="about">
 <div class="max-w-6xl mx-auto section-content">
@@ -402,6 +495,7 @@ body {
 </div>
 </div>
 </section>
+
 <!-- Solo Engineering Section -->
 <section class="bg-background py-32 px-8 border-t border-outline-variant/10">
 <div class="max-w-6xl mx-auto section-content">
@@ -429,7 +523,12 @@ body {
 </div>
 </div>
 <div class="order-1 lg:order-2">
-<div class="inline-block bg-primary/10 text-primary-dim px-4 py-1.5 rounded-full font-barlow font-bold text-[10px] uppercase tracking-[0.2em] mb-8">Target Launch: November 2026</div>
+<div class="flex flex-wrap gap-2 mb-8">
+  <span class="inline-block bg-primary/10 text-primary-dim px-4 py-1.5 rounded-full font-barlow font-bold text-[10px] uppercase tracking-[0.2em]">Field Deployment: August 2026</span>
+  <span class="inline-block bg-tertiary/10 text-tertiary px-4 py-1.5 rounded-full font-barlow font-bold text-[10px] uppercase tracking-[0.2em]">Test Crop: Banda Gobi, Harpur UP</span>
+  <span class="inline-block bg-secondary/10 text-secondary px-4 py-1.5 rounded-full font-barlow font-bold text-[10px] uppercase tracking-[0.2em]">Accuracy Target: 97%+ by end of first season</span>
+  <span class="inline-block bg-outline-variant/20 text-outline px-4 py-1.5 rounded-full font-barlow font-bold text-[10px] uppercase tracking-[0.2em]">Built on: iPad + Raspberry Pi 5. No laptop.</span>
+</div>
 <h2 class="font-barlow font-bold text-5xl md:text-6xl text-on-surface leading-[0.9] mb-4">Field intelligence,</h2>
 <h3 class="font-instrument italic text-4xl md:text-5xl text-on-surface/70 mb-8">redefined.</h3>
 <div class="space-y-6 max-w-lg">
@@ -443,6 +542,7 @@ body {
 </div>
 </div>
 </section>
+
 <!-- Technology Stack Section -->
 <section class="bg-on-surface text-surface py-32 px-8 rounded-[4rem] mx-4 md:mx-8 mb-8 md:mb-12 z-20 scroll-mt-24" id="tech-stack">
 <div class="max-w-6xl mx-auto section-content">
@@ -450,34 +550,54 @@ body {
 <h2 class="font-barlow font-bold text-xs uppercase tracking-[0.3em] opacity-40 mb-4">Under the Hood</h2>
 <h3 class="font-barlow font-bold text-5xl tracking-tighter">The AgriSync Tech Stack</h3>
 </div>
-<div class="grid grid-cols-2 md:grid-cols-3 gap-8 lg:grid-cols-7">
-<div class="flex flex-col items-center text-center gap-4 p-8 rounded-2xl border border-white/5 hover:border-white/20 transition-all">
+<div class="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-6 gap-6">
+<div class="flex flex-col items-center text-center gap-4 p-6 rounded-2xl border border-white/5 hover:border-white/20 transition-all">
 <span class="material-symbols-outlined text-4xl opacity-60" data-icon="memory">memory</span>
 <span class="font-barlow font-bold text-sm tracking-widest uppercase">ESP32</span>
 </div>
-<div class="flex flex-col items-center text-center gap-4 p-8 rounded-2xl border border-white/5 hover:border-white/20 transition-all">
-<span class="material-symbols-outlined text-4xl opacity-60" data-icon="settings_input_antenna">settings_input_antenna</span>
-<span class="font-barlow font-bold text-sm tracking-widest uppercase">LoRa</span>
+<div class="flex flex-col items-center text-center gap-4 p-6 rounded-2xl border border-white/5 hover:border-white/20 transition-all">
+<span class="material-symbols-outlined text-4xl opacity-60" data-icon="sim_card">sim_card</span>
+<span class="font-barlow font-bold text-sm tracking-widest uppercase">SIM7600G</span>
 </div>
-<div class="flex flex-col items-center text-center gap-4 p-8 rounded-2xl border border-white/5 hover:border-white/20 transition-all">
-<span class="material-symbols-outlined text-4xl opacity-60" data-icon="database">database</span>
-<span class="font-barlow font-bold text-sm tracking-widest uppercase">InfluxDB</span>
-</div>
-<div class="flex flex-col items-center text-center gap-4 p-8 rounded-2xl border border-white/5 hover:border-white/20 transition-all">
-<span class="material-symbols-outlined text-4xl opacity-60" data-icon="terminal">terminal</span>
-<span class="font-barlow font-bold text-sm tracking-widest uppercase">Node.js</span>
-</div>
-<div class="flex flex-col items-center text-center gap-4 p-8 rounded-2xl border border-white/5 hover:border-white/20 transition-all">
-<span class="material-symbols-outlined text-4xl opacity-60" data-icon="monitoring">monitoring</span>
-<span class="font-barlow font-bold text-sm tracking-widest uppercase">Grafana</span>
-</div>
-<div class="flex flex-col items-center text-center gap-4 p-8 rounded-2xl border border-white/5 hover:border-white/20 transition-all">
-<span class="material-symbols-outlined text-4xl opacity-60" data-icon="cloud">cloud</span>
-<span class="font-barlow font-bold text-sm tracking-widest uppercase">AWS IoT</span>
-</div>
-<div class="flex flex-col items-center text-center gap-4 p-8 rounded-2xl border border-white/5 hover:border-white/20 transition-all">
+<div class="flex flex-col items-center text-center gap-4 p-6 rounded-2xl border border-white/5 hover:border-white/20 transition-all">
 <span class="material-symbols-outlined text-4xl opacity-60" data-icon="developer_board">developer_board</span>
 <span class="font-barlow font-bold text-sm tracking-widest uppercase">Raspberry Pi 5</span>
+</div>
+<div class="flex flex-col items-center text-center gap-4 p-6 rounded-2xl border border-white/5 hover:border-white/20 transition-all">
+<span class="material-symbols-outlined text-4xl opacity-60" data-icon="database">database</span>
+<span class="font-barlow font-bold text-sm tracking-widest uppercase">MongoDB Atlas</span>
+</div>
+<div class="flex flex-col items-center text-center gap-4 p-6 rounded-2xl border border-white/5 hover:border-white/20 transition-all">
+<span class="material-symbols-outlined text-4xl opacity-60" data-icon="cloud">cloud</span>
+<span class="font-barlow font-bold text-sm tracking-widest uppercase">Azure IoT Hub</span>
+</div>
+<div class="flex flex-col items-center text-center gap-4 p-6 rounded-2xl border border-white/5 hover:border-white/20 transition-all">
+<span class="material-symbols-outlined text-4xl opacity-60" data-icon="model_training">model_training</span>
+<span class="font-barlow font-bold text-sm tracking-widest uppercase">TensorFlow Lite</span>
+</div>
+<div class="flex flex-col items-center text-center gap-4 p-6 rounded-2xl border border-white/5 hover:border-white/20 transition-all">
+<span class="material-symbols-outlined text-4xl opacity-60" data-icon="auto_awesome">auto_awesome</span>
+<span class="font-barlow font-bold text-sm tracking-widest uppercase">PyTorch</span>
+</div>
+<div class="flex flex-col items-center text-center gap-4 p-6 rounded-2xl border border-white/5 hover:border-white/20 transition-all">
+<span class="material-symbols-outlined text-4xl opacity-60" data-icon="satellite_alt">satellite_alt</span>
+<span class="font-barlow font-bold text-sm tracking-widest uppercase">Sentinel-2</span>
+</div>
+<div class="flex flex-col items-center text-center gap-4 p-6 rounded-2xl border border-white/5 hover:border-white/20 transition-all">
+<span class="material-symbols-outlined text-4xl opacity-60" data-icon="wb_sunny">wb_sunny</span>
+<span class="font-barlow font-bold text-sm tracking-widest uppercase">NASA POWER</span>
+</div>
+<div class="flex flex-col items-center text-center gap-4 p-6 rounded-2xl border border-white/5 hover:border-white/20 transition-all">
+<span class="material-symbols-outlined text-4xl opacity-60" data-icon="chat">chat</span>
+<span class="font-barlow font-bold text-sm tracking-widest uppercase">WhatsApp API</span>
+</div>
+<div class="flex flex-col items-center text-center gap-4 p-6 rounded-2xl border border-white/5 hover:border-white/20 transition-all">
+<span class="material-symbols-outlined text-4xl opacity-60" data-icon="sms">sms</span>
+<span class="font-barlow font-bold text-sm tracking-widest uppercase">Fast2SMS</span>
+</div>
+<div class="flex flex-col items-center text-center gap-4 p-6 rounded-2xl border border-white/5 hover:border-white/20 transition-all">
+<span class="material-symbols-outlined text-4xl opacity-60" data-icon="terminal">terminal</span>
+<span class="font-barlow font-bold text-sm tracking-widest uppercase">Python 3.11</span>
 </div>
 </div>
 <div class="mt-24 pt-24 border-t border-white/10 flex flex-col items-center text-center gap-10" id="connect">
@@ -565,7 +685,7 @@ body {
 
   function showComingSoon(el, name) {
     const original = el.innerText;
-    el.innerText = 'Coming Nov 2026';
+    el.innerText = 'Coming Aug 2026';
     el.style.opacity = '0.5';
     el.style.pointerEvents = 'none';
     setTimeout(() => {
@@ -581,8 +701,16 @@ body {
     <div class="flex flex-col items-center gap-3 section-content">
         <a class="font-['Barlow'] font-bold text-2xl text-stone-900 hover:opacity-70 transition-opacity" href="#">AgriSync</a>
         <p class="font-['Barlow'] text-sm text-stone-500">© 2026 AgriSync. All rights reserved.</p>
+        <p class="font-['Barlow'] text-xs text-stone-400 italic">v3.0 in active development — field deployment August 2026</p>
+        <div class="flex items-center gap-4 mt-2">
+          <a href="/v1.html" class="font-['Barlow'] text-xs text-stone-400 hover:text-stone-600 transition-colors uppercase tracking-widest">v1.0 Archive</a>
+          <span class="w-1 h-1 bg-stone-300 rounded-full"></span>
+          <a href="/v2.html" class="font-['Barlow'] text-xs text-stone-400 hover:text-stone-600 transition-colors uppercase tracking-widest">v2.0 Archive</a>
+          <span class="w-1 h-1 bg-stone-300 rounded-full"></span>
+          <span class="font-['Barlow'] text-xs text-stone-600 font-bold uppercase tracking-widest">v3.0 (current)</span>
+        </div>
     </div>
-  
+
 </footer>
 </div>
 </body>
