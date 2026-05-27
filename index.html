@@ -257,11 +257,10 @@ body {
 
 <!-- Hero Section -->
 <main class="relative flex flex-col items-center justify-center overflow-hidden h-screen min-h-[800px]" id="top">
-<video id="hero-video" autoplay loop muted playsinline preload="auto" disablepictureinpicture class="absolute inset-0 w-full h-full object-cover z-0" style="filter: brightness(0.85);"
+<video id="hero-video" autoplay loop muted playsinline preload="auto" disablepictureinpicture x-webkit-airplay="deny" class="absolute inset-0 w-full h-full object-cover z-0" style="filter: brightness(0.85);"
   oncanplay="document.getElementById('hero-fallback').style.display='none';"
   onerror="this.style.display='none';">
   <source src="hero-bg.mp4" type="video/mp4"/>
-  <source src="https://d8j0ntlcm91z4.cloudfront.net/user_38xzZboKViGWJOttwIXH07lWA1P/hf_20260228_065522_522e2295-ba22-457e-8fdb-fbcd68109c73.mp4" type="video/mp4"/>
 </video>
 <!-- Fallback gradient — visible immediately, hidden once video plays -->
 <div id="hero-fallback" class="absolute inset-0 w-full h-full z-0" style="background: linear-gradient(135deg, #2c3a2c 0%, #3b4738 50%, #1a2a1a 100%);"></div>
@@ -292,19 +291,52 @@ body {
     const v = document.getElementById('hero-video');
     if (!v) return;
     v.muted = true;
+    v.defaultMuted = true;
     v.setAttribute('muted', '');
+    v.playsInline = true;
+    v.loop = true;
+
     const tryPlay = () => {
+      if (!v.paused && !v.ended) return;
+      v.muted = true;
       const p = v.play();
       if (p && typeof p.catch === 'function') p.catch(() => {});
     };
+
     tryPlay();
-    v.addEventListener('canplay', tryPlay);
-    v.addEventListener('loadeddata', tryPlay);
-    v.addEventListener('pause', () => { if (!v.ended) tryPlay(); });
+    ['loadedmetadata', 'loadeddata', 'canplay', 'canplaythrough'].forEach(ev =>
+      v.addEventListener(ev, tryPlay)
+    );
+    v.addEventListener('pause', () => {
+      if (!v.ended && document.visibilityState === 'visible') {
+        setTimeout(tryPlay, 100);
+      }
+    });
     document.addEventListener('visibilitychange', () => {
       if (!document.hidden) tryPlay();
     });
     window.addEventListener('focus', tryPlay);
+    window.addEventListener('pageshow', tryPlay);
+
+    const interactionEvents = ['click', 'touchstart', 'keydown', 'scroll', 'pointerdown'];
+    const onInteract = () => {
+      tryPlay();
+      if (!v.paused) {
+        interactionEvents.forEach(ev =>
+          document.removeEventListener(ev, onInteract, true)
+        );
+      }
+    };
+    interactionEvents.forEach(ev =>
+      document.addEventListener(ev, onInteract, { capture: true, passive: true })
+    );
+
+    const watchdog = setInterval(() => {
+      if (v.readyState >= 2 && v.paused && !v.ended && document.visibilityState === 'visible') {
+        tryPlay();
+      }
+    }, 1500);
+    setTimeout(() => clearInterval(watchdog), 30000);
   })();
 </script>
 
