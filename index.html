@@ -7,6 +7,7 @@
 <meta name="description" content="AgriSync v3 PhytoPlex — a satellite-dominant crop advisory system for smallholder cabbage farmers. One Raspberry Pi 5 runs the whole pipeline. WhatsApp in Hindi. No field sensors required."/>
 <meta name="theme-color" content="#2c3434"/>
 <link rel="canonical" href="https://agrisync.tech/"/>
+<link rel="preload" href="hero-bg.mp4" as="video" type="video/mp4" fetchpriority="high"/>
 <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🌿</text></svg>"/>
 <!-- Open Graph -->
 <meta property="og:type" content="website"/>
@@ -257,8 +258,9 @@ body {
 
 <!-- Hero Section -->
 <main class="relative flex flex-col items-center justify-center overflow-hidden h-screen min-h-[800px]" id="top">
-<video id="hero-video" autoplay loop muted playsinline preload="auto" disablepictureinpicture x-webkit-airplay="deny" class="absolute inset-0 w-full h-full object-cover z-0" style="filter: brightness(0.85);"
-  oncanplay="document.getElementById('hero-fallback').style.display='none';"
+<video id="hero-video" muted autoplay loop playsinline webkit-playsinline preload="auto" fetchpriority="high" class="absolute inset-0 w-full h-full object-cover z-0" style="filter: brightness(0.85);"
+  oncanplay="this.play().catch(()=>{});document.getElementById('hero-fallback').style.display='none';"
+  onloadeddata="this.play().catch(()=>{});"
   onerror="this.style.display='none';">
   <source src="hero-bg.mp4" type="video/mp4"/>
 </video>
