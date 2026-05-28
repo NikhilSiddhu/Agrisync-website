@@ -279,7 +279,7 @@ body {
 </div>
 </div>
 <div class="absolute left-1/2 -translate-x-1/2 z-20" style="bottom: 18%;">
-<a class="bg-white/20 backdrop-blur-md border border-white/40 text-white px-8 py-3.5 rounded-full inline-flex items-center gap-2 font-['Barlow'] font-bold text-xs uppercase tracking-widest transition-all hover:bg-white/30 hover:scale-105 active:scale-95 shadow-lg" href="https://dashboard.agrisync.tech" target="_blank" rel="noopener">
+<a class="bg-white/40 backdrop-blur-xl border border-white/50 text-white px-8 py-3.5 rounded-full inline-flex items-center gap-2 font-['Barlow'] font-bold text-xs uppercase tracking-widest transition-all hover:bg-white/55 hover:scale-105 active:scale-95 shadow-sm" href="https://dashboard.agrisync.tech" target="_blank" rel="noopener">
   Dashboard <span class="material-symbols-outlined text-lg rotate-45" data-icon="arrow_forward">arrow_forward</span>
 </a>
 </div>
@@ -357,37 +357,37 @@ body {
 <span class="material-symbols-outlined text-2xl text-outline-variant" data-icon="satellite_alt">satellite_alt</span>
 <span class="font-barlow font-bold text-outline-variant text-sm">01 / Satellites</span>
 <h4 class="font-barlow font-bold text-xl text-on-surface">Free Public Imagery</h4>
-<p class="font-barlow text-sm text-on-surface-variant leading-relaxed">Sentinel-2 optical scenes every 5 days show crop greenness and water content. Sentinel-1 radar sees through clouds for soil moisture. Both are free, and they do most of the sensing — no per-field hardware needed.</p>
+<p class="font-barlow text-sm text-on-surface-variant leading-relaxed">Sentinel-2 optical images every 5 days track crop health. Sentinel-1 radar sees through clouds to read soil moisture. Both free, no field hardware needed.</p>
 </div>
 <div class="flex flex-col gap-4 p-6 bg-surface-container-low rounded-2xl border border-outline-variant/10 transition-all duration-500 hover:-translate-y-2 hover:shadow-2xl hover:border-outline/30">
 <span class="material-symbols-outlined text-2xl text-outline-variant" data-icon="cloud">cloud</span>
 <span class="font-barlow font-bold text-outline-variant text-sm">02 / Weather</span>
 <h4 class="font-barlow font-bold text-xl text-on-surface">NASA POWER + Open-Meteo</h4>
-<p class="font-barlow text-sm text-on-surface-variant leading-relaxed">Daily temperature, rainfall and humidity from NASA POWER. Forecasts from Open-Meteo, which serves the ECMWF AIFS model. Both free APIs, pulled each morning at 00:30 IST.</p>
+<p class="font-barlow text-sm text-on-surface-variant leading-relaxed">Daily temperature, rainfall and humidity from NASA POWER. Forecasts from Open-Meteo's ECMWF AIFS model. Both free, pulled each morning at 00:30 IST.</p>
 </div>
 <div class="flex flex-col gap-4 p-6 bg-surface-container-low rounded-2xl border border-outline-variant/10 transition-all duration-500 hover:-translate-y-2 hover:shadow-2xl hover:border-outline/30">
 <span class="material-symbols-outlined text-2xl text-outline-variant" data-icon="developer_board">developer_board</span>
 <span class="font-barlow font-bold text-outline-variant text-sm">03 / Edge Brain</span>
 <h4 class="font-barlow font-bold text-xl text-on-surface">One Raspberry Pi 5</h4>
-<p class="font-barlow text-sm text-on-surface-variant leading-relaxed">A single Pi 5 in the village runs every job: pulling data, computing indices, scoring models, sending messages. No cloud database, no laptop, no office.</p>
+<p class="font-barlow text-sm text-on-surface-variant leading-relaxed">One Raspberry Pi 5 in the village does everything: pulls data, runs models, sends messages. No cloud, no laptop, no office.</p>
 </div>
 <div class="flex flex-col gap-4 p-6 bg-surface-container-low rounded-2xl border border-outline-variant/10 transition-all duration-500 hover:-translate-y-2 hover:shadow-2xl hover:border-outline/30">
 <span class="material-symbols-outlined text-2xl text-outline-variant" data-icon="schedule">schedule</span>
 <span class="font-barlow font-bold text-outline-variant text-sm">04 / Daily Pipeline</span>
 <h4 class="font-barlow font-bold text-xl text-on-surface">Eleven Scheduled Jobs</h4>
-<p class="font-barlow text-sm text-on-surface-variant leading-relaxed">Every night the Pi fetches weather and satellite data, computes vegetation indices, runs four models, builds advisories, and ships them by 06:00 IST. systemd timers drive the whole sequence.</p>
+<p class="font-barlow text-sm text-on-surface-variant leading-relaxed">Each night the Pi fetches weather and satellite data, runs four models, and sends advisories by 06:00 IST. Scheduled jobs handle the full sequence.</p>
 </div>
 <div class="flex flex-col gap-4 p-6 bg-surface-container-low rounded-2xl border border-outline-variant/10 transition-all duration-500 hover:-translate-y-2 hover:shadow-2xl hover:border-outline/30">
 <span class="material-symbols-outlined text-2xl text-outline-variant" data-icon="database">database</span>
 <span class="font-barlow font-bold text-outline-variant text-sm">05 / Local Storage</span>
 <h4 class="font-barlow font-bold text-xl text-on-surface">SQLite + DuckDB</h4>
-<p class="font-barlow text-sm text-on-surface-variant leading-relaxed">Daily writes go into a local SQLite database on the Pi. Heavier analytics queries run on DuckDB over Parquet files. Nothing leaves the device by default.</p>
+<p class="font-barlow text-sm text-on-surface-variant leading-relaxed">Daily records go into a local SQLite database on the Pi. Heavier queries run on DuckDB. Nothing leaves the device by default.</p>
 </div>
 <div class="flex flex-col gap-4 p-6 bg-on-surface text-surface rounded-2xl border border-outline-variant/10 shadow-xl transition-all duration-500 hover:-translate-y-2 hover:shadow-2xl hover:border-outline/30">
 <span class="material-symbols-outlined text-2xl opacity-60" data-icon="chat">chat</span>
 <span class="font-barlow font-bold opacity-60 text-sm">06 / Output</span>
 <h4 class="font-barlow font-bold text-2xl">WhatsApp + Photos Back</h4>
-<p class="font-barlow text-sm opacity-80 leading-relaxed">Farmers get a short Hindi advisory on WhatsApp at 06:00 IST via Twilio. They can send a photo back any time — a vision model on the Pi diagnoses it and replies. Validated photos earn a small UPI payout via Razorpay.</p>
+<p class="font-barlow text-sm opacity-80 leading-relaxed">Farmers get a short Hindi advisory on WhatsApp at 06:00 IST via Twilio. They can reply with a photo; a vision model on the Pi diagnoses it. Validated photos earn a small UPI payout via Razorpay.</p>
 </div>
 </div>
 </section>
@@ -428,22 +428,22 @@ body {
 <div class="flex flex-col gap-4 p-6 bg-surface-container-low rounded-2xl border border-outline-variant/10 transition-all duration-500 hover:-translate-y-2 hover:shadow-2xl hover:border-outline/30">
 <span class="font-barlow font-bold text-outline-variant text-sm uppercase tracking-widest">Model A · Soil Moisture</span>
 <h4 class="font-barlow font-bold text-xl text-on-surface">XGBoost Regressor</h4>
-<p class="font-barlow text-sm text-on-surface-variant leading-relaxed">Predicts how wet the soil is now and over the next 72 hours. Inputs are Sentinel-1 radar, Sentinel-2 moisture index, rainfall and evapotranspiration from NASA POWER.</p>
+<p class="font-barlow text-sm text-on-surface-variant leading-relaxed">Forecasts soil wetness now and for the next 72 hours, using Sentinel-1 radar, Sentinel-2 moisture data, rainfall, and crop water loss from NASA POWER.</p>
 </div>
 <div class="flex flex-col gap-4 p-6 bg-surface-container-low rounded-2xl border border-outline-variant/10 transition-all duration-500 hover:-translate-y-2 hover:shadow-2xl hover:border-outline/30">
 <span class="font-barlow font-bold text-outline-variant text-sm uppercase tracking-widest">Model B · Crop Stage</span>
 <h4 class="font-barlow font-bold text-xl text-on-surface">Growing-Degree Days</h4>
-<p class="font-barlow text-sm text-on-surface-variant leading-relaxed">Tracks the cabbage day-by-day from transplant to harvest by adding up daily heat units. Pure arithmetic — no machine learning — and accurate to within a few days.</p>
+<p class="font-barlow text-sm text-on-surface-variant leading-relaxed">Tracks cabbage from transplant to harvest by adding up daily heat. Simple math, no AI, accurate within a few days.</p>
 </div>
 <div class="flex flex-col gap-4 p-6 bg-surface-container-low rounded-2xl border border-outline-variant/10 transition-all duration-500 hover:-translate-y-2 hover:shadow-2xl hover:border-outline/30">
 <span class="font-barlow font-bold text-outline-variant text-sm uppercase tracking-widest">Model C · Disease Risk</span>
 <h4 class="font-barlow font-bold text-xl text-on-surface">Rules + Matched Filter + BOCPD</h4>
-<p class="font-barlow text-sm text-on-surface-variant leading-relaxed">Three signals decide if disease pressure is building: agronomic weather rules, a template that matches early outbreak patterns in satellite indices, and a change-point detector that flags when the field starts behaving abnormally.</p>
+<p class="font-barlow text-sm text-on-surface-variant leading-relaxed">Three signals catch disease early: weather-based rules, a pattern-match on satellite images, and an alert when the field starts behaving oddly.</p>
 </div>
 <div class="flex flex-col gap-4 p-6 bg-surface-container-low rounded-2xl border border-outline-variant/10 transition-all duration-500 hover:-translate-y-2 hover:shadow-2xl hover:border-outline/30">
 <span class="font-barlow font-bold text-outline-variant text-sm uppercase tracking-widest">Model D · Photo Diagnosis</span>
 <h4 class="font-barlow font-bold text-xl text-on-surface">Moondream 2 Vision Model</h4>
-<p class="font-barlow text-sm text-on-surface-variant leading-relaxed">A small open vision-language model runs locally on the Pi. The farmer sends a photo on WhatsApp, the model names the symptom and recommends a treatment in Hindi, usually within 90 seconds.</p>
+<p class="font-barlow text-sm text-on-surface-variant leading-relaxed">A small open vision model runs on the Pi. The farmer sends a WhatsApp photo, Moondream 2 names the symptom and suggests treatment in Hindi within 90 seconds.</p>
 </div>
 </div>
 </div>
@@ -548,9 +548,6 @@ body {
 </div>
 <div class="order-1 lg:order-2">
 <div class="flex flex-wrap gap-2 mb-8">
-  <span class="inline-block bg-primary/10 text-primary-dim px-4 py-1.5 rounded-full font-barlow font-bold text-[10px] uppercase tracking-[0.2em]">Field Deployment: Rabi Season 2026</span>
-  <span class="inline-block bg-tertiary/10 text-tertiary px-4 py-1.5 rounded-full font-barlow font-bold text-[10px] uppercase tracking-[0.2em]">Test Crop: Banda Gobi, Harpur UP</span>
-  <span class="inline-block bg-secondary/10 text-secondary px-4 py-1.5 rounded-full font-barlow font-bold text-[10px] uppercase tracking-[0.2em]">Disease Target: 75–85% accuracy at 3–7 day lead</span>
   <span class="inline-block bg-outline-variant/20 text-outline px-4 py-1.5 rounded-full font-barlow font-bold text-[10px] uppercase tracking-[0.2em]">Built on: iPad + Raspberry Pi 5. No laptop.</span>
 </div>
 <h2 class="font-barlow font-bold text-5xl md:text-6xl text-on-surface leading-[0.9] mb-4">Field intelligence,</h2>
