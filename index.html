@@ -198,6 +198,39 @@ body {
             .reveal { opacity: 1; transform: none; transition: none; }
             .explore-cue { animation: none; }
         }
+
+        /* Touch parity — tap on iPad/phone reads the same as hover on desktop.
+           Gated to devices without real hover so we don't double up on hybrid laptops. */
+        @media (hover: none) and (pointer: coarse) {
+            .reveal, .group { -webkit-tap-highlight-color: transparent; }
+
+            /* Cards (pipeline, models, Banda Gobi, tech-stack) lift on tap */
+            .reveal[class*="p-6"].is-tapped {
+                transform: translateY(-4px);
+            }
+            /* Tech-stack icon glyph brightens on tap */
+            .reveal.group[class*="p-6"].is-tapped .material-symbols-outlined {
+                opacity: 1;
+            }
+            /* Stat numbers (72h / 3–7d / 4 / 1) pop on tap */
+            .group.is-tapped > span.inline-block {
+                transform: scale(1.06) translateY(-2px);
+            }
+            .group.is-tapped > p.font-instrument.italic.transition-colors {
+                color: #2c3434;
+            }
+            /* Resolve circles invert + scale on tap */
+            .reveal[class*="gap-6"].group.is-tapped > div:first-child {
+                background-color: #2c3434;
+                color: #f8faf9;
+                transform: scale(1.10);
+            }
+        }
+        @media (prefers-reduced-motion: reduce) {
+            .reveal[class*="p-6"].is-tapped,
+            .group.is-tapped > span.inline-block,
+            .reveal[class*="gap-6"].group.is-tapped > div:first-child { transform: none; }
+        }
     </style>
         <!-- Google tag (gtag.js) -->
 <script async src="https://www.googletagmanager.com/gtag/js?id=G-XX2TLR35NH"></script>
@@ -746,6 +779,28 @@ body {
       el.style.pointerEvents = '';
     }, 2000);
   }
+
+  // Touch parity — mirror hover feedback for ~280ms after tap on touch devices
+  (function initTouchParity() {
+    if (window.matchMedia('(hover: hover)').matches) return;
+    const targetSelector = '.reveal[class*="p-6"], .reveal[class*="gap-6"].group, .group';
+    const timers = new WeakMap();
+    document.addEventListener('touchstart', (e) => {
+      const el = e.target.closest(targetSelector);
+      if (!el) return;
+      const existing = timers.get(el);
+      if (existing) clearTimeout(existing);
+      el.classList.add('is-tapped');
+    }, { passive: true });
+    const release = (e) => {
+      const el = e.target.closest(targetSelector);
+      if (!el) return;
+      const t = setTimeout(() => el.classList.remove('is-tapped'), 280);
+      timers.set(el, t);
+    };
+    document.addEventListener('touchend', release, { passive: true });
+    document.addEventListener('touchcancel', release, { passive: true });
+  })();
 
   // Scroll reveal — subtle fade + lift, staggered per grid
   (function initScrollReveal() {
