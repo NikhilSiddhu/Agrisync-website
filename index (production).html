@@ -1,0 +1,1446 @@
+<!DOCTYPE html>
+
+<html lang="en" style="scroll-behavior: smooth;"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>AgriSync | Early Warning for Cabbage Disease</title>
+<meta name="description" content="AgriSync v0 — an early-warning system for cabbage disease on a small farm in Uttar Pradesh. One low-cost field box plus free satellite and weather data warns of rising disease risk 12 to 72 hours before it shows on the leaves."/>
+<meta name="theme-color" content="#2c3434"/>
+<link rel="canonical" href="https://agrisync.tech/"/>
+<link rel="preload" href="hero-bg.mp4" as="video" type="video/mp4" fetchpriority="high"/>
+<link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🌿</text></svg>"/>
+<!-- Open Graph -->
+<meta property="og:type" content="website"/>
+<meta property="og:url" content="https://agrisync.tech/"/>
+<meta property="og:title" content="AgriSync | Early Warning for Cabbage Disease"/>
+<meta property="og:description" content="Version 0 — a small box in one cabbage field plus free satellite and weather data, warning of disease 12 to 72 hours before you can see it."/>
+<meta property="og:image" content="https://agrisync.tech/screen.png"/>
+<!-- Twitter Card -->
+<meta name="twitter:card" content="summary_large_image"/>
+<meta name="twitter:title" content="AgriSync | Early Warning for Cabbage Disease"/>
+<meta name="twitter:description" content="Version 0 — a small box in one cabbage field plus free satellite and weather data, warning of disease 12 to 72 hours before you can see it."/>
+<meta name="twitter:image" content="https://agrisync.tech/screen.png"/>
+<link href="https://fonts.googleapis.com" rel="preconnect"/>
+<link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect"/>
+<link href="https://fonts.googleapis.com/css2?family=Barlow:ital,wght@0,400;0,500;0,600;0,700;1,400&amp;family=Instrument+Serif:ital@0;1&amp;family=Inter:wght@400;500;600&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<script id="tailwind-config">
+        tailwind.config = {
+          darkMode: "class",
+          theme: {
+            extend: {
+              "colors": {
+                      "surface-container": "#eaefee",
+                      "on-secondary-fixed": "#3b4134",
+                      "background": "#f8faf9",
+                      "on-secondary-container": "#4d5446",
+                      "outline": "#747c7c",
+                      "secondary-container": "#dee5d2",
+                      "on-tertiary-fixed-variant": "#60685e",
+                      "on-secondary-fixed-variant": "#575e4f",
+                      "on-error-container": "#752121",
+                      "outline-variant": "#abb4b3",
+                      "surface-dim": "#d2dcdb",
+                      "surface": "#f8faf9",
+                      "primary-fixed": "#e5e2e1",
+                      "on-primary-container": "#525151",
+                      "on-tertiary": "#f3fbee",
+                      "tertiary": "#596157",
+                      "error": "#9f403d",
+                      "on-primary": "#faf7f6",
+                      "secondary-fixed-dim": "#d0d7c5",
+                      "primary-dim": "#535252",
+                      "on-surface-variant": "#586160",
+                      "on-error": "#fff7f6",
+                      "inverse-primary": "#ffffff",
+                      "inverse-on-surface": "#9b9d9d",
+                      "on-background": "#2c3434",
+                      "primary": "#5f5e5e",
+                      "primary-container": "#e5e2e1",
+                      "on-primary-fixed-variant": "#5c5b5b",
+                      "surface-bright": "#f8faf9",
+                      "surface-variant": "#dce4e3",
+                      "on-primary-fixed": "#403f3f",
+                      "tertiary-fixed": "#eef6e9",
+                      "error-dim": "#4e0309",
+                      "on-surface": "#2c3434",
+                      "tertiary-container": "#eef6e9",
+                      "tertiary-fixed-dim": "#e0e8db",
+                      "on-tertiary-fixed": "#444c42",
+                      "surface-container-low": "#f1f4f3",
+                      "inverse-surface": "#0c0f0f",
+                      "secondary": "#5a6153",
+                      "surface-container-highest": "#dce4e3",
+                      "on-secondary": "#f4fce8",
+                      "secondary-dim": "#4e5547",
+                      "error-container": "#fe8983",
+                      "secondary-fixed": "#dee5d2",
+                      "on-tertiary-container": "#565e54",
+                      "surface-container-lowest": "#ffffff",
+                      "tertiary-dim": "#4d554c",
+                      "surface-container-high": "#e3e9e8",
+                      "surface-tint": "#5f5e5e",
+                      "primary-fixed-dim": "#d6d4d3"
+              },
+              "borderRadius": {
+                      "DEFAULT": "1rem",
+                      "lg": "2rem",
+                      "xl": "3rem",
+                      "full": "9999px"
+              },
+              "fontFamily": {
+                      "headline": ["Instrument Serif", "serif"],
+                      "body": ["Barlow", "sans-serif"],
+                      "label": ["Barlow", "sans-serif"]
+              }
+            },
+          },
+        }
+    </script>
+<style>
+        /* Prevent FOUC */
+body {
+    animation: fadeIn 0.8s ease-in-out forwards;
+    opacity: 0;
+}
+@keyframes fadeIn {
+    to { opacity: 1; }
+}
+
+        .glass-pill {
+    background: rgba(255, 255, 255, 0.45) !important;
+    backdrop-filter: blur(20px) !important;
+    -webkit-backdrop-filter: blur(20px) !important;
+    border: 1px solid rgba(255, 255, 255, 0.5) !important;
+    box-shadow: 0 4px 30px rgba(0, 0, 0, 0.03);
+}
+
+        /* Custom Premium Scrollbar */
+::-webkit-scrollbar {
+    width: 8px;
+}
+::-webkit-scrollbar-track {
+    background: #eaefee; /* Matches your surface-container */
+}
+::-webkit-scrollbar-thumb {
+    background: #7b8c74; /* Muted sage green */
+    border-radius: 10px;
+}
+::-webkit-scrollbar-thumb:hover {
+    background: #3b4134; /* Darkens on hover */
+}
+
+        /* Performance & Flash prevention */
+        html {
+            visibility: visible;
+            opacity: 1;
+            scroll-behavior: smooth;
+        }
+        body {
+            font-family: 'Barlow', sans-serif;
+            margin: 0;
+            padding: 0;
+            overflow-x: hidden;
+            background-color: #f8faf9;
+        }
+        .font-instrument { font-family: 'Instrument Serif', serif; }
+        .font-barlow { font-family: 'Barlow', sans-serif; }
+        .material-symbols-outlined {
+            font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+        }
+        .liquid-glass {
+            background: rgba(255, 255, 255, 0.25);
+            backdrop-filter: blur(24px);
+            -webkit-backdrop-filter: blur(24px);
+            border: 1px solid rgba(255, 255, 255, 0.4);
+        }
+
+
+
+
+
+        /* Fix whitespace issues */
+        #content-with-particles {
+            position: relative;
+            display: flex;
+            flex-direction: column;
+           /*overflow: hidden; */
+        }
+
+        footer {
+            margin-bottom: 0 !important;
+        }
+
+        /* Scroll reveal — subtle fade + lift as elements enter view */
+        .reveal {
+            opacity: 0;
+            transform: translateY(14px);
+            transition: opacity 0.7s cubic-bezier(0.22, 1, 0.36, 1),
+                        transform 0.7s cubic-bezier(0.22, 1, 0.36, 1);
+            will-change: opacity, transform;
+        }
+        .reveal.is-visible {
+            opacity: 1;
+            transform: translateY(0);
+        }
+
+        /* Hero "Explore" cue — soft opacity breathe */
+        @keyframes exploreBreath {
+            0%, 100% { opacity: 0.45; }
+            50%      { opacity: 0.85; }
+        }
+        .explore-cue {
+            animation: exploreBreath 3.2s ease-in-out infinite;
+        }
+
+        @media (prefers-reduced-motion: reduce) {
+            .reveal { opacity: 1; transform: none; transition: none; }
+            .explore-cue { animation: none; }
+        }
+
+        /* Touch parity — tap on iPad/phone reads the same as hover on desktop.
+           Gated to devices without real hover so we don't double up on hybrid laptops. */
+        @media (hover: none) and (pointer: coarse) {
+            .reveal, .group { -webkit-tap-highlight-color: transparent; }
+
+            /* Cards (pipeline, models, Banda Gobi, tech-stack) lift on tap */
+            .reveal[class*="p-6"].is-tapped {
+                transform: translateY(-4px);
+            }
+            /* Tech-stack icon glyph brightens on tap */
+            .reveal.group[class*="p-6"].is-tapped .material-symbols-outlined {
+                opacity: 1;
+            }
+            /* Stat numbers (72h / 3–7d / 4 / 1) pop on tap */
+            .group.is-tapped > span.inline-block {
+                transform: scale(1.06) translateY(-2px);
+            }
+            .group.is-tapped > p.font-instrument.italic.transition-colors {
+                color: #2c3434;
+            }
+            /* Resolve circles invert + scale on tap */
+            .reveal[class*="gap-6"].group.is-tapped > div:first-child {
+                background-color: #2c3434;
+                color: #f8faf9;
+                transform: scale(1.10);
+            }
+        }
+        @media (prefers-reduced-motion: reduce) {
+            .reveal[class*="p-6"].is-tapped,
+            .group.is-tapped > span.inline-block,
+            .reveal[class*="gap-6"].group.is-tapped > div:first-child { transform: none; }
+        }
+
+        /* ---------- Modern-minimal depth system ---------- */
+
+        /* Fine grid texture — fades out via radial mask, no perf cost */
+        .bg-grid {
+            background-image:
+                linear-gradient(rgba(44,52,52,0.045) 1px, transparent 1px),
+                linear-gradient(90deg, rgba(44,52,52,0.045) 1px, transparent 1px);
+            background-size: 56px 56px;
+            -webkit-mask-image: radial-gradient(ellipse 72% 68% at 50% 32%, #000 35%, transparent 78%);
+            mask-image: radial-gradient(ellipse 72% 68% at 50% 32%, #000 35%, transparent 78%);
+        }
+
+        /* Pointer-tilt cards — GPU transform only, driven by JS via .is-hover */
+        .card-3d {
+            transform-style: preserve-3d;
+            will-change: transform;
+            transition: transform 0.4s cubic-bezier(0.22,1,0.36,1),
+                        box-shadow 0.4s ease,
+                        border-color 0.4s ease,
+                        opacity 0.7s ease;
+        }
+        .card-3d.is-hover {
+            box-shadow: 0 28px 55px -20px rgba(20,26,26,0.34);
+            border-color: rgba(116,124,124,0.4);
+        }
+
+        /* Hero parallax layer smoothing */
+        #hero-parallax { transition: transform 0.25s cubic-bezier(0.22,1,0.36,1); will-change: transform; }
+
+        /* ---------- AI Engine: interactive 3D layered scene ---------- */
+        .scene-3d { perspective: 1100px; }
+        .scene-3d-inner {
+            position: absolute; inset: 0;
+            transform-style: preserve-3d;
+            transform: rotateX(8deg) rotateY(-9deg);
+            animation: sceneFloat 11s ease-in-out infinite;
+        }
+        @keyframes sceneFloat {
+            0%, 100% { transform: rotateX(8deg)  rotateY(-11deg); }
+            50%      { transform: rotateX(11deg) rotateY(-4deg);  }
+        }
+        .layer-3d {
+            position: absolute; left: 50%; top: 50%;
+            width: 62%; height: 41%;
+            margin: -20.5% 0 0 -31%;
+            border-radius: 1rem;
+            padding: 0.85rem 1rem;
+            display: flex; flex-direction: column; gap: 0.3rem;
+            background: rgba(255,255,255,0.07);
+            border: 1px solid rgba(255,255,255,0.16);
+            box-shadow: 0 22px 48px -18px rgba(0,0,0,0.7),
+                        inset 0 1px 0 rgba(255,255,255,0.08);
+        }
+        .layer-back  { transform: translate3d(-27%, -41%, 0);    }
+        .layer-mid   { transform: translate3d(0,     -2%,  52px); }
+        .layer-front { transform: translate3d(27%,   41%,  104px);
+                       background: rgba(255,255,255,0.1); }
+
+        @media (prefers-reduced-motion: reduce) {
+            .scene-3d-inner { animation: none; }
+            .card-3d { transform: none !important; }
+            #hero-parallax { transition: none; }
+        }
+    </style>
+        <style id="__om-no-select">
+        /* Make all text/content uncopyable + show the arrow cursor (not the text I-beam) */
+        *, *::before, *::after {
+            -webkit-user-select: none !important;
+            -moz-user-select: none !important;
+            -ms-user-select: none !important;
+            user-select: none !important;
+            cursor: default !important;
+        }
+        /* Keep the normal hand/pointer on clickable things so hover behaviour is unchanged */
+        a, button, [role="button"], [onclick], summary, label, select,
+        input[type="checkbox"], input[type="radio"], input[type="submit"], input[type="button"] {
+            cursor: pointer !important;
+        }
+        </style>
+        <style id="__ambient">
+        /* ---------- Soothing ambient system (driven by Tweaks) ---------- */
+        :root{
+            --accent: #8aa17d;          /* warm sage */
+            --accent-soft: #b7cbac;
+            --motion-scale: 0.7;        /* 0.2 calm … 1.8 lively */
+            --amb-mist: 1;
+            --amb-grain: 0;
+            --amb-cursor: 0.55;
+            --reveal-dur: 0.9s;
+        }
+        .amb-layer{ position:fixed; inset:0; pointer-events:none; }
+
+        /* Breathing mist — slow drifting accent fog behind everything */
+        #amb-mist{ z-index:0; overflow:hidden; opacity:var(--amb-mist); transition:opacity .8s ease; }
+        .amb-blob{
+            position:absolute; border-radius:50%;
+            filter:blur(120px); will-change:transform,opacity;
+        }
+        .amb-blob-1{ top:-18%; left:-12%; width:55vw; height:55vw;
+            background:var(--accent); opacity:.16;
+            animation:ambDrift1 calc(46s / var(--motion-scale)) ease-in-out infinite; }
+        .amb-blob-2{ bottom:-20%; right:-14%; width:62vw; height:62vw;
+            background:var(--accent-soft); opacity:.14;
+            animation:ambDrift2 calc(58s / var(--motion-scale)) ease-in-out infinite; }
+        .amb-blob-3{ top:30%; left:40%; width:40vw; height:40vw;
+            background:var(--accent); opacity:.08;
+            animation:ambDrift3 calc(52s / var(--motion-scale)) ease-in-out infinite; }
+        @keyframes ambDrift1{ 0%,100%{ transform:translate3d(0,0,0) scale(1); opacity:.14; }
+            50%{ transform:translate3d(8vw,6vh,0) scale(1.15); opacity:.20; } }
+        @keyframes ambDrift2{ 0%,100%{ transform:translate3d(0,0,0) scale(1.05); opacity:.12; }
+            50%{ transform:translate3d(-7vw,-5vh,0) scale(0.9); opacity:.18; } }
+        @keyframes ambDrift3{ 0%,100%{ transform:translate3d(-3vw,0,0) scale(0.95); opacity:.06; }
+            50%{ transform:translate3d(4vw,-4vh,0) scale(1.2); opacity:.12; } }
+
+        /* Cursor-follow glow — a soft pool of light that adds depth behind glass */
+        #amb-cursor{ z-index:0; opacity:var(--amb-cursor); transition:opacity .6s ease;
+            background:radial-gradient(circle 360px at var(--cx,50%) var(--cy,38%),
+                color-mix(in oklab, var(--accent) 38%, transparent), transparent 70%); }
+
+        /* Film grain — gentle texture for softness (off by default) */
+        #amb-grain{ z-index:9990; opacity:var(--amb-grain); mix-blend-mode:soft-light;
+            transition:opacity .6s ease;
+            background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='160' height='160'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='2' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.5'/%3E%3C/svg%3E");
+            background-size:160px 160px; }
+
+        /* Gentler, slower reveals (overrides the base .reveal timing) */
+        .reveal{ transition-duration: var(--reveal-dur) !important; }
+
+        /* Dark-section glass pill (for the 3D centerpiece) */
+        .pulse-pill{ background:rgba(255,255,255,0.07); backdrop-filter:blur(14px);
+            -webkit-backdrop-filter:blur(14px); border:1px solid rgba(255,255,255,0.16);
+            box-shadow:0 6px 30px rgba(0,0,0,0.25); transition:background .3s ease, transform .3s ease; }
+        .pulse-pill:hover{ background:rgba(255,255,255,0.12); transform:translateY(-2px); }
+
+        @media (prefers-reduced-motion: reduce){
+            .amb-blob{ animation:none !important; }
+        }
+        </style>
+        <style id="__futuristic">
+        /* ============ Futuristic 3D transform — floating glass slabs over a live atmosphere ============ */
+        html{ min-height:100%;
+            background:
+              radial-gradient(120% 90% at 50% 0%, #f2f6f1 0%, #e8efe8 45%, #dee7dd 100%) fixed; }
+        body.f3d{ background:transparent !important; }
+
+        /* persistent 3D atmosphere canvas — sits behind everything */
+        #bg-canvas{ position:fixed; inset:0; width:100vw; height:100vh;
+            z-index:-1; pointer-events:none; display:block; }
+
+        /* Floating slab: each major section hovers as frosted glass over the atmosphere */
+        body.f3d .slab{
+            position:relative;
+            margin:clamp(22px,4.2vh,72px) clamp(14px,3vw,60px);
+            border-radius:28px !important;
+            background:
+              linear-gradient(135deg, rgba(255,255,255,0.55), rgba(255,255,255,0) 38%),
+              radial-gradient(135% 130% at var(--mx,26%) var(--my,-12%), rgba(255,255,255,0.5), transparent 46%),
+              rgba(247,250,249,0.56) !important;
+            -webkit-backdrop-filter:blur(28px) saturate(128%);
+            backdrop-filter:blur(28px) saturate(128%);
+            border:1px solid rgba(255,255,255,0.6);
+            box-shadow:
+              0 1px 0 rgba(255,255,255,0.75) inset,
+              0 0 0 1px rgba(28,40,36,0.028),
+              0 2px 6px rgba(28,40,36,0.04),
+              0 20px 44px -24px rgba(28,40,36,0.26),
+              0 56px 100px -54px rgba(28,40,36,0.46);
+            overflow:hidden;
+            transform:translateY(var(--py,0px));
+            transition:box-shadow .6s cubic-bezier(.2,.7,.2,1);
+            will-change:transform;
+        }
+        /* dark sections become deep glass */
+        body.f3d .slab.slab-dark{
+            background:
+              linear-gradient(135deg, rgba(255,255,255,0.10), rgba(255,255,255,0) 42%),
+              radial-gradient(135% 130% at var(--mx,26%) var(--my,-12%), color-mix(in oklab, var(--accent) 22%, transparent), transparent 50%),
+              rgba(23,30,28,0.58) !important;
+            border:1px solid rgba(255,255,255,0.10);
+            box-shadow:
+              0 1px 0 rgba(255,255,255,0.09) inset,
+              0 24px 54px -26px rgba(0,0,0,0.55),
+              0 70px 110px -58px rgba(0,0,0,0.66);
+        }
+        /* hairline frame + corner ticks = quiet HUD detailing */
+        body.f3d .slab::after{
+            content:""; position:absolute; inset:13px; border-radius:20px;
+            border:1px solid color-mix(in oklab, var(--accent) 30%, transparent);
+            opacity:.4; pointer-events:none;
+            -webkit-mask:
+              linear-gradient(#000,#000) top left/26px 1px no-repeat,
+              linear-gradient(#000,#000) top left/1px 26px no-repeat,
+              linear-gradient(#000,#000) top right/26px 1px no-repeat,
+              linear-gradient(#000,#000) top right/1px 26px no-repeat,
+              linear-gradient(#000,#000) bottom left/26px 1px no-repeat,
+              linear-gradient(#000,#000) bottom left/1px 26px no-repeat,
+              linear-gradient(#000,#000) bottom right/26px 1px no-repeat,
+              linear-gradient(#000,#000) bottom right/1px 26px no-repeat;
+                  mask:
+              linear-gradient(#000,#000) top left/26px 1px no-repeat,
+              linear-gradient(#000,#000) top left/1px 26px no-repeat,
+              linear-gradient(#000,#000) top right/26px 1px no-repeat,
+              linear-gradient(#000,#000) top right/1px 26px no-repeat,
+              linear-gradient(#000,#000) bottom left/26px 1px no-repeat,
+              linear-gradient(#000,#000) bottom left/1px 26px no-repeat,
+              linear-gradient(#000,#000) bottom right/26px 1px no-repeat,
+              linear-gradient(#000,#000) bottom right/1px 26px no-repeat;
+        }
+
+        /* keep the pulse centerpiece full-bleed & immersive (not slabbed) */
+        body.f3d #pulse{ margin:0 !important; border-radius:0 !important; }
+
+        /* On touch / coarse devices, drop heavy blur for stability → near-solid panels */
+        @media (hover:none) and (pointer:coarse){
+            body.f3d .slab{ -webkit-backdrop-filter:none; backdrop-filter:none;
+                background:rgba(247,250,248,0.95) !important; }
+            body.f3d .slab.slab-dark{ background:rgba(23,30,28,0.94) !important; }
+        }
+        @media (prefers-reduced-motion: reduce){
+            body.f3d .slab{ transform:none !important; }
+        }
+
+        /* Soothing first-load: the 3D canvases breathe in rather than popping */
+        #bg-canvas, #pulse-canvas{ opacity:0; transition:opacity 1.4s ease; }
+        body.assets-in #bg-canvas, body.assets-in #pulse-canvas{ opacity:1; }
+        @media (prefers-reduced-motion: reduce){
+            #bg-canvas, #pulse-canvas{ opacity:1; transition:none; }
+        }
+        </style>
+        <!-- Google tag (gtag.js) -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-XX2TLR35NH"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+
+  gtag('config', 'G-XX2TLR35NH');
+</script>
+        </head>
+<body class="f3d bg-surface text-on-surface font-inter antialiased selection:bg-primary selection:text-on-primary">
+
+        <!-- Persistent 3D atmosphere (the living data-field the whole site floats inside) -->
+        <canvas id="bg-canvas" aria-hidden="true"></canvas>
+
+        <!-- Ambient soothing layers -->
+        <div id="amb-mist" class="amb-layer" aria-hidden="true">
+            <span class="amb-blob amb-blob-1"></span>
+            <span class="amb-blob amb-blob-2"></span>
+            <span class="amb-blob amb-blob-3"></span>
+        </div>
+        <div id="amb-cursor" class="amb-layer" aria-hidden="true"></div>
+        <div id="amb-grain" class="amb-layer" aria-hidden="true"></div>
+
+        <div class="fixed inset-0 pointer-events-none z-0 overflow-hidden">
+    <div class="absolute top-[-20%] left-[-10%] w-[50%] h-[50%] rounded-full bg-primary/5 blur-[120px]"></div>
+    <div class="absolute bottom-[-10%] right-[-10%] w-[60%] h-[60%] rounded-full bg-secondary/5 blur-[150px]"></div>
+</div>
+
+
+        <!-- Header Navigation Shell -->
+<header class="fixed top-6 left-1/2 -translate-x-1/2 w-[95%] max-w-5xl z-50 flex items-center justify-between px-6 py-4 bg-white/40 backdrop-blur-xl border border-white/50 rounded-full shadow-sm">
+  <a class="flex items-center gap-2 px-3 py-1.5 rounded-full hover:bg-black/5 transition-all active:scale-95" href="#top">
+    <span class="material-symbols-outlined text-stone-900" data-icon="eco">eco</span>
+    <span class="font-['Barlow'] font-bold text-xl text-stone-900">AgriSync</span>
+  </a>
+  <nav class="hidden md:flex items-center gap-8">
+    <a class="text-stone-900 font-bold hover:opacity-70 font-['Barlow'] text-xs uppercase tracking-widest transition-opacity duration-300" href="#architecture">Architecture</a>
+    <a class="text-stone-900 font-bold hover:opacity-70 font-['Barlow'] text-xs uppercase tracking-widest transition-opacity duration-300" href="#ai-engine">AI Engine</a>
+    <a class="text-stone-900 font-bold hover:opacity-70 font-['Barlow'] text-xs uppercase tracking-widest transition-opacity duration-300" href="#about">About</a>
+    <a class="text-stone-900 font-bold hover:opacity-70 font-['Barlow'] text-xs uppercase tracking-widest transition-opacity duration-300" href="#tech-stack">Stack</a>
+  </nav>
+  <div class="hidden md:flex items-center gap-2">
+    <a class="bg-white/50 backdrop-blur-md border border-white/60 text-stone-900 px-6 py-2.5 rounded-full flex items-center gap-2 font-['Barlow'] font-bold text-xs uppercase tracking-widest transition-all hover:bg-white/70 hover:scale-105 active:scale-95 shadow-sm" href="#connect">
+      Contact <span class="material-symbols-outlined text-lg rotate-45" data-icon="arrow_forward">arrow_forward</span>
+    </a>
+  </div>
+  <!-- Mobile Hamburger -->
+  <button class="md:hidden flex flex-col gap-1.5 p-2 rounded-full hover:bg-black/5 transition-all" id="menu-toggle" aria-label="Open menu" aria-expanded="false" aria-controls="mobile-menu">
+    <span class="w-5 h-0.5 bg-stone-900 transition-all duration-300" id="bar1"></span>
+    <span class="w-5 h-0.5 bg-stone-900 transition-all duration-300" id="bar2"></span>
+    <span class="w-5 h-0.5 bg-stone-900 transition-all duration-300" id="bar3"></span>
+  </button>
+</header>
+
+<!-- Mobile Menu Overlay -->
+<div class="fixed inset-0 z-40 bg-white/95 backdrop-blur-xl flex flex-col items-center justify-center gap-10 transition-all duration-300 opacity-0 pointer-events-none" id="mobile-menu">
+  <a class="font-['Barlow'] font-bold text-3xl text-stone-900 uppercase tracking-widest hover:opacity-50 transition-opacity" href="#architecture" onclick="closeMobileMenu()">Architecture</a>
+  <a class="font-['Barlow'] font-bold text-3xl text-stone-900 uppercase tracking-widest hover:opacity-50 transition-opacity" href="#ai-engine" onclick="closeMobileMenu()">AI Engine</a>
+  <a class="font-['Barlow'] font-bold text-3xl text-stone-900 uppercase tracking-widest hover:opacity-50 transition-opacity" href="#about" onclick="closeMobileMenu()">About</a>
+  <a class="font-['Barlow'] font-bold text-3xl text-stone-900 uppercase tracking-widest hover:opacity-50 transition-opacity" href="#tech-stack" onclick="closeMobileMenu()">Stack</a>
+  <a class="mt-4 bg-stone-900 text-white px-10 py-4 rounded-full font-['Barlow'] font-bold text-sm uppercase tracking-widest" href="https://dashboard.agrisync.tech" target="_blank" rel="noopener" onclick="closeMobileMenu()">Dashboard</a>
+  <a class="bg-stone-900 text-white px-10 py-4 rounded-full font-['Barlow'] font-bold text-sm uppercase tracking-widest" href="#connect" onclick="closeMobileMenu()">Contact</a>
+</div>
+
+<script>
+  const toggle = document.getElementById('menu-toggle');
+  const menu = document.getElementById('mobile-menu');
+  const bar1 = document.getElementById('bar1');
+  const bar2 = document.getElementById('bar2');
+  const bar3 = document.getElementById('bar3');
+  let open = false;
+
+  toggle.addEventListener('click', () => {
+    open = !open;
+    menu.style.opacity = open ? '1' : '0';
+    menu.style.pointerEvents = open ? 'all' : 'none';
+    toggle.setAttribute('aria-expanded', open ? 'true' : 'false');
+    toggle.setAttribute('aria-label', open ? 'Close menu' : 'Open menu');
+    bar1.style.transform = open ? 'translateY(8px) rotate(45deg)' : '';
+    bar2.style.opacity = open ? '0' : '1';
+    bar3.style.transform = open ? 'translateY(-8px) rotate(-45deg)' : '';
+  });
+
+  function closeMobileMenu() {
+    open = false;
+    menu.style.opacity = '0';
+    menu.style.pointerEvents = 'none';
+    toggle.setAttribute('aria-expanded', 'false');
+    toggle.setAttribute('aria-label', 'Open menu');
+    bar1.style.transform = '';
+    bar2.style.opacity = '1';
+    bar3.style.transform = '';
+  }
+</script>
+
+<!-- Hero Section -->
+<main class="relative flex flex-col items-center justify-center overflow-hidden h-screen min-h-[800px]" id="top">
+<video id="hero-video" muted autoplay loop playsinline webkit-playsinline preload="auto" fetchpriority="high" class="absolute inset-0 w-full h-full object-cover z-0" style="filter: brightness(0.85);"
+  oncanplay="this.play().catch(()=>{});document.getElementById('hero-fallback').style.display='none';"
+  onloadeddata="this.play().catch(()=>{});"
+  onerror="this.style.display='none';">
+  <source src="hero-bg.mp4" type="video/mp4"/>
+</video>
+<!-- Fallback gradient — visible immediately, hidden once video plays -->
+<div id="hero-fallback" class="absolute inset-0 w-full h-full z-0" style="background: linear-gradient(135deg, #2c3a2c 0%, #3b4738 50%, #1a2a1a 100%);"></div>
+<div class="relative z-10 w-full max-w-4xl px-6 pt-24 text-center" id="hero-parallax">
+<div class="mb-6 text-white">
+<h1 class="flex flex-col items-center gap-0">
+<span class="font-barlow font-bold tracking-[-2px] md:tracking-[-4px] uppercase block text-5xl md:text-7xl leading-[0.9] drop-shadow-md">The field finally</span>
+<span class="font-instrument italic leading-tight block text-[72px] md:text-[104px] -mt-2 md:-mt-4 drop-shadow-lg" style="color: #3b4738;">speaks data.</span>
+</h1>
+<p class="font-barlow font-semibold text-sm md:text-base uppercase tracking-widest text-white/80 mt-4 drop-shadow">AgriSync · Version 0 — the first scope we build</p>
+</div>
+<div class="max-w-2xl mx-auto mb-8">
+<p class="font-barlow font-medium text-lg md:text-xl leading-relaxed text-white drop-shadow-[0_2px_4px_rgba(0,0,0,0.5)]">AgriSync watches a single cabbage field in Uttar Pradesh. One cheap box in the ground, plus free satellite and weather data, spots a disease 12 to 72 hours before it shows on the leaves — so the farmer can spray in time, not too late.</p>
+</div>
+</div>
+<div class="absolute left-1/2 -translate-x-1/2 z-20" style="bottom: 18%;">
+<a class="bg-white/40 backdrop-blur-xl border border-white/50 text-white px-8 py-3.5 rounded-full inline-flex items-center gap-2 font-['Barlow'] font-bold text-xs uppercase tracking-widest transition-all hover:bg-white/55 hover:scale-105 active:scale-95 shadow-sm" href="https://dashboard.agrisync.tech" target="_blank" rel="noopener">
+  Dashboard <span class="material-symbols-outlined text-lg rotate-45" data-icon="arrow_forward">arrow_forward</span>
+</a>
+</div>
+<div class="explore-cue absolute bottom-12 left-1/2 -translate-x-1/2 flex flex-col items-center gap-2 opacity-50 text-white">
+<span class="font-barlow font-bold text-[10px] uppercase tracking-[0.2em]">Explore</span>
+<div class="w-[1px] h-12 bg-gradient-to-b from-white to-transparent"></div>
+</div>
+</main>
+<script>
+  (function ensureHeroVideoPlays() {
+    const v = document.getElementById('hero-video');
+    if (!v) return;
+    v.muted = true;
+    v.defaultMuted = true;
+    v.setAttribute('muted', '');
+    v.playsInline = true;
+    v.loop = true;
+
+    const tryPlay = () => {
+      if (!v.paused && !v.ended) return;
+      v.muted = true;
+      const p = v.play();
+      if (p && typeof p.catch === 'function') p.catch(() => {});
+    };
+
+    tryPlay();
+    ['loadedmetadata', 'loadeddata', 'canplay', 'canplaythrough'].forEach(ev =>
+      v.addEventListener(ev, tryPlay)
+    );
+    v.addEventListener('pause', () => {
+      if (!v.ended && document.visibilityState === 'visible') {
+        setTimeout(tryPlay, 100);
+      }
+    });
+    document.addEventListener('visibilitychange', () => {
+      if (!document.hidden) tryPlay();
+    });
+    window.addEventListener('focus', tryPlay);
+    window.addEventListener('pageshow', tryPlay);
+
+    const interactionEvents = ['click', 'touchstart', 'keydown', 'scroll', 'pointerdown'];
+    const onInteract = () => {
+      tryPlay();
+      if (!v.paused) {
+        interactionEvents.forEach(ev =>
+          document.removeEventListener(ev, onInteract, true)
+        );
+      }
+    };
+    interactionEvents.forEach(ev =>
+      document.addEventListener(ev, onInteract, { capture: true, passive: true })
+    );
+
+    const watchdog = setInterval(() => {
+      if (v.readyState >= 2 && v.paused && !v.ended && document.visibilityState === 'visible') {
+        tryPlay();
+      }
+    }, 1500);
+    setTimeout(() => clearInterval(watchdog), 30000);
+  })();
+</script>
+
+<!-- Global Particles Container -->
+<div class="relative">
+<!-- ============ 3D Pulse Centerpiece ============ -->
+<section id="pulse" class="relative isolate overflow-hidden" style="min-height:100svh; background:radial-gradient(135% 115% at 50% 14%, #38433f 0%, #2a3331 46%, #1d2523 100%);">
+  <canvas id="pulse-canvas" class="absolute inset-0 w-full h-full block" style="pointer-events:none;"></canvas>
+  <!-- vignette to seat the orb -->
+  <div class="absolute inset-0 pointer-events-none" style="background:radial-gradient(58% 52% at 50% 48%, transparent 38%, rgba(18,24,22,0.6) 100%);"></div>
+  <!-- top + bottom fade so it blends into the light sections above/below -->
+  <div class="absolute top-0 left-0 right-0 h-40 pointer-events-none" style="background:linear-gradient(to bottom, rgba(20,26,24,0.55), transparent);"></div>
+  <div class="absolute bottom-0 left-0 right-0 h-48 pointer-events-none" style="background:linear-gradient(to top, #1d2523, transparent);"></div>
+  <!-- legibility scrim: soft dark pool behind the headline so text stays readable over the particle cloud -->
+  <div class="absolute inset-0 pointer-events-none" style="background:radial-gradient(42% 40% at 50% 50%, rgba(15,20,18,0.62), rgba(15,20,18,0.28) 55%, transparent 72%);"></div>
+
+  <div class="relative z-10 flex flex-col items-center justify-center text-center px-6 py-32" style="min-height:100svh;">
+    <span class="reveal inline-flex items-center gap-2.5 font-barlow font-bold text-[11px] uppercase tracking-[0.35em] text-emerald-100/70 mb-8">
+      <span class="w-1.5 h-1.5 rounded-full bg-emerald-300 animate-pulse"></span> Listening · Live
+    </span>
+    <h2 class="reveal font-instrument italic text-white leading-[0.92] text-[15vw] sm:text-7xl md:text-8xl max-w-4xl" style="text-shadow:0 6px 40px rgba(0,0,0,0.45);">The field has a pulse.</h2>
+    <p class="reveal font-barlow text-base md:text-lg text-white/65 leading-relaxed max-w-xl mt-8">
+      Leaf wetness, air, sky and soil fold into one living signal. AgriSync watches it breathe — and feels the field slipping toward disease before a single spot shows on the leaf.
+    </p>
+
+    <!-- data-fusion chips (glass, matching the nav) -->
+    <div class="reveal flex flex-wrap items-center justify-center gap-3 mt-10">
+      <span class="pulse-pill flex items-center gap-2 px-5 py-2.5 rounded-full text-white/90 font-barlow font-bold text-[11px] uppercase tracking-widest">
+        <span class="material-symbols-outlined text-sm text-emerald-200/90" data-icon="sensors">sensors</span> Field box
+      </span>
+      <span class="pulse-pill flex items-center gap-2 px-5 py-2.5 rounded-full text-white/90 font-barlow font-bold text-[11px] uppercase tracking-widest">
+        <span class="material-symbols-outlined text-sm text-emerald-200/90" data-icon="satellite_alt">satellite_alt</span> Satellite
+      </span>
+      <span class="pulse-pill flex items-center gap-2 px-5 py-2.5 rounded-full text-white/90 font-barlow font-bold text-[11px] uppercase tracking-widest">
+        <span class="material-symbols-outlined text-sm text-emerald-200/90" data-icon="cloud">cloud</span> Weather
+      </span>
+    </div>
+
+    <p class="reveal font-barlow text-[11px] uppercase tracking-[0.3em] text-white/35 mt-12">One living signal · updated every day</p>
+  </div>
+</section>
+<!-- ============ /3D Pulse Centerpiece ============ -->
+<!-- The Timing Gap Section -->
+<section class="slab py-28 md:py-32 px-8 bg-surface scroll-mt-24 relative overflow-hidden" id="timing">
+<div class="absolute inset-0 bg-grid pointer-events-none" style="z-index:0"></div>
+<div class="max-w-5xl mx-auto section-content relative" style="z-index:1">
+<div class="reveal mb-16 md:mb-24 text-center flex flex-col items-center">
+<h2 class="font-barlow font-bold text-xs uppercase tracking-[0.3em] text-outline mb-6">Why Timing Is Everything</h2>
+<h3 class="font-instrument italic text-5xl md:text-6xl text-on-surface leading-tight max-w-3xl">By the time you can see it,<br class="hidden md:block"/> the spray window is half closed.</h3>
+<p class="font-barlow text-on-surface-variant leading-relaxed max-w-xl mt-6">Disease control is a race against the clock. AgriSync moves the starting line 12 to 72 hours earlier — from the day spots appear, to the days before.</p>
+</div>
+<!-- Horizontal timeline (tablet / desktop) -->
+<div class="reveal hidden sm:block">
+<div class="relative">
+<div class="absolute top-[17px] left-[16.6%] right-[16.6%] h-[2px] bg-outline-variant/30"></div>
+<div class="absolute top-[16px] left-[16.6%] w-[33.3%] h-1 bg-on-surface rounded-full"></div>
+<div class="relative grid grid-cols-3">
+<div class="flex flex-col items-center text-center px-3">
+<div class="w-9 h-9 rounded-full bg-on-surface text-surface ring-4 ring-surface flex items-center justify-center relative z-10"><span class="material-symbols-outlined text-lg" data-icon="notifications_active">notifications_active</span></div>
+<span class="font-barlow font-bold text-on-surface text-lg mt-5">12–72 h early</span>
+<span class="font-barlow text-sm text-on-surface-variant mt-1 max-w-[22ch]">AgriSync raises the risk flag — before anything shows on the leaf</span>
+</div>
+<div class="flex flex-col items-center text-center px-3">
+<div class="w-9 h-9 rounded-full bg-surface border-2 border-on-surface text-on-surface ring-4 ring-surface flex items-center justify-center relative z-10"><span class="material-symbols-outlined text-lg" data-icon="visibility">visibility</span></div>
+<span class="font-barlow font-bold text-on-surface text-lg mt-5">Symptoms appear</span>
+<span class="font-barlow text-sm text-on-surface-variant mt-1 max-w-[22ch]">The first spots become visible — when most tools begin</span>
+</div>
+<div class="flex flex-col items-center text-center px-3">
+<div class="w-9 h-9 rounded-full bg-surface border-2 border-outline-variant text-outline-variant ring-4 ring-surface flex items-center justify-center relative z-10"><span class="material-symbols-outlined text-lg" data-icon="timer_off">timer_off</span></div>
+<span class="font-barlow font-bold text-outline-variant text-lg mt-5">Too late</span>
+<span class="font-barlow text-sm text-on-surface-variant mt-1 max-w-[22ch]">The spray window is half closed and yield is already lost</span>
+</div>
+</div>
+</div>
+<p class="text-center font-barlow text-sm text-on-surface-variant max-w-2xl mx-auto mt-14">The dark span is the head start AgriSync buys you — <span class="text-on-surface font-bold">12 to 72 hours</span> to spray before the first spot ever shows.</p>
+</div>
+<!-- Vertical timeline (mobile) -->
+<div class="reveal sm:hidden">
+<ol class="relative border-l-2 border-outline-variant/30 ml-5 flex flex-col gap-10 py-2">
+<li class="relative pl-8">
+<div class="absolute -left-[19px] top-0 w-8 h-8 rounded-full bg-on-surface text-surface flex items-center justify-center"><span class="material-symbols-outlined text-base" data-icon="notifications_active">notifications_active</span></div>
+<p class="font-barlow font-bold text-on-surface text-lg leading-tight">12–72 h early</p>
+<p class="font-barlow text-sm text-on-surface-variant mt-1">AgriSync raises the risk flag — before anything shows on the leaf. <span class="text-on-surface font-bold">This is your spray window.</span></p>
+</li>
+<li class="relative pl-8">
+<div class="absolute -left-[19px] top-0 w-8 h-8 rounded-full bg-surface border-2 border-on-surface text-on-surface flex items-center justify-center"><span class="material-symbols-outlined text-base" data-icon="visibility">visibility</span></div>
+<p class="font-barlow font-bold text-on-surface text-lg leading-tight">Symptoms appear</p>
+<p class="font-barlow text-sm text-on-surface-variant mt-1">The first spots become visible — when most tools begin.</p>
+</li>
+<li class="relative pl-8">
+<div class="absolute -left-[19px] top-0 w-8 h-8 rounded-full bg-surface border-2 border-outline-variant text-outline-variant flex items-center justify-center"><span class="material-symbols-outlined text-base" data-icon="timer_off">timer_off</span></div>
+<p class="font-barlow font-bold text-outline-variant text-lg leading-tight">Too late</p>
+<p class="font-barlow text-sm text-on-surface-variant mt-1">The spray window is half closed and yield is already lost.</p>
+</li>
+</ol>
+</div>
+</div>
+</section>
+<!-- Pipeline Section -->
+<section class="slab py-32 px-8 relative bg-surface rounded-[3rem] overflow-hidden scroll-mt-24" id="architecture">
+<div class="max-w-6xl mx-auto section-content">
+<div class="reveal mb-20 flex flex-col items-center text-center">
+<h2 class="font-barlow font-bold text-xs uppercase tracking-[0.3em] text-outline mb-6">How AgriSync v0 Works</h2>
+<h3 class="font-instrument italic text-5xl md:text-6xl text-on-surface leading-tight max-w-3xl">Five simple parts. One early warning.</h3>
+</div>
+</div>
+<div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-x-8 gap-y-12 max-w-6xl mx-auto section-content">
+<div class="reveal flex flex-col gap-4 p-6 bg-surface-container-low rounded-2xl border border-outline-variant/10 card-3d">
+<span class="material-symbols-outlined text-2xl text-outline-variant" data-icon="sensors">sensors</span>
+<span class="font-barlow font-bold text-outline-variant text-sm">01 / The Field Box</span>
+<h4 class="font-barlow font-bold text-xl text-on-surface">A Small Box in the Field</h4>
+<p class="font-barlow text-sm text-on-surface-variant leading-relaxed">One cheap box sits in the field and measures what a disease needs to grow: how long the leaves stay wet, the air temperature, the humidity and the rain. It runs on a small solar panel, so it keeps working even when the power does not.</p>
+</div>
+<div class="reveal flex flex-col gap-4 p-6 bg-surface-container-low rounded-2xl border border-outline-variant/10 card-3d">
+<span class="material-symbols-outlined text-2xl text-outline-variant" data-icon="satellite_alt">satellite_alt</span>
+<span class="font-barlow font-bold text-outline-variant text-sm">02 / Satellites</span>
+<h4 class="font-barlow font-bold text-xl text-on-surface">Free Eyes in the Sky</h4>
+<p class="font-barlow text-sm text-on-surface-variant leading-relaxed">Free Sentinel-2 photos check the crop's health every 2 to 3 days, and Sentinel-1 radar sees right through monsoon clouds. Together they give a wider view of the whole field, not just the spot where the box sits.</p>
+</div>
+<div class="reveal flex flex-col gap-4 p-6 bg-surface-container-low rounded-2xl border border-outline-variant/10 card-3d">
+<span class="material-symbols-outlined text-2xl text-outline-variant" data-icon="cloud">cloud</span>
+<span class="font-barlow font-bold text-outline-variant text-sm">03 / Weather</span>
+<h4 class="font-barlow font-bold text-xl text-on-surface">Free Weather Data</h4>
+<p class="font-barlow text-sm text-on-surface-variant leading-relaxed">Free weather history and a daily forecast for that exact field, from NASA POWER, ERA5-Land and Open-Meteo. The forecast is what lets the system warn ahead of time instead of after.</p>
+</div>
+<div class="reveal flex flex-col gap-4 p-6 bg-surface-container-low rounded-2xl border border-outline-variant/10 card-3d">
+<span class="material-symbols-outlined text-2xl text-outline-variant" data-icon="developer_board">developer_board</span>
+<span class="font-barlow font-bold text-outline-variant text-sm">04 / The Computer</span>
+<h4 class="font-barlow font-bold text-xl text-on-surface">One Cheap Computer at Home</h4>
+<p class="font-barlow text-sm text-on-surface-variant leading-relaxed">A small computer at home pulls all the data together and runs the models. No cloud, no office and no big bills — it does its work quietly each day on its own.</p>
+</div>
+<div class="reveal flex flex-col gap-4 p-6 bg-surface-container-low rounded-2xl border border-outline-variant/10 card-3d">
+<span class="material-symbols-outlined text-2xl text-outline-variant" data-icon="database">database</span>
+<span class="font-barlow font-bold text-outline-variant text-sm">05 / The Record</span>
+<h4 class="font-barlow font-bold text-xl text-on-surface">The First Local Disease Record</h4>
+<p class="font-barlow text-sm text-on-surface-variant leading-relaxed">Every reading is saved in one small file on the computer. Over a season this grows into the first real record of cabbage disease for this crop and this corner of India — something no one has ever collected here.</p>
+</div>
+<div class="reveal flex flex-col gap-4 p-6 bg-on-surface text-surface rounded-2xl border border-outline-variant/10 shadow-xl card-3d">
+<span class="material-symbols-outlined text-2xl opacity-60" data-icon="monitoring">monitoring</span>
+<span class="font-barlow font-bold opacity-60 text-sm">The Output · The Warning</span>
+<h4 class="font-barlow font-bold text-2xl">A Simple Dashboard</h4>
+<p class="font-barlow text-sm opacity-80 leading-relaxed">The disease-risk warning and the season's record show up on one simple dashboard. There is no farmer app, Hindi messaging or payments in v0 — those are planned for a later version, not part of this first build.</p>
+</div>
+</div>
+</section>
+
+<!-- AI Intelligence Stack Section -->
+<section class="slab py-32 px-8 overflow-hidden bg-surface scroll-mt-24" id="ai-engine">
+<div class="max-w-6xl mx-auto section-content">
+<div class="grid grid-cols-1 lg:grid-cols-2 gap-20 items-center mb-20">
+<div class="reveal">
+<h2 class="font-barlow font-bold text-xs uppercase tracking-[0.3em] text-outline mb-6">How It Thinks · v0</h2>
+<h3 class="font-barlow font-bold text-5xl text-on-surface tracking-tighter mb-8 leading-tight">Learn healthy.<br/>Catch the change.</h3>
+<p class="font-barlow text-lg text-on-surface-variant leading-relaxed mb-12">Think of a smartwatch. It learns what your normal looks like and warns you when something drifts, before you feel sick. AgriSync does the same for a cabbage field. It learns what a healthy field looks like and quietly notices when the field starts slipping toward disease — usually before any spot shows on a leaf.</p>
+<div class="grid grid-cols-2 gap-8">
+<div class="group"><span class="font-barlow font-bold text-4xl text-on-surface inline-block transition-transform duration-500 ease-out group-hover:scale-[1.08] group-hover:-translate-y-0.5">12–72h</span><p class="font-instrument italic text-xl text-on-surface-variant transition-colors duration-300 group-hover:text-on-surface">How early it warns</p></div>
+<div class="group"><span class="font-barlow font-bold text-4xl text-on-surface inline-block transition-transform duration-500 ease-out group-hover:scale-[1.08] group-hover:-translate-y-0.5">2</span><p class="font-instrument italic text-xl text-on-surface-variant transition-colors duration-300 group-hover:text-on-surface">Diseases watched in v0</p></div>
+<div class="group"><span class="font-barlow font-bold text-4xl text-on-surface inline-block transition-transform duration-500 ease-out group-hover:scale-[1.08] group-hover:-translate-y-0.5">70–75%</span><p class="font-instrument italic text-xl text-on-surface-variant transition-colors duration-300 group-hover:text-on-surface">Target accuracy, with error bars</p></div>
+<div class="group"><span class="font-barlow font-bold text-4xl text-on-surface inline-block transition-transform duration-500 ease-out group-hover:scale-[1.08] group-hover:-translate-y-0.5">1</span><p class="font-instrument italic text-xl text-on-surface-variant transition-colors duration-300 group-hover:text-on-surface">Field where it starts</p></div>
+</div>
+</div>
+<div class="reveal relative aspect-square scene-3d rounded-3xl overflow-hidden shadow-2xl bg-on-surface" id="ai-scene">
+<div class="absolute inset-0 opacity-25 pointer-events-none">
+<div class="w-full h-full" style="background: radial-gradient(circle at 28% 18%, rgba(255,255,255,0.5), transparent 58%);"></div>
+</div>
+<div class="scene-3d-inner" id="ai-scene-inner">
+<!-- Back layer · Satellite -->
+<div class="layer-3d layer-back">
+<div class="flex items-center gap-2"><span class="material-symbols-outlined text-base text-surface/75" data-icon="satellite_alt">satellite_alt</span><span class="font-barlow font-bold text-[10px] uppercase tracking-[0.2em] text-surface/75">Satellite</span></div>
+<div class="flex flex-wrap gap-1 mt-1">
+<span class="w-1.5 h-1.5 rounded-sm bg-emerald-400/80"></span><span class="w-1.5 h-1.5 rounded-sm bg-emerald-400/50"></span><span class="w-1.5 h-1.5 rounded-sm bg-emerald-400/80"></span><span class="w-1.5 h-1.5 rounded-sm bg-emerald-400/30"></span><span class="w-1.5 h-1.5 rounded-sm bg-emerald-400/70"></span><span class="w-1.5 h-1.5 rounded-sm bg-emerald-400/80"></span>
+<span class="w-1.5 h-1.5 rounded-sm bg-emerald-400/40"></span><span class="w-1.5 h-1.5 rounded-sm bg-emerald-400/80"></span><span class="w-1.5 h-1.5 rounded-sm bg-emerald-400/60"></span><span class="w-1.5 h-1.5 rounded-sm bg-emerald-400/80"></span><span class="w-1.5 h-1.5 rounded-sm bg-emerald-400/40"></span><span class="w-1.5 h-1.5 rounded-sm bg-emerald-400/70"></span>
+</div>
+</div>
+<!-- Mid layer · Weather -->
+<div class="layer-3d layer-mid">
+<div class="flex items-center gap-2"><span class="material-symbols-outlined text-base text-surface/75" data-icon="cloud">cloud</span><span class="font-barlow font-bold text-[10px] uppercase tracking-[0.2em] text-surface/75">Weather</span></div>
+<svg viewBox="0 0 120 24" class="w-full mt-1" preserveAspectRatio="none" fill="none"><polyline points="2,16 17,11 32,15 47,7 62,13 77,6 92,12 107,5 118,10" stroke="#f8faf9" stroke-opacity="0.55" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"></polyline></svg>
+</div>
+<!-- Front layer · Disease risk -->
+<div class="layer-3d layer-front">
+<div class="flex items-center justify-between">
+<div class="flex items-center gap-2"><span class="material-symbols-outlined text-base text-surface" data-icon="show_chart">show_chart</span><span class="font-barlow font-bold text-[10px] uppercase tracking-[0.2em] text-surface">Disease risk</span></div>
+<span class="flex items-center gap-1.5"><span class="w-1.5 h-1.5 rounded-full bg-emerald-400 animate-pulse"></span><span class="font-barlow text-[9px] uppercase tracking-widest text-surface/70">Live</span></span>
+</div>
+<svg viewBox="0 0 120 30" class="w-full" preserveAspectRatio="none" fill="none"><defs><linearGradient id="riskFill" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#34d399" stop-opacity="0.3"></stop><stop offset="1" stop-color="#34d399" stop-opacity="0"></stop></linearGradient></defs><path d="M2,27 C28,26 48,24 68,16 C88,8 102,5 116,3 L116,30 L2,30 Z" fill="url(#riskFill)"></path><path d="M2,27 C28,26 48,24 68,16 C88,8 102,5 116,3" stroke="#f8faf9" stroke-width="1.5" stroke-linecap="round"></path><circle cx="116" cy="3" r="2.6" fill="#34d399"></circle></svg>
+<span class="font-barlow font-bold text-[10px] uppercase tracking-[0.15em] text-surface/80">12–72h early warning</span>
+</div>
+</div>
+</div>
+</div>
+<!-- 4 Model Cards -->
+<div class="grid grid-cols-1 md:grid-cols-2 gap-8">
+<div class="reveal flex flex-col gap-4 p-6 bg-surface-container-low rounded-2xl border border-outline-variant/10 card-3d">
+<span class="font-barlow font-bold text-outline-variant text-sm uppercase tracking-widest">Step 1 · Weather Rules</span>
+<h4 class="font-barlow font-bold text-xl text-on-surface">The Dependable Floor</h4>
+<p class="font-barlow text-sm text-on-surface-variant leading-relaxed">Plant scientists already know the weather each disease needs. AgriSync runs those proven rules against the live readings and the forecast. This works on day one with no training data — about 60 to 70% right on its own.</p>
+</div>
+<div class="reveal flex flex-col gap-4 p-6 bg-surface-container-low rounded-2xl border border-outline-variant/10 card-3d">
+<span class="font-barlow font-bold text-outline-variant text-sm uppercase tracking-widest">Step 2 · Learn Healthy</span>
+<h4 class="font-barlow font-bold text-xl text-on-surface">Spot the Drift</h4>
+<p class="font-barlow text-sm text-on-surface-variant leading-relaxed">The system learns the normal pattern of a healthy field from the box and the satellites, then flags when the live field drifts away from normal. The clever part: it never needs photos of sick plants to do this.</p>
+</div>
+<div class="reveal flex flex-col gap-4 p-6 bg-surface-container-low rounded-2xl border border-outline-variant/10 card-3d">
+<span class="font-barlow font-bold text-outline-variant text-sm uppercase tracking-widest">The Check · Is It Really Disease?</span>
+<h4 class="font-barlow font-bold text-xl text-on-surface">Drift Plus Weather</h4>
+<p class="font-barlow text-sm text-on-surface-variant leading-relaxed">A drift on its own only means "something is off" — it could just be dry or hungry soil, not disease. So the system checks the weather too. A drift that matches the disease weather is a confident warning.</p>
+</div>
+<div class="reveal flex flex-col gap-4 p-6 bg-surface-container-low rounded-2xl border border-outline-variant/10 card-3d">
+<span class="font-barlow font-bold text-outline-variant text-sm uppercase tracking-widest">The Honest Bit · How Sure</span>
+<h4 class="font-barlow font-bold text-xl text-on-surface">A Risk, Not a Promise</h4>
+<p class="font-barlow text-sm text-on-surface-variant leading-relaxed">The warning is given as a risk that rises over a day or two, with a clear margin of error — never a fake-exact "disease at 3pm". Like a smartwatch, it will sometimes raise a false alarm, and it is honest about that.</p>
+</div>
+</div>
+</div>
+</section>
+
+<!-- Built for Field Section -->
+<section class="slab bg-surface py-32 px-8 overflow-hidden">
+<div class="max-w-6xl mx-auto section-content">
+<div class="reveal text-center mb-16">
+<h2 class="font-barlow font-bold text-xs uppercase tracking-[0.3em] text-outline mb-6">Crop Intelligence</h2>
+<h3 class="font-instrument italic text-5xl md:text-7xl text-on-surface leading-tight mb-6">Built for Banda Gobi</h3>
+<p class="font-barlow font-bold text-xl text-on-surface-variant max-w-2xl mx-auto mb-4">Cabbage disease, tuned to one field on the Indo-Gangetic Plain</p>
+<p class="font-barlow text-on-surface-variant leading-relaxed max-w-2xl mx-auto">AgriSync v0 starts with the two diseases that cost a Harpur cabbage farmer the most. Two other common ones are mapped out but parked for a later version, so v0 stays small enough to actually finish.</p>
+</div>
+<div class="grid grid-cols-1 md:grid-cols-2 gap-8">
+<div class="reveal flex flex-col gap-4 p-6 bg-surface-container-low rounded-2xl border border-outline-variant/10 card-3d">
+<span class="inline-block self-start font-barlow font-bold text-[10px] uppercase tracking-widest px-3 py-1 rounded-full bg-on-surface text-surface">v0 · Watched Now</span>
+<h4 class="font-barlow font-bold text-xl text-on-surface">Alternaria Leaf Spot</h4>
+<p class="font-barlow text-sm text-on-surface-variant leading-relaxed">Brown spots with rings, like little targets. It strikes when days are warm (20–30°C), the air is very damp, and leaves stay wet for 9 hours or more. AgriSync warns 12 to 72 hours ahead.</p>
+</div>
+<div class="reveal flex flex-col gap-4 p-6 bg-surface-container-low rounded-2xl border border-outline-variant/10 card-3d">
+<span class="inline-block self-start font-barlow font-bold text-[10px] uppercase tracking-widest px-3 py-1 rounded-full bg-on-surface text-surface">v0 · Watched Now</span>
+<h4 class="font-barlow font-bold text-xl text-on-surface">Downy Mildew</h4>
+<p class="font-barlow text-sm text-on-surface-variant leading-relaxed">Yellow patches on top of the leaf, with grey fuzz underneath. It loves cool nights (8–16°C), damp air and morning fog. The worst risk is in October and November.</p>
+</div>
+<div class="reveal flex flex-col gap-4 p-6 bg-surface-container-low rounded-2xl border border-outline-variant/10 card-3d">
+<span class="inline-block self-start font-barlow font-bold text-[10px] uppercase tracking-widest px-3 py-1 rounded-full border border-outline-variant/40 text-outline-variant">Later version</span>
+<h4 class="font-barlow font-bold text-xl text-on-surface">Black Rot</h4>
+<p class="font-barlow text-sm text-on-surface-variant leading-relaxed">Yellow V-shapes at the leaf edge that turn black. It spreads in warm, wet weather. Already mapped out, but saved for a later version to keep v0 small.</p>
+</div>
+<div class="reveal flex flex-col gap-4 p-6 bg-surface-container-low rounded-2xl border border-outline-variant/10 card-3d">
+<span class="inline-block self-start font-barlow font-bold text-[10px] uppercase tracking-widest px-3 py-1 rounded-full border border-outline-variant/40 text-outline-variant">Later version</span>
+<h4 class="font-barlow font-bold text-xl text-on-surface">Soft Rot</h4>
+<p class="font-barlow text-sm text-on-surface-variant leading-relaxed">Mushy, smelly rot that comes with waterlogged soil and in storage. The fix is better drainage and harvest timing. Saved for a later version.</p>
+</div>
+</div>
+</section>
+
+<!-- The Gap / Competitive Section -->
+<section class="slab bg-surface py-32 px-8 overflow-hidden scroll-mt-24 relative" id="gap">
+<div class="absolute inset-0 bg-grid pointer-events-none" style="z-index:0"></div>
+<div class="max-w-5xl mx-auto section-content relative" style="z-index:1">
+<div class="reveal text-center mb-16 flex flex-col items-center">
+<h2 class="font-barlow font-bold text-xs uppercase tracking-[0.3em] text-outline mb-6">The Gap</h2>
+<h3 class="font-instrument italic text-5xl md:text-7xl text-on-surface leading-tight">Everyone else looks back.<br/>AgriSync looks ahead.</h3>
+<p class="font-barlow text-on-surface-variant leading-relaxed max-w-2xl mt-6">Plenty of tools touch this problem. None combine pre-symptom prediction, one crop, one microclimate, and cheap shared hardware for a smallholder. That farmer sits below the economic radar of the big players — and that gap is the opening.</p>
+</div>
+<div class="reveal rounded-3xl border border-outline-variant/15 overflow-hidden">
+<div class="hidden md:grid grid-cols-12 gap-6 px-8 py-5 bg-surface-container-high/70">
+<span class="col-span-4 font-barlow font-bold text-[11px] uppercase tracking-[0.2em] text-outline">The approach</span>
+<span class="col-span-4 font-barlow font-bold text-[11px] uppercase tracking-[0.2em] text-outline">What it does</span>
+<span class="col-span-4 font-barlow font-bold text-[11px] uppercase tracking-[0.2em] text-outline">Where it falls short</span>
+</div>
+<div class="divide-y divide-outline-variant/15">
+<div class="grid grid-cols-1 md:grid-cols-12 gap-2 md:gap-6 px-6 md:px-8 py-6 bg-surface-container-low/40">
+<div class="md:col-span-4"><p class="font-barlow font-bold text-on-surface">Per-plot hardware</p><p class="font-barlow text-xs text-outline-variant">Fasal, Fyllo</p></div>
+<p class="md:col-span-4 font-barlow text-sm text-on-surface-variant">Accurate sensors on every plot</p>
+<p class="md:col-span-4 font-barlow text-sm text-on-surface-variant">Costs tens of thousands per plot; tuned for vineyards and orchards, not a quarter-acre cabbage field</p>
+</div>
+<div class="grid grid-cols-1 md:grid-cols-12 gap-2 md:gap-6 px-6 md:px-8 py-6 bg-surface-container-low/40">
+<div class="md:col-span-4"><p class="font-barlow font-bold text-on-surface">Satellite platforms</p><p class="font-barlow text-xs text-outline-variant">Cropin, Satsure, Farmonaut</p></div>
+<p class="md:col-span-4 font-barlow text-sm text-on-surface-variant">Cheap satellite data sold to large buyers</p>
+<p class="md:col-span-4 font-barlow text-sm text-on-surface-variant">Generic across crops; the farmer is a data point, not a user</p>
+</div>
+<div class="grid grid-cols-1 md:grid-cols-12 gap-2 md:gap-6 px-6 md:px-8 py-6 bg-surface-container-low/40">
+<div class="md:col-span-4"><p class="font-barlow font-bold text-on-surface">Hyperspectral imagery</p><p class="font-barlow text-xs text-outline-variant">Pixxel</p></div>
+<p class="md:col-span-4 font-barlow text-sm text-on-surface-variant">High-detail imagery from space</p>
+<p class="md:col-span-4 font-barlow text-sm text-on-surface-variant">Sells pixels, not decisions</p>
+</div>
+<div class="grid grid-cols-1 md:grid-cols-12 gap-2 md:gap-6 px-6 md:px-8 py-6 bg-surface-container-low/40">
+<div class="md:col-span-4"><p class="font-barlow font-bold text-on-surface">Photo diagnosis</p><p class="font-barlow text-xs text-outline-variant">Plantix</p></div>
+<p class="md:col-span-4 font-barlow text-sm text-on-surface-variant">Identifies disease from a leaf photo</p>
+<p class="md:col-span-4 font-barlow text-sm text-on-surface-variant">Reactive — only works once the symptom is already visible</p>
+</div>
+<div class="grid grid-cols-1 md:grid-cols-12 gap-2 md:gap-6 px-6 md:px-8 py-6 bg-surface-container-low/40">
+<div class="md:col-span-4"><p class="font-barlow font-bold text-on-surface">Government extension</p><p class="font-barlow text-xs text-outline-variant">Public advisories</p></div>
+<p class="md:col-span-4 font-barlow text-sm text-on-surface-variant">Trusted, free advisories</p>
+<p class="md:col-span-4 font-barlow text-sm text-on-surface-variant">Slow, district-level and one-size-fits-all</p>
+</div>
+</div>
+</div>
+<div class="reveal mt-6 bg-on-surface text-surface rounded-3xl p-8 md:p-12 shadow-xl">
+<div class="flex flex-col md:flex-row md:items-center gap-8">
+<div class="flex items-center gap-4 md:w-1/3 shrink-0">
+<div class="w-12 h-12 rounded-2xl bg-surface/10 flex items-center justify-center"><span class="material-symbols-outlined" data-icon="eco">eco</span></div>
+<div><p class="font-barlow font-bold text-2xl">AgriSync v0</p><p class="font-barlow text-xs uppercase tracking-widest opacity-60">Predict, don’t react</p></div>
+</div>
+<div class="flex-1 grid grid-cols-1 sm:grid-cols-2 gap-x-8 gap-y-3">
+<div class="flex items-start gap-2"><span class="material-symbols-outlined text-base opacity-70 mt-0.5" data-icon="check">check</span><span class="font-barlow text-sm opacity-90">Predicts before symptoms appear</span></div>
+<div class="flex items-start gap-2"><span class="material-symbols-outlined text-base opacity-70 mt-0.5" data-icon="check">check</span><span class="font-barlow text-sm opacity-90">One crop, one microclimate</span></div>
+<div class="flex items-start gap-2"><span class="material-symbols-outlined text-base opacity-70 mt-0.5" data-icon="check">check</span><span class="font-barlow text-sm opacity-90">One shared low-cost box per cluster</span></div>
+<div class="flex items-start gap-2"><span class="material-symbols-outlined text-base opacity-70 mt-0.5" data-icon="check">check</span><span class="font-barlow text-sm opacity-90">Farmer-first, not corporate-first</span></div>
+</div>
+</div>
+<p class="font-barlow text-sm italic opacity-60 leading-relaxed mt-8 pt-6 border-t border-white/10">Honest caveat: pre-symptom prediction already exists in hyperspectral lab and greenhouse research. What does not exist is a deployed product doing it for smallholders with one crop, one microclimate and cheap hardware. The honest claim is “no deployed smallholder product does this,” not “nobody has ever tried it.”</p>
+</div>
+</div>
+</section>
+
+<!-- Why It Matters Section / Solo Resolve Story -->
+<section class="slab bg-surface py-32 px-8 overflow-hidden scroll-mt-24" id="about">
+<div class="max-w-6xl mx-auto section-content">
+<div class="reveal text-center mb-24">
+<h2 class="font-barlow font-bold text-xs uppercase tracking-[0.3em] text-outline mb-6">The Resolve</h2>
+<h3 class="font-instrument italic text-5xl md:text-7xl text-on-surface leading-tight">Built from one village field,<br/>built honestly.</h3>
+</div>
+<div class="grid grid-cols-1 md:grid-cols-3 gap-12">
+<div class="reveal flex flex-col gap-6 group">
+<div class="w-16 h-16 rounded-full bg-on-surface/5 border border-on-surface/10 flex items-center justify-center transition-all duration-300 group-hover:bg-on-surface group-hover:scale-110 shadow-sm group-hover:shadow-lg text-on-surface group-hover:text-surface">
+<span class="material-symbols-outlined" data-icon="cottage">cottage</span>
+</div>
+<h4 class="font-barlow font-bold text-2xl text-on-surface">Tuned to One Real Field</h4>
+<p class="font-barlow text-on-surface-variant leading-relaxed">Built for one real cabbage field in Harpur, eastern Uttar Pradesh. Every weather rule and disease window is tuned for that farmer's field and his neighbours, not a generic crop.</p>
+</div>
+<div class="reveal flex flex-col gap-6 group">
+<div class="w-16 h-16 rounded-full bg-on-surface/5 border border-on-surface/10 flex items-center justify-center transition-all duration-300 group-hover:bg-on-surface group-hover:scale-110 shadow-sm group-hover:shadow-lg text-on-surface group-hover:text-surface">
+<span class="material-symbols-outlined" data-icon="language">language</span>
+</div>
+<h4 class="font-barlow font-bold text-2xl text-on-surface">The Real Prize Is the Record</h4>
+<p class="font-barlow text-on-surface-variant leading-relaxed">The biggest result is not the prediction — it is the record. AgriSync is building the first-ever local record of cabbage disease for this crop and region. That record simply does not exist anywhere today.</p>
+</div>
+<div class="reveal flex flex-col gap-6 group">
+<div class="w-16 h-16 rounded-full bg-on-surface/5 border border-on-surface/10 flex items-center justify-center transition-all duration-300 group-hover:bg-on-surface group-hover:scale-110 shadow-sm group-hover:shadow-lg text-on-surface group-hover:text-surface">
+<span class="material-symbols-outlined" data-icon="handshake">handshake</span>
+</div>
+<h4 class="font-barlow font-bold text-2xl text-on-surface">Honest, Not Hyped</h4>
+<p class="font-barlow text-on-surface-variant leading-relaxed">The satellite images, weather and tools are all free or open. v0 keeps its promises small and clear: it will sometimes raise a false alarm, and every weak point has a backup plan written down.</p>
+</div>
+</div>
+</div>
+</section>
+
+<!-- Solo Engineering Section -->
+<section class="slab bg-background py-32 px-8 border-t border-outline-variant/10">
+<div class="max-w-6xl mx-auto section-content">
+<div class="grid grid-cols-1 lg:grid-cols-2 gap-16 items-center">
+<div class="reveal relative order-2 lg:order-1">
+<div class="aspect-[4/3] bg-surface-container rounded-3xl border border-outline-variant/20 shadow-2xl overflow-hidden flex flex-col justify-center gap-1 p-8 md:p-10">
+<div class="flex items-center gap-4">
+<div class="w-12 h-12 shrink-0 rounded-2xl bg-on-surface text-surface flex items-center justify-center"><span class="material-symbols-outlined" data-icon="sensors">sensors</span></div>
+<div><p class="font-barlow font-bold text-on-surface leading-tight">In the field</p><p class="font-barlow text-xs text-on-surface-variant">Solar box · leaf wetness, temperature, humidity, rain</p></div>
+</div>
+<div class="w-px h-6 bg-outline-variant/40 ml-6 my-1"></div>
+<div class="flex items-center gap-4">
+<div class="w-12 h-12 shrink-0 rounded-2xl bg-on-surface text-surface flex items-center justify-center"><span class="material-symbols-outlined" data-icon="developer_board">developer_board</span></div>
+<div><p class="font-barlow font-bold text-on-surface leading-tight">At home</p><p class="font-barlow text-xs text-on-surface-variant">One Raspberry Pi 5 pulls the data and runs the models</p></div>
+</div>
+<div class="w-px h-6 bg-outline-variant/40 ml-6 my-1"></div>
+<div class="flex items-center gap-4">
+<div class="w-12 h-12 shrink-0 rounded-2xl bg-on-surface text-surface flex items-center justify-center"><span class="material-symbols-outlined" data-icon="monitoring">monitoring</span></div>
+<div><p class="font-barlow font-bold text-on-surface leading-tight">The output</p><p class="font-barlow text-xs text-on-surface-variant">One simple dashboard · risk curve and season record</p></div>
+</div>
+</div>
+<div class="absolute -top-6 -right-6 liquid-glass px-5 py-3 rounded-full shadow-lg flex items-center gap-3">
+<div class="w-2 h-2 bg-primary rounded-full animate-pulse"></div>
+<span class="font-barlow font-bold text-[10px] uppercase tracking-widest">Village Field #01</span>
+</div>
+</div>
+<div class="reveal order-1 lg:order-2">
+<h2 class="font-barlow font-bold text-5xl md:text-6xl text-on-surface leading-[0.9] mb-4">Field intelligence,</h2>
+<h3 class="font-instrument italic text-4xl md:text-5xl text-on-surface/70 mb-8">redefined.</h3>
+<div class="space-y-6 max-w-lg">
+<p class="font-barlow font-bold text-xl text-on-surface leading-snug">The whole thing runs on one small computer.</p>
+<p class="font-barlow text-on-surface-variant leading-relaxed">No cloud bills and no big setup — just free satellite data overhead, one small box in the field, and one device on the wall.</p>
+<div class="pt-8 border-t border-outline-variant/20">
+<p class="font-barlow text-sm italic text-on-surface/60 leading-relaxed">A solo project from a village in India — built first by one person, so a research university can make it rigorous and bring it to many farms.</p>
+</div>
+</div>
+</div>
+</div>
+</div>
+</section>
+
+<!-- Technology Stack Section -->
+<section class="slab slab-dark bg-on-surface text-surface py-32 px-8 rounded-[4rem] mx-4 md:mx-8 mb-8 md:mb-12 z-20 scroll-mt-24" id="tech-stack">
+<div class="max-w-6xl mx-auto section-content">
+<div class="reveal mb-20 text-center">
+<h2 class="font-barlow font-bold text-xs uppercase tracking-[0.3em] opacity-40 mb-6">Under the Hood</h2>
+<h3 class="font-barlow font-bold text-5xl tracking-tighter">The AgriSync Tech Stack</h3>
+</div>
+<div class="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-6 gap-6">
+<div class="reveal group flex flex-col items-center text-center gap-4 p-6 rounded-2xl border border-white/5 hover:border-white/20 hover:-translate-y-1 hover:bg-white/[0.02] transition-all duration-300">
+<span class="material-symbols-outlined text-4xl opacity-60 group-hover:opacity-100 transition-opacity duration-300" data-icon="developer_board">developer_board</span>
+<span class="font-barlow font-bold text-sm tracking-widest uppercase">Raspberry Pi 5</span>
+</div>
+<div class="reveal group flex flex-col items-center text-center gap-4 p-6 rounded-2xl border border-white/5 hover:border-white/20 hover:-translate-y-1 hover:bg-white/[0.02] transition-all duration-300">
+<span class="material-symbols-outlined text-4xl opacity-60 group-hover:opacity-100 transition-opacity duration-300" data-icon="terminal">terminal</span>
+<span class="font-barlow font-bold text-sm tracking-widest uppercase">Python 3.11</span>
+</div>
+<div class="reveal group flex flex-col items-center text-center gap-4 p-6 rounded-2xl border border-white/5 hover:border-white/20 hover:-translate-y-1 hover:bg-white/[0.02] transition-all duration-300">
+<span class="material-symbols-outlined text-4xl opacity-60 group-hover:opacity-100 transition-opacity duration-300" data-icon="schedule">schedule</span>
+<span class="font-barlow font-bold text-sm tracking-widest uppercase">systemd</span>
+</div>
+<div class="reveal group flex flex-col items-center text-center gap-4 p-6 rounded-2xl border border-white/5 hover:border-white/20 hover:-translate-y-1 hover:bg-white/[0.02] transition-all duration-300">
+<span class="material-symbols-outlined text-4xl opacity-60 group-hover:opacity-100 transition-opacity duration-300" data-icon="database">database</span>
+<span class="font-barlow font-bold text-sm tracking-widest uppercase">SQLite</span>
+</div>
+<div class="reveal group flex flex-col items-center text-center gap-4 p-6 rounded-2xl border border-white/5 hover:border-white/20 hover:-translate-y-1 hover:bg-white/[0.02] transition-all duration-300">
+<span class="material-symbols-outlined text-4xl opacity-60 group-hover:opacity-100 transition-opacity duration-300" data-icon="storage">storage</span>
+<span class="font-barlow font-bold text-sm tracking-widest uppercase">DuckDB</span>
+</div>
+<div class="reveal group flex flex-col items-center text-center gap-4 p-6 rounded-2xl border border-white/5 hover:border-white/20 hover:-translate-y-1 hover:bg-white/[0.02] transition-all duration-300">
+<span class="material-symbols-outlined text-4xl opacity-60 group-hover:opacity-100 transition-opacity duration-300" data-icon="api">api</span>
+<span class="font-barlow font-bold text-sm tracking-widest uppercase">Flask</span>
+</div>
+<div class="reveal group flex flex-col items-center text-center gap-4 p-6 rounded-2xl border border-white/5 hover:border-white/20 hover:-translate-y-1 hover:bg-white/[0.02] transition-all duration-300">
+<span class="material-symbols-outlined text-4xl opacity-60 group-hover:opacity-100 transition-opacity duration-300" data-icon="model_training">model_training</span>
+<span class="font-barlow font-bold text-sm tracking-widest uppercase">XGBoost</span>
+</div>
+<div class="reveal group flex flex-col items-center text-center gap-4 p-6 rounded-2xl border border-white/5 hover:border-white/20 hover:-translate-y-1 hover:bg-white/[0.02] transition-all duration-300">
+<span class="material-symbols-outlined text-4xl opacity-60 group-hover:opacity-100 transition-opacity duration-300" data-icon="public">public</span>
+<span class="font-barlow font-bold text-sm tracking-widest uppercase">ERA5-Land</span>
+</div>
+<div class="reveal group flex flex-col items-center text-center gap-4 p-6 rounded-2xl border border-white/5 hover:border-white/20 hover:-translate-y-1 hover:bg-white/[0.02] transition-all duration-300">
+<span class="material-symbols-outlined text-4xl opacity-60 group-hover:opacity-100 transition-opacity duration-300" data-icon="satellite_alt">satellite_alt</span>
+<span class="font-barlow font-bold text-sm tracking-widest uppercase">Sentinel-1 / 2</span>
+</div>
+<div class="reveal group flex flex-col items-center text-center gap-4 p-6 rounded-2xl border border-white/5 hover:border-white/20 hover:-translate-y-1 hover:bg-white/[0.02] transition-all duration-300">
+<span class="material-symbols-outlined text-4xl opacity-60 group-hover:opacity-100 transition-opacity duration-300" data-icon="wb_sunny">wb_sunny</span>
+<span class="font-barlow font-bold text-sm tracking-widest uppercase">NASA POWER</span>
+</div>
+<div class="reveal group flex flex-col items-center text-center gap-4 p-6 rounded-2xl border border-white/5 hover:border-white/20 hover:-translate-y-1 hover:bg-white/[0.02] transition-all duration-300">
+<span class="material-symbols-outlined text-4xl opacity-60 group-hover:opacity-100 transition-opacity duration-300" data-icon="cloud">cloud</span>
+<span class="font-barlow font-bold text-sm tracking-widest uppercase">Open-Meteo</span>
+</div>
+<div class="reveal group flex flex-col items-center text-center gap-4 p-6 rounded-2xl border border-white/5 hover:border-white/20 hover:-translate-y-1 hover:bg-white/[0.02] transition-all duration-300">
+<span class="material-symbols-outlined text-4xl opacity-60 group-hover:opacity-100 transition-opacity duration-300" data-icon="water_drop">water_drop</span>
+<span class="font-barlow font-bold text-sm tracking-widest uppercase">Leaf Wetness Sensor</span>
+</div>
+<div class="reveal group flex flex-col items-center text-center gap-4 p-6 rounded-2xl border border-white/5 hover:border-white/20 hover:-translate-y-1 hover:bg-white/[0.02] transition-all duration-300">
+<span class="material-symbols-outlined text-4xl opacity-60 group-hover:opacity-100 transition-opacity duration-300" data-icon="thermostat">thermostat</span>
+<span class="font-barlow font-bold text-sm tracking-widest uppercase">BME280 Sensor</span>
+</div>
+</div>
+<div class="mt-24 pt-24 border-t border-white/10 flex flex-col items-center text-center gap-10" id="connect">
+<div class="reveal max-w-2xl flex flex-col items-center">
+<h4 class="font-instrument italic text-4xl mb-4">Want to follow the build?</h4>
+<p class="font-barlow text-surface/60 text-base leading-relaxed mb-10 max-w-md">AgriSync v0 is being built in the open for one cabbage field this season. Get in touch if you grow cabbage, work with satellites or machine learning, or want to help prove it properly.</p>
+<div class="flex flex-col items-center gap-5">
+<a class="inline-flex bg-white text-on-surface px-10 py-4 rounded-full font-barlow font-bold text-sm uppercase tracking-widest hover:scale-105 active:scale-95 transition-all shadow-xl items-center gap-2" href="https://x.com/nikhilsiddhu_" target="_blank" rel="noopener">
+    CONNECT
+    <svg class="w-4 h-4" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24h-6.66l-5.214-6.817L4.99 21.75H1.68l7.73-8.835L1.254 2.25H8.08l4.713 6.231 5.45-6.231Zm-1.161 17.52h1.833L7.084 4.126H5.117L17.083 19.77Z"/></svg>
+</a>
+<a class="inline-flex items-center gap-2 font-barlow text-sm uppercase tracking-widest text-surface/60 hover:text-white transition-colors" href="https://www.linkedin.com/in/nikhil-siddhu-411406366" target="_blank" rel="noopener">
+    <svg class="w-4 h-4" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M20.447 20.452h-3.554v-5.569c0-1.328-.027-3.037-1.852-3.037-1.853 0-2.136 1.445-2.136 2.939v5.667H9.351V9h3.414v1.561h.046c.477-.9 1.637-1.85 3.37-1.85 3.601 0 4.267 2.37 4.267 5.455v6.286ZM5.337 7.433a2.062 2.062 0 0 1-2.063-2.065 2.064 2.064 0 1 1 2.063 2.065Zm1.782 13.019H3.555V9h3.564v11.452ZM22.225 0H1.771C.792 0 0 .774 0 1.729v20.542C0 23.227.792 24 1.771 24h20.451C23.2 24 24 23.227 24 22.271V1.729C24 .774 23.2 0 22.222 0h.003Z"/></svg>
+    Connect on LinkedIn
+</a>
+</div>
+</div>
+<div class="flex flex-col md:flex-row gap-8 items-center mt-8 opacity-60">
+<a class="font-barlow text-sm uppercase tracking-widest hover:text-white transition-colors cursor-pointer" onclick="showComingSoon(this, 'API Reference')">API Reference</a>
+<span class="hidden md:block w-1 h-1 bg-white rounded-full"></span>
+<a class="font-barlow text-sm uppercase tracking-widest hover:text-white transition-colors cursor-pointer" onclick="showComingSoon(this, 'Hardware Specs')">Hardware Specs</a>
+<span class="hidden md:block w-1 h-1 bg-white rounded-full"></span>
+<a class="font-barlow text-sm uppercase tracking-widest hover:text-white transition-colors cursor-pointer" onclick="showComingSoon(this, 'Deployment Guide')">Deployment Guide</a>
+</div>
+</div>
+</div>
+</section>
+<script>
+  function showToast(message) {
+    const existing = document.getElementById('agrisync-toast');
+    if (existing) existing.remove();
+    const toast = document.createElement('div');
+    toast.id = 'agrisync-toast';
+    toast.textContent = message;
+    toast.style.cssText = [
+      'position:fixed', 'bottom:2rem', 'left:50%', 'transform:translateX(-50%) translateY(0)',
+      'background:rgba(44,52,52,0.95)', 'color:#f8faf9',
+      'padding:0.875rem 2rem', 'border-radius:9999px',
+      'font-family:Barlow,sans-serif', 'font-weight:700',
+      'font-size:0.75rem', 'letter-spacing:0.12em', 'text-transform:uppercase',
+      'z-index:9999', 'backdrop-filter:blur(20px)',
+      'border:1px solid rgba(255,255,255,0.15)',
+      'box-shadow:0 8px 40px rgba(0,0,0,0.25)',
+      'transition:opacity 0.4s ease, transform 0.4s ease',
+      'white-space:nowrap'
+    ].join(';');
+    document.body.appendChild(toast);
+    requestAnimationFrame(() => {
+      setTimeout(() => {
+        toast.style.opacity = '0';
+        toast.style.transform = 'translateX(-50%) translateY(0.5rem)';
+        setTimeout(() => toast.remove(), 400);
+      }, 2600);
+    });
+  }
+
+  // Scroll-spy: highlight active nav link based on visible section
+  (function initScrollSpy() {
+    const sections = ['architecture', 'ai-engine', 'about', 'tech-stack'];
+    const navLinks = document.querySelectorAll('nav a[href^="#"]');
+    const activeClass = ['opacity-100', '!opacity-100'];
+
+    function getActiveSection() {
+      const scrollY = window.scrollY + 120;
+      let active = null;
+      for (const id of sections) {
+        const el = document.getElementById(id);
+        if (!el) continue;
+        const absoluteTop = el.getBoundingClientRect().top + window.scrollY;
+        if (absoluteTop <= scrollY) active = id;
+      }
+      return active;
+    }
+
+    function updateNav() {
+      const active = getActiveSection();
+      navLinks.forEach(link => {
+        const href = link.getAttribute('href').slice(1);
+        if (href === active) {
+          link.style.opacity = '1';
+          link.style.borderBottom = '2px solid currentColor';
+          link.style.paddingBottom = '2px';
+        } else {
+          link.style.opacity = '';
+          link.style.borderBottom = '';
+          link.style.paddingBottom = '';
+        }
+      });
+    }
+
+    window.addEventListener('scroll', updateNav, { passive: true });
+    updateNav();
+  })();
+
+  function showComingSoon(el, name) {
+    const original = el.innerText;
+    el.innerText = 'Coming Aug 2026';
+    el.style.opacity = '0.5';
+    el.style.pointerEvents = 'none';
+    setTimeout(() => {
+      el.innerText = original;
+      el.style.opacity = '';
+      el.style.pointerEvents = '';
+    }, 2000);
+  }
+
+  // Touch parity — mirror hover feedback for ~280ms after tap on touch devices
+  (function initTouchParity() {
+    if (window.matchMedia('(hover: hover)').matches) return;
+    const targetSelector = '.reveal[class*="p-6"], .reveal[class*="gap-6"].group, .group';
+    const timers = new WeakMap();
+    document.addEventListener('touchstart', (e) => {
+      const el = e.target.closest(targetSelector);
+      if (!el) return;
+      const existing = timers.get(el);
+      if (existing) clearTimeout(existing);
+      el.classList.add('is-tapped');
+    }, { passive: true });
+    const release = (e) => {
+      const el = e.target.closest(targetSelector);
+      if (!el) return;
+      const t = setTimeout(() => el.classList.remove('is-tapped'), 280);
+      timers.set(el, t);
+    };
+    document.addEventListener('touchend', release, { passive: true });
+    document.addEventListener('touchcancel', release, { passive: true });
+  })();
+
+  // Scroll reveal — subtle fade + lift, staggered per grid
+  (function initScrollReveal() {
+    const els = document.querySelectorAll('.reveal');
+    if (!els.length) return;
+    if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
+      els.forEach(el => el.classList.add('is-visible'));
+      return;
+    }
+    const io = new IntersectionObserver((entries) => {
+      entries.forEach(entry => {
+        if (!entry.isIntersecting) return;
+        const target = entry.target;
+        const siblings = Array.from(target.parentElement.children).filter(c => c.classList.contains('reveal'));
+        const idx = Math.max(0, siblings.indexOf(target));
+        const delay = Math.min(idx, 8) * 70;
+        target.style.transitionDelay = `${delay}ms`;
+        target.classList.add('is-visible');
+        io.unobserve(target);
+        // Clear the inline delay after entry so it doesn't carry into hover transitions
+        setTimeout(() => { target.style.transitionDelay = ''; }, delay + 900);
+      });
+    }, { threshold: 0.14, rootMargin: '0px 0px -6% 0px' });
+    els.forEach(el => io.observe(el));
+  })();
+
+  /* ---------- Pointer-tilt depth on feature cards (perf-gated) ---------- */
+  (function init3DTilt() {
+    if (!window.matchMedia('(hover: hover) and (pointer: fine)').matches) return;
+    if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) return;
+    const MAX = 6.5;
+    let cur = null, raf = null, mx = 0, my = 0;
+    function apply() {
+      raf = null;
+      if (!cur) return;
+      const rx = (-my * MAX).toFixed(2);
+      const ry = (mx * MAX).toFixed(2);
+      cur.style.transform =
+        'perspective(900px) rotateX(' + rx + 'deg) rotateY(' + ry + 'deg) translateY(-8px)';
+    }
+    function reset(el) { el.classList.remove('is-hover'); el.style.transform = ''; }
+    document.addEventListener('pointermove', (e) => {
+      const card = e.target.closest('.card-3d');
+      if (!card) { if (cur) { reset(cur); cur = null; } return; }
+      if (card !== cur) { if (cur) reset(cur); cur = card; card.classList.add('is-hover'); }
+      const r = card.getBoundingClientRect();
+      mx = (e.clientX - r.left) / r.width - 0.5;
+      my = (e.clientY - r.top) / r.height - 0.5;
+      if (!raf) raf = requestAnimationFrame(apply);
+    }, { passive: true });
+    window.addEventListener('blur', () => { if (cur) { reset(cur); cur = null; } });
+  })();
+
+  /* ---------- AI Engine 3D scene: smoothly blends idle-float ↔ pointer, no snapping ---------- */
+  (function initScene() {
+    const scene = document.getElementById('ai-scene');
+    const inner = document.getElementById('ai-scene-inner');
+    if (!scene || !inner) return;
+    if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) return;
+    const fine = window.matchMedia('(hover: hover) and (pointer: fine)').matches;
+    // Drive everything in JS so entering/leaving eases instead of toggling the CSS keyframes.
+    inner.style.animation = 'none';
+    let tx = 0, ty = 0;                 // raw pointer target (-0.5..0.5)
+    let cx = 0, cy = 0;                 // eased pointer
+    let hover = 0, hoverTarget = 0;     // 0 = idle float, 1 = follow pointer
+    if (fine) {
+      scene.addEventListener('pointermove', (e) => {
+        const r = scene.getBoundingClientRect();
+        tx = (e.clientX - r.left) / r.width - 0.5;
+        ty = (e.clientY - r.top) / r.height - 0.5;
+        hoverTarget = 1;
+      }, { passive: true });
+      scene.addEventListener('pointerleave', () => { hoverTarget = 0; });
+    }
+    let visible = true;
+    if ('IntersectionObserver' in window) {
+      new IntersectionObserver((es) => { visible = es[0].isIntersecting; }, { threshold: 0.01 }).observe(scene);
+    }
+    const t0 = performance.now();
+    function loop(now) {
+      requestAnimationFrame(loop);
+      if (!visible) return;
+      const t = (now - t0) / 1000;
+      // gentle idle float (same rest pose the pointer math resolves to → seamless blend)
+      const idleRx = 8 + Math.sin(t * 0.55) * 2.2;
+      const idleRy = -7 + Math.sin(t * 0.42) * 4.0;
+      hover += (hoverTarget - hover) * 0.05;
+      cx += (tx - cx) * 0.08;
+      cy += (ty - cy) * 0.08;
+      const ptrRx = -cy * 14 + 8;
+      const ptrRy = cx * 24 - 7;
+      const rx = idleRx * (1 - hover) + ptrRx * hover;
+      const ry = idleRy * (1 - hover) + ptrRy * hover;
+      inner.style.transform = 'rotateX(' + rx.toFixed(2) + 'deg) rotateY(' + ry.toFixed(2) + 'deg)';
+    }
+    requestAnimationFrame(loop);
+  })();
+
+  /* ---------- Hero parallax depth ---------- */
+  (function initHeroParallax() {
+    const main = document.getElementById('top');
+    const layer = document.getElementById('hero-parallax');
+    if (!main || !layer) return;
+    if (!window.matchMedia('(hover: hover) and (pointer: fine)').matches) return;
+    if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) return;
+    let raf = null, x = 0, y = 0;
+    main.addEventListener('pointermove', (e) => {
+      const r = main.getBoundingClientRect();
+      x = (e.clientX - r.left) / r.width - 0.5;
+      y = (e.clientY - r.top) / r.height - 0.5;
+      if (!raf) raf = requestAnimationFrame(() => {
+        raf = null;
+        layer.style.transform =
+          'translate3d(' + (x * 16).toFixed(1) + 'px,' + (y * 11).toFixed(1) + 'px,0)';
+      });
+    }, { passive: true });
+    main.addEventListener('pointerleave', () => { layer.style.transform = ''; });
+  })();
+</script>
+
+<!-- Footer Shell -->
+<footer class="bg-background w-full flex flex-col items-center text-center px-12 py-16 gap-10">
+    <div class="flex flex-col items-center gap-3 section-content">
+        <a class="font-['Barlow'] font-bold text-2xl text-stone-900 hover:opacity-70 transition-opacity" href="#">AgriSync</a>
+        <p class="font-['Barlow'] text-sm text-stone-500">© 2026 AgriSync. All rights reserved.</p>
+        <p class="font-['Barlow'] text-xs text-stone-400 italic">Version 0 in active development — the first scope we build, season 2026</p>
+    </div>
+
+</footer>
+</div>
+
+<!-- ===== Soothing layer: cursor glow tracking ===== -->
+<script>
+  (function initCursorGlow() {
+    if (!window.matchMedia('(hover: hover) and (pointer: fine)').matches) return;
+    var root = document.documentElement;
+    var raf = null, x = 50, y = 38;
+    window.addEventListener('pointermove', function (e) {
+      x = (e.clientX / window.innerWidth) * 100;
+      y = (e.clientY / window.innerHeight) * 100;
+      if (!raf) raf = requestAnimationFrame(function () {
+        raf = null;
+        root.style.setProperty('--cx', x.toFixed(1) + '%');
+        root.style.setProperty('--cy', y.toFixed(1) + '%');
+      });
+    }, { passive: true });
+  })();
+</script>
+
+<!-- ===== Persistent 3D atmosphere + centerpiece (Three.js) ===== -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+<script src="bg3d.js"></script>
+<script src="scene3d.js"></script>
+<script>
+  // Fade the 3D canvases in once a couple of frames have rendered (soothing first load).
+  (function fadeInAtmosphere(){
+    function reveal(){ requestAnimationFrame(function(){
+      requestAnimationFrame(function(){ document.body.classList.add('assets-in'); });
+    }); }
+    if (document.readyState === 'complete') reveal();
+    else window.addEventListener('load', reveal);
+    setTimeout(reveal, 1200); // safety fallback
+  })();
+
+  // Native scrolling — the JS wheel-hijack ("fluent scroll") was removed because it
+  // fought the browser's GPU scrolling and caused lag. The browser scrolls smoothly on its own.
+</script>
+
+<!-- ===== Slab depth parallax (subtle, bounded, stable) ===== -->
+<script>
+  (function slabParallax() {
+    return; // Disabled: scroll-coupled layout reads/transforms caused jank. Native scroll stays smooth.
+    if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) return;
+    var slabs = [].slice.call(document.querySelectorAll('.slab'));
+    if (!slabs.length) return;
+    var ticking = false;
+    function update() {
+      ticking = false;
+      var vh = window.innerHeight;
+      for (var i = 0; i < slabs.length; i++) {
+        var s = slabs[i];
+        var r = s.getBoundingClientRect();
+        if (r.bottom < -200 || r.top > vh + 200) continue; // offscreen → skip
+        // center distance from viewport middle, normalized
+        var c = (r.top + r.height / 2 - vh / 2) / vh;
+        // gentle rise as a slab approaches center; max ±10px
+        var py = Math.max(-10, Math.min(10, -c * 10));
+        s.style.setProperty('--py', py.toFixed(1) + 'px');
+      }
+    }
+    window.addEventListener('scroll', function () {
+      if (!ticking) { ticking = true; requestAnimationFrame(update); }
+    }, { passive: true });
+    window.addEventListener('resize', update);
+    update();
+  })();
+</script>
+
+<!-- ===== Slab cursor sheen (premium glass light-follow) ===== -->
+<script>
+  (function slabSheen() {
+    if (!window.matchMedia('(hover: hover) and (pointer: fine)').matches) return;
+    var raf = null, pending = null;
+    function apply() {
+      raf = null;
+      if (!pending) return;
+      var slab = pending.target.closest ? pending.target.closest('.slab') : null;
+      if (!slab) return;
+      var r = slab.getBoundingClientRect();
+      var mx = ((pending.x - r.left) / r.width) * 100;
+      var my = ((pending.y - r.top) / r.height) * 100;
+      slab.style.setProperty('--mx', mx.toFixed(1) + '%');
+      slab.style.setProperty('--my', my.toFixed(1) + '%');
+    }
+    document.addEventListener('pointermove', function (e) {
+      pending = { target: e.target, x: e.clientX, y: e.clientY };
+      if (!raf) raf = requestAnimationFrame(apply);
+    }, { passive: true });
+  })();
+</script>
+
+<!-- ===== Production defaults (replaces the Tweaks panel: keeps centerpiece on particles-only) ===== -->
+<script>
+  (function applyProductionDefaults(){
+    var n = 0;
+    var id = setInterval(function(){
+      if (window.AgriPulse) { window.AgriPulse.update({ style: 'particles' }); clearInterval(id); }
+      if (++n > 50) clearInterval(id);
+    }, 120);
+  })();
+</script>
+</body>
+</html>
