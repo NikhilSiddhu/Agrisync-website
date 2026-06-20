@@ -1,0 +1,808 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1"/>
+<title>AgriSync | The field finally speaks data</title>
+<meta name="description" content="AgriSync is an early-warning system for cabbage disease on a smallholder farm in Harpur, Uttar Pradesh. A field sensor box plus free satellite and weather data, read on one Raspberry Pi, flags disease risk 12–72 hours before symptoms show."/>
+<meta name="theme-color" content="#f4f2ec"/>
+<link rel="canonical" href="https://agrisync.tech/"/>
+<link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='%233f5e39'><path d='M6.05 8.05c-2.73 2.73-2.73 7.15-.02 9.88 1.47-3.4 4.09-6.24 7.36-7.93-2.77 2.34-4.71 5.61-5.39 9.32 2.6 1.23 5.8.78 7.95-1.37C19.43 14.47 20 4 20 4S9.53 4.57 6.05 8.05z'/></svg>"/>
+
+<!-- Open Graph -->
+<meta property="og:type" content="website"/>
+<meta property="og:url" content="https://agrisync.tech/"/>
+<meta property="og:title" content="AgriSync | The field finally speaks data"/>
+<meta property="og:description" content="An early-warning system for cabbage disease. A field sensor box plus free satellite and weather data on one Raspberry Pi — a 12–72 hour disease-risk warning, before symptoms show."/>
+<meta property="og:image" content="https://agrisync.tech/screen.png"/>
+<!-- Twitter -->
+<meta name="twitter:card" content="summary_large_image"/>
+<meta name="twitter:title" content="AgriSync | The field finally speaks data"/>
+<meta name="twitter:description" content="An early-warning system for cabbage disease. A field sensor box plus free satellite and weather data on one Raspberry Pi — a 12–72 hour disease-risk warning, before symptoms show."/>
+<meta name="twitter:image" content="https://agrisync.tech/screen.png"/>
+
+<link rel="preconnect" href="https://fonts.googleapis.com"/>
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin/>
+<link href="https://fonts.googleapis.com/css2?family=Instrument+Serif:ital@0;1&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet"/>
+
+<style>
+  :root{
+    --paper:#f4f2ec;
+    --card:#fbfaf6;
+    --line:#e4e1d6;
+    --ink:#20271f;
+    --ink-soft:#5f655a;
+    --green:#3f5e39;
+    --green-deep:#26331f;
+    --moss:#5c7340;
+    --forest:#3b4738;
+    --r:18px;
+    --maxw:1080px;
+    --shadow:0 1px 2px rgba(30,40,25,.04), 0 14px 34px rgba(30,40,25,.06);
+  }
+
+  *{box-sizing:border-box;}
+  html{scroll-behavior:smooth;-webkit-text-size-adjust:100%;}
+  body{
+    margin:0;
+    font-family:'Inter',system-ui,-apple-system,Segoe UI,Roboto,sans-serif;
+    color:var(--ink);
+    background:var(--paper);
+    font-size:1.0625rem;
+    line-height:1.7;
+    -webkit-font-smoothing:antialiased;
+    text-rendering:optimizeLegibility;
+    overflow-x:hidden;
+    cursor:default;
+  }
+  @media (prefers-reduced-motion:no-preference){
+    body{animation:fadeIn .6s ease both;}
+  }
+  @keyframes fadeIn{from{opacity:0}to{opacity:1}}
+  /* Soft, fixed depth layer — premium, costs nothing on scroll */
+  body::before{content:"";position:fixed;inset:0;z-index:-1;pointer-events:none;
+    background:radial-gradient(100% 55% at 50% 0%, rgba(255,255,255,.55), transparent 55%);}
+
+  a{color:inherit;text-decoration:none;}
+  a,button,.btn,.hamburger,summary,[role="button"]{cursor:pointer;}
+  img,video{display:block;max-width:100%;}
+  ::selection{background:var(--green);color:#fff;}
+  :focus-visible{outline:2px solid var(--green);outline-offset:3px;border-radius:8px;}
+
+  .serif{font-family:'Instrument Serif',Georgia,serif;font-weight:400;font-style:italic;}
+  .container{width:100%;max-width:var(--maxw);margin:0 auto;padding:0 1.5rem;}
+
+  h1,h2,h3,h4{margin:0;font-weight:600;letter-spacing:-.02em;line-height:1.12;text-wrap:balance;}
+  p{margin:0;text-wrap:pretty;}
+  .eyebrow{font-size:.72rem;font-weight:600;text-transform:uppercase;letter-spacing:.18em;color:var(--green);}
+  .lede{color:var(--ink-soft);font-size:1.125rem;line-height:1.65;}
+
+  /* Buttons */
+  .btn{
+    display:inline-flex;align-items:center;gap:.5rem;
+    padding:.85rem 1.4rem;border-radius:999px;border:1px solid transparent;
+    font-size:.78rem;font-weight:600;letter-spacing:.08em;text-transform:uppercase;
+    cursor:pointer;
+    transition:transform .3s cubic-bezier(.22,1,.36,1), background .3s ease, box-shadow .3s ease, color .3s ease;
+  }
+  .btn svg{width:16px;height:16px;}
+  .btn:active{transform:scale(.96);}
+  /* Apple-style frosted glass — one material for the nav + every button */
+  .btn-glass{
+    background:rgba(255,255,255,.45);
+    -webkit-backdrop-filter:blur(20px) saturate(180%);backdrop-filter:blur(20px) saturate(180%);
+    border:1px solid rgba(255,255,255,.5);
+    color:var(--ink);
+    box-shadow:inset 0 1px 0 rgba(255,255,255,.7), inset 0 -1px 0 rgba(0,0,0,.04), 0 6px 20px rgba(30,40,25,.08);
+  }
+  .btn-glass:hover{background:rgba(255,255,255,.62);transform:translateY(-2px);box-shadow:inset 0 1px 0 rgba(255,255,255,.8), 0 12px 28px rgba(30,40,25,.12);}
+  .btn-glass svg{transition:transform .3s ease;}
+  .btn-glass:hover svg{transform:scale(1.08);}
+  /* Same glass, tuned for dark imagery (hero) */
+  .btn-glass.on-dark{
+    background:rgba(255,255,255,.16);
+    border-color:rgba(255,255,255,.4);
+    color:#fff;
+    box-shadow:inset 0 1px 0 rgba(255,255,255,.4), 0 6px 20px rgba(0,0,0,.18);
+  }
+  .btn-glass.on-dark:hover{background:rgba(255,255,255,.26);}
+  /* Dashboard / primary — darker moss-green frosted glass */
+  .btn-greenglass{
+    background:rgba(43,56,27,.7);
+    -webkit-backdrop-filter:blur(20px) saturate(180%);backdrop-filter:blur(20px) saturate(180%);
+    border:1px solid rgba(255,255,255,.2);
+    color:#fff;
+    box-shadow:inset 0 1px 0 rgba(255,255,255,.22), 0 8px 24px rgba(30,40,25,.2);
+  }
+  .btn-greenglass svg{color:#fff;}
+  .btn-greenglass:hover{background:rgba(43,56,27,.8);transform:translateY(-2px);box-shadow:inset 0 1px 0 rgba(255,255,255,.3), 0 12px 30px rgba(30,40,25,.28);}
+  /* Hero dashboard — white frosted-glass pill with a circular play ring (v1 style) */
+  .btn-hero-play{text-transform:none;letter-spacing:0;font-size:1.02rem;padding:.65rem 1.6rem .65rem .65rem;gap:.85rem;}
+  .btn-hero-play .play-ring{display:inline-flex;align-items:center;justify-content:center;width:34px;height:34px;border-radius:50%;border:2px solid rgba(32,39,31,.3);transition:border-color .3s ease;flex:none;}
+  .btn-hero-play .play-ring svg{width:13px;height:13px;color:var(--ink);margin-left:1px;}
+  .btn-hero-play:hover .play-ring{border-color:rgba(32,39,31,.6);}
+
+  /* Header */
+  .header{
+    position:fixed;top:1rem;left:50%;transform:translateX(-50%);
+    width:calc(100% - 1.5rem);max-width:var(--maxw);z-index:50;
+    display:flex;align-items:center;justify-content:space-between;
+    padding:.55rem .55rem .55rem 1.2rem;border-radius:999px;
+    background:rgba(251,250,246,.5);
+    -webkit-backdrop-filter:blur(22px) saturate(180%);backdrop-filter:blur(22px) saturate(180%);
+    border:1px solid rgba(255,255,255,.55);
+    box-shadow:inset 0 1px 0 rgba(255,255,255,.65), 0 8px 30px rgba(30,40,25,.09);
+  }
+  .brand{display:inline-flex;align-items:center;gap:.55rem;font-weight:700;font-size:1.15rem;letter-spacing:-.02em;color:var(--moss);transition:opacity .25s ease;}
+  .brand:hover{opacity:.72;}
+  .brand svg{width:22px;height:22px;color:var(--green);}
+  /* Nav brand matches the hero "speaks data." serif */
+  .header .brand{color:var(--forest);}
+  .nav{display:none;align-items:center;gap:1.6rem;}
+  .nav a{position:relative;font-size:.78rem;font-weight:500;color:var(--ink-soft);transition:color .25s ease;}
+  .nav a::after{content:"";position:absolute;left:0;right:0;bottom:-5px;height:1.5px;border-radius:2px;background:var(--green);transform:scaleX(0);transition:transform .35s cubic-bezier(.22,1,.36,1);}
+  .nav a:hover{color:var(--green);}
+  .nav a:hover::after{transform:scaleX(1);}
+  .header-cta{display:none;}
+  .header .btn{padding:.7rem 1.2rem;}
+
+  .hamburger{display:inline-flex;flex-direction:column;gap:5px;padding:.7rem;background:none;border:none;cursor:pointer;}
+  .hamburger span{display:block;width:22px;height:2px;background:var(--ink);border-radius:2px;transition:transform .3s ease,opacity .3s ease;}
+  .hamburger[aria-expanded="true"] span:nth-child(1){transform:translateY(7px) rotate(45deg);}
+  .hamburger[aria-expanded="true"] span:nth-child(2){opacity:0;}
+  .hamburger[aria-expanded="true"] span:nth-child(3){transform:translateY(-7px) rotate(-45deg);}
+
+  .mobile-menu{
+    position:fixed;inset:0;z-index:45;
+    background:rgba(244,242,236,.82);
+    -webkit-backdrop-filter:blur(28px) saturate(180%);backdrop-filter:blur(28px) saturate(180%);
+    display:flex;flex-direction:column;align-items:center;justify-content:center;gap:1.6rem;
+    opacity:0;pointer-events:none;transition:opacity .3s ease;
+  }
+  .mobile-menu.open{opacity:1;pointer-events:auto;}
+  .mobile-menu a:not(.btn){font-size:1.6rem;font-weight:600;color:var(--ink);padding:.35rem 1.4rem;border-radius:999px;transition:color .25s ease, background .25s ease;}
+  .mobile-menu a:not(.btn):hover,.mobile-menu a:not(.btn):active{color:var(--green);background:rgba(63,94,57,.08);}
+  .mobile-menu .btn{margin-top:.6rem;}
+
+  /* Hero */
+  .hero{
+    position:relative;min-height:100vh;min-height:100svh;
+    display:flex;align-items:center;justify-content:center;text-align:center;
+    overflow:hidden;color:#fff;
+  }
+  .hero-gradient{position:absolute;inset:0;z-index:0;
+    background:linear-gradient(180deg,#aebf94 0%,#7e9a63 38%,#47663d 72%,#2c4427 100%);}
+  .hero-video{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;z-index:0;opacity:0;transition:opacity 1.2s ease;filter:brightness(.85);}
+  .hero-video.is-ready{opacity:1;}
+  /* Light treatment (v1): keep the meadow bright through the middle; only anchor nav + lower text */
+  .hero-overlay{position:absolute;inset:0;z-index:1;
+    background:linear-gradient(180deg,rgba(16,24,14,.22) 0%,rgba(16,24,14,0) 34%,rgba(16,24,14,0) 58%,rgba(16,24,14,.32) 100%);}
+  .hero-inner{position:relative;z-index:2;max-width:820px;padding:7rem 1.5rem 0;}
+  .hero h1{font-weight:700;text-transform:uppercase;letter-spacing:-.02em;font-size:clamp(2.3rem,7vw,4.4rem);line-height:.94;color:#fff;text-shadow:0 2px 4px rgba(0,0,0,.4), 0 2px 24px rgba(0,0,0,.4);}
+  .hero h1 .serif{display:block;text-transform:none;font-weight:400;font-style:italic;font-size:clamp(3.4rem,11vw,6.4rem);line-height:1.02;letter-spacing:-.01em;margin-top:-.04em;color:#3b4738;text-shadow:0 1px 10px rgba(255,255,255,.28), 0 3px 20px rgba(0,0,0,.3);}
+  .hero .sub{margin:1.6rem auto 2.2rem;max-width:600px;font-size:clamp(1rem,2.4vw,1.2rem);color:rgba(255,255,255,.92);text-shadow:0 1px 10px rgba(0,0,0,.4);line-height:1.6;}
+
+  .scroll-cue{position:absolute;bottom:1.8rem;left:50%;transform:translateX(-50%);z-index:2;
+    display:flex;flex-direction:column;align-items:center;gap:.5rem;color:rgba(255,255,255,.75);
+    font-size:.62rem;font-weight:600;letter-spacing:.24em;text-transform:uppercase;}
+  .scroll-cue .line{width:1px;height:42px;background:linear-gradient(to bottom,rgba(255,255,255,.85),transparent);}
+  @media (prefers-reduced-motion:no-preference){.scroll-cue{animation:breathe 3s ease-in-out infinite;}}
+  @keyframes breathe{0%,100%{opacity:.45}50%{opacity:.95}}
+
+  /* Sections */
+  .section{padding:clamp(4.5rem,10vw,8rem) 0;}
+  section[id],#connect{scroll-margin-top:96px;}
+  .section-head{max-width:680px;margin:0 auto clamp(2.5rem,5vw,3.8rem);text-align:center;}
+  .section-head h2{font-size:clamp(1.9rem,4.4vw,3rem);margin-top:.85rem;}
+  .section-head h2 .serif{font-size:1.05em;color:var(--moss);}
+  .section-head .lede{margin-top:1rem;}
+  .section-head .eyebrow{display:inline-flex;align-items:center;gap:.65rem;}
+  .section-head .eyebrow::before,.section-head .eyebrow::after{content:"";width:22px;height:1px;background:currentColor;opacity:.45;}
+
+  /* Grid of feature steps + cards */
+  .grid{display:grid;gap:1.25rem;}
+  .grid-steps{grid-template-columns:1fr;}
+  .grid-cards{grid-template-columns:1fr;}
+
+  .step,.card{
+    background:rgba(255,255,255,.55);border:1px solid var(--line);border-radius:var(--r);padding:1.7rem;
+    box-shadow:inset 0 1px 0 rgba(255,255,255,.6);
+    transition:transform .4s cubic-bezier(.22,1,.36,1), box-shadow .4s ease, border-color .4s ease, background .4s ease;
+  }
+  .step:hover,.card:hover{transform:translateY(-5px);background:rgba(255,255,255,.8);box-shadow:0 18px 40px rgba(30,40,25,.09);border-color:rgba(63,94,57,.22);}
+  .step .top{display:flex;align-items:center;justify-content:space-between;margin-bottom:1.1rem;}
+  .step .top svg{width:24px;height:24px;color:var(--green);}
+  .step .num{font-size:.72rem;font-weight:600;letter-spacing:.16em;color:var(--ink-soft);}
+  .step h3{font-size:1.12rem;margin-bottom:.4rem;}
+  .step p{font-size:.94rem;color:var(--ink-soft);line-height:1.6;}
+
+  .card .tag{font-size:.7rem;font-weight:600;text-transform:uppercase;letter-spacing:.13em;color:var(--green);}
+  .card h3{font-size:1.2rem;margin:.55rem 0 .5rem;}
+  .card p{font-size:.94rem;color:var(--ink-soft);line-height:1.6;}
+
+  /* Stats */
+  .stats{display:grid;grid-template-columns:repeat(2,1fr);gap:1.4rem 1rem;max-width:720px;margin:0 auto clamp(2.8rem,5vw,3.8rem);text-align:center;}
+  .stat .n{display:block;font-size:clamp(2rem,6vw,3rem);font-weight:700;letter-spacing:-.03em;color:var(--ink);line-height:1;}
+  .stat .l{display:block;margin-top:.4rem;font-size:.82rem;color:var(--ink-soft);}
+  .stat{transition:transform .4s cubic-bezier(.22,1,.36,1);}
+  .stat .n{transition:color .3s ease;}
+  .stat:hover{transform:translateY(-3px);}
+  .stat:hover .n{color:var(--green);}
+
+  /* Values */
+  .values{display:grid;grid-template-columns:1fr;gap:2.2rem;}
+  .value .vic{width:48px;height:48px;border-radius:14px;background:rgba(63,94,57,.09);display:flex;align-items:center;justify-content:center;margin-bottom:1.1rem;}
+  .value .vic{transition:transform .4s cubic-bezier(.22,1,.36,1), background .3s ease;}
+  .value:hover .vic{transform:translateY(-3px) scale(1.06);background:rgba(63,94,57,.14);}
+  .value .vic svg{width:24px;height:24px;color:var(--green);}
+  .value h3{font-size:1.18rem;margin-bottom:.5rem;}
+  .value p{font-size:.95rem;color:var(--ink-soft);line-height:1.6;}
+  .build-note{margin-top:clamp(2.5rem,5vw,3.5rem);text-align:center;color:var(--ink-soft);font-size:1.05rem;}
+  .build-note .serif{color:var(--moss);font-size:1.15em;}
+
+  /* What is AgriSync — words-first intro */
+  .intro-points{display:grid;grid-template-columns:1fr;gap:1.4rem;max-width:880px;margin:clamp(2.5rem,5vw,3.5rem) auto 0;}
+  .ip{display:flex;flex-direction:column;gap:.3rem;padding-top:1.1rem;border-top:1px solid var(--line);transition:border-color .35s ease;}
+  .ip:hover{border-top-color:var(--moss);}
+  .ip-k{font-size:.98rem;font-weight:600;color:var(--moss);letter-spacing:-.01em;}
+  .ip-v{font-size:.95rem;color:var(--ink-soft);line-height:1.55;}
+  .intro-why{max-width:680px;margin:clamp(2.5rem,5vw,3.5rem) auto 0;text-align:center;font-size:1.12rem;color:var(--ink-soft);}
+  .intro-why .serif{color:var(--moss);font-size:1.12em;}
+  @media (min-width:760px){.intro-points{grid-template-columns:repeat(3,1fr);gap:2rem;}}
+
+  /* Connect — social links */
+  .connect-links{display:flex;flex-wrap:wrap;gap:.8rem;justify-content:center;}
+
+  /* Stack + Contact — light translucent glass panel */
+  .panel{
+    position:relative;overflow:hidden;
+    background:rgba(63,94,57,.12);
+    -webkit-backdrop-filter:blur(20px) saturate(180%);backdrop-filter:blur(20px) saturate(180%);
+    border:1px solid rgba(63,94,57,.18);
+    box-shadow:inset 0 1px 0 rgba(255,255,255,.5), 0 20px 50px rgba(30,40,25,.06);
+    border-radius:32px;margin:0 .75rem;
+    padding:clamp(4.5rem,9vw,7rem) 0;
+  }
+  .panel::before{content:"";position:absolute;inset:0;pointer-events:none;
+    background:radial-gradient(120% 80% at 50% 0%, rgba(255,255,255,.35), transparent 60%);}
+  .panel > .container{position:relative;z-index:1;}
+  .pills{display:flex;flex-wrap:wrap;gap:.6rem;justify-content:center;max-width:780px;margin:0 auto;}
+  .pill{font-size:.82rem;padding:.5rem 1.05rem;border-radius:999px;
+    border:1px solid rgba(63,94,57,.2);
+    background:rgba(255,255,255,.5);
+    box-shadow:inset 0 1px 0 rgba(255,255,255,.5);
+    color:var(--ink-soft);
+    transition:transform .25s ease, background .25s ease, color .25s ease, border-color .25s ease;}
+  .pill:hover{background:rgba(255,255,255,.82);color:var(--ink);transform:translateY(-2px);}
+  .connect{text-align:center;margin-top:clamp(3rem,6vw,5rem);}
+  .connect h3{font-size:clamp(1.7rem,4vw,2.6rem);color:var(--ink);}
+  .connect h3 .serif{font-size:1.05em;color:var(--green);}
+  .connect p{max-width:480px;margin:1rem auto 2rem;color:var(--ink-soft);font-size:1.02rem;}
+
+  /* Footer */
+  .footer{text-align:center;padding:3.2rem 1.5rem 3.5rem;color:var(--ink-soft);}
+  .footer .brand{justify-content:center;margin-bottom:1rem;}
+  .footer .meta{font-size:.88rem;}
+  .footer .status{font-size:.8rem;font-style:italic;color:var(--ink-soft);opacity:.85;margin-top:.3rem;}
+  .footer .archive{display:flex;flex-wrap:wrap;gap:.85rem;justify-content:center;align-items:center;margin-top:1.2rem;font-size:.68rem;text-transform:uppercase;letter-spacing:.14em;}
+  .footer .archive a{color:var(--ink-soft);transition:color .2s;}
+  .footer .archive a:hover{color:var(--ink);}
+  .footer .archive .cur{color:var(--ink);font-weight:600;}
+  .dot{width:4px;height:4px;border-radius:50%;background:var(--line);}
+
+  /* What's next — quiet roadmap note at the very bottom */
+  .whats-next{max-width:640px;margin:0 auto;padding:clamp(2.5rem,5vw,3.5rem) 1.5rem 0;text-align:center;}
+  .whats-next .wn-label{display:inline-block;font-size:.68rem;font-weight:600;text-transform:uppercase;letter-spacing:.18em;color:var(--green);margin-bottom:.5rem;}
+  .whats-next p{color:var(--ink-soft);font-size:.96rem;}
+
+  /* Reveal */
+  .reveal{opacity:0;transform:translateY(16px);
+    transition:opacity .7s cubic-bezier(.22,1,.36,1), transform .7s cubic-bezier(.22,1,.36,1);}
+  .reveal.in{opacity:1;transform:none;}
+
+  /* ── Fluidity & micro-interactions — all compositor-only (transform/opacity) ── */
+
+  /* Scroll progress — a thin "growth line" across the very top */
+  .scroll-progress{position:fixed;top:0;left:0;z-index:60;height:2px;width:100%;
+    transform:scaleX(0);transform-origin:0 50%;will-change:transform;pointer-events:none;
+    background:linear-gradient(90deg,var(--moss),var(--green));opacity:.9;}
+
+  /* Header settles to a touch more presence once you leave the hero */
+  .header{transition:padding .35s cubic-bezier(.22,1,.36,1), background .35s ease, box-shadow .35s ease;}
+  .header.scrolled{padding-top:.42rem;padding-bottom:.42rem;
+    background:rgba(251,250,246,.74);
+    box-shadow:inset 0 1px 0 rgba(255,255,255,.7), 0 12px 34px rgba(30,40,25,.14);}
+
+  /* Active section in the nav */
+  .nav a.active{color:var(--green);}
+  .nav a.active::after{transform:scaleX(1);}
+
+  /* Soft pointer-following glow on cards/steps (enabled in JS on hover devices) */
+  .card,.step{position:relative;--mx:50%;--my:50%;}
+  .card::after,.step::after{content:"";position:absolute;inset:0;border-radius:inherit;pointer-events:none;
+    background:radial-gradient(240px circle at var(--mx) var(--my), rgba(63,94,57,.12), transparent 62%);
+    opacity:0;transition:opacity .45s ease;}
+  .card:hover::after,.step:hover::after{opacity:1;}
+
+  /* Staggered hero entrance */
+  @media (prefers-reduced-motion:no-preference){
+    .hero-inner > h1,.hero-inner > .sub,.hero-inner > .btn{opacity:0;animation:heroRise .9s cubic-bezier(.22,1,.36,1) both;}
+    .hero-inner > h1{animation-delay:.15s;}
+    .hero-inner > .sub{animation-delay:.34s;}
+    .hero-inner > .btn{animation-delay:.5s;}
+  }
+  @keyframes heroRise{from{opacity:0;transform:translateY(20px);}to{opacity:1;transform:none;}}
+
+  /* Apple-style overlay scrollbar — slim, hidden until the pointer is in the page.
+     Only on hover-capable / fine-pointer devices; phones keep their native auto-hiding bar. */
+  @media (hover:hover) and (pointer:fine){
+    html{scrollbar-width:thin;scrollbar-color:rgba(63,94,57,0) transparent;transition:scrollbar-color .35s ease;}
+    html:hover,html:focus-within{scrollbar-color:rgba(63,94,57,.42) transparent;}
+    ::-webkit-scrollbar{width:13px;height:13px;}
+    ::-webkit-scrollbar-track{background:transparent;}
+    ::-webkit-scrollbar-thumb{
+      background-color:rgba(63,94,57,0);
+      border:4px solid transparent;border-radius:999px;background-clip:content-box;
+      transition:background-color .35s ease;
+    }
+    html:hover ::-webkit-scrollbar-thumb{background-color:rgba(63,94,57,.38);}
+    ::-webkit-scrollbar-thumb:hover{background-color:rgba(63,94,57,.6);}
+    ::-webkit-scrollbar-corner{background:transparent;}
+  }
+
+  /* Responsive */
+  @media (min-width:640px){
+    .grid-cards{grid-template-columns:1fr 1fr;}
+    .stats{grid-template-columns:repeat(4,1fr);}
+  }
+  @media (min-width:760px){
+    .grid-steps{grid-template-columns:1fr 1fr;}
+    .values{grid-template-columns:repeat(3,1fr);}
+  }
+  @media (min-width:980px){
+    .grid-steps{grid-template-columns:repeat(3,1fr);}
+  }
+  @media (min-width:900px){
+    .nav{display:flex;}
+    .header-cta{display:inline-flex;}
+    .hamburger{display:none;}
+    .panel{margin:0 1.5rem;}
+  }
+
+  /* Phones: lighten the frosted-glass blur so the fixed header doesn't repaint
+     expensively over the moving video/content on every scroll frame. */
+  @media (max-width:899px){
+    .header{-webkit-backdrop-filter:blur(14px);backdrop-filter:blur(14px);}
+    .btn-glass,.btn-greenglass,.btn-glass.on-dark{-webkit-backdrop-filter:blur(10px);backdrop-filter:blur(10px);}
+    .panel{-webkit-backdrop-filter:blur(12px);backdrop-filter:blur(12px);}
+    .mobile-menu{-webkit-backdrop-filter:blur(16px);backdrop-filter:blur(16px);}
+  }
+
+  @media (prefers-reduced-motion:reduce){
+    html{scroll-behavior:auto;}
+    .reveal{opacity:1;transform:none;transition:none;}
+    .hero-video{transition:none;}
+    .scroll-cue{animation:none;}
+  }
+</style>
+<noscript><style>.reveal{opacity:1;transform:none;}</style></noscript>
+
+<!-- Google tag (gtag.js) -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-XX2TLR35NH"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+  gtag('config', 'G-XX2TLR35NH');
+</script>
+</head>
+
+<body>
+
+<div class="scroll-progress" id="scroll-progress" aria-hidden="true"></div>
+
+<!-- Header -->
+<header class="header">
+  <a class="brand" href="#top" aria-label="AgriSync home">
+    <svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M6.05 8.05c-2.73 2.73-2.73 7.15-.02 9.88 1.47-3.4 4.09-6.24 7.36-7.93-2.77 2.34-4.71 5.61-5.39 9.32 2.6 1.23 5.8.78 7.95-1.37C19.43 14.47 20 4 20 4S9.53 4.57 6.05 8.05z"/></svg>
+    AgriSync
+  </a>
+  <nav class="nav" aria-label="Primary">
+    <a href="#what">Overview</a>
+    <a href="#how">How it works</a>
+    <a href="#engine">Intelligence</a>
+    <a href="#about">About</a>
+    <a href="#stack">Stack</a>
+  </nav>
+  <a class="btn btn-glass header-cta" href="#connect">Connect</a>
+  <button class="hamburger" id="menu-toggle" aria-label="Open menu" aria-expanded="false" aria-controls="mobile-menu">
+    <span></span><span></span><span></span>
+  </button>
+</header>
+
+<!-- Mobile menu -->
+<div class="mobile-menu" id="mobile-menu">
+  <a href="#what">Overview</a>
+  <a href="#how">How it works</a>
+  <a href="#engine">Intelligence</a>
+  <a href="#about">About</a>
+  <a href="#stack">Stack</a>
+  <a class="btn btn-greenglass js-dashboard-cta">Dashboard</a>
+  <a class="btn btn-glass" href="#connect">Connect</a>
+</div>
+
+<!-- Hero -->
+<main id="top">
+<section class="hero">
+  <div class="hero-gradient" aria-hidden="true"></div>
+  <video class="hero-video" id="hero-video" muted playsinline loop preload="none" aria-hidden="true" tabindex="-1"></video>
+  <div class="hero-overlay" aria-hidden="true"></div>
+
+  <div class="hero-inner">
+    <h1>The field finally <span class="serif">speaks data.</span></h1>
+    <p class="sub">An early-warning system for cabbage disease. A small box in the field, plus free satellite and weather data, learns what a healthy field looks like — and flags the drift toward disease 12–72 hours before it shows on the leaf.</p>
+    <!-- Dashboard CTA — intentionally unwired for now; add href when the dashboard is ready -->
+    <a class="btn btn-glass btn-hero-play js-dashboard-cta">
+      <span class="play-ring" aria-hidden="true"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M8 5v14l11-7z"/></svg></span>
+      Dashboard
+    </a>
+  </div>
+
+  <div class="scroll-cue" aria-hidden="true">
+    <span>Explore</span>
+    <span class="line"></span>
+  </div>
+</section>
+</main>
+
+<!-- What is AgriSync -->
+<section class="section intro" id="what">
+  <div class="container">
+    <div class="section-head reveal">
+      <p class="eyebrow">What is AgriSync</p>
+      <h2>A smartwatch for the field, <span class="serif">not a diagnosis after the fact.</span></h2>
+      <p class="lede">Most tools name a disease only once it's visible on a leaf — when the spray window is already half closed. AgriSync learns what one healthy cabbage field looks like and warns as it starts to drift, 12–72 hours before the eye can catch it.</p>
+    </div>
+    <div class="intro-points reveal">
+      <div class="ip"><span class="ip-k">12–72 hours ahead</span><span class="ip-v">A rising disease-risk warning before symptoms — for Alternaria leaf spot and downy mildew.</span></div>
+      <div class="ip"><span class="ip-k">Learns healthy, flags the drift</span><span class="ip-v">It models a healthy field, so it needs no library of "sick plant" photos to raise the alarm.</span></div>
+      <div class="ip"><span class="ip-k">One field, done properly</span><span class="ip-v">Tuned to a real cabbage field in Harpur, UP — not a generic, all-crop model.</span></div>
+    </div>
+    <p class="intro-why reveal">A smallholder can lose most of a crop to disease in a single week. <span class="serif">AgriSync buys back the hours that decide the season.</span></p>
+  </div>
+</section>
+
+<!-- How it works -->
+<section class="section" id="how">
+  <div class="container">
+    <div class="section-head reveal">
+      <p class="eyebrow">How it works</p>
+      <h2>One Raspberry Pi runs the <span class="serif">whole pipeline.</span></h2>
+      <p class="lede">One box in the field, free satellite and weather data, and a small computer at home — that's the whole system. No cloud bill, no farmer hardware to buy.</p>
+    </div>
+
+    <div class="grid grid-steps">
+      <article class="step reveal">
+        <div class="top">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="1.6"/><path d="M8.5 15.5a5 5 0 0 1 0-7M15.5 8.5a5 5 0 0 1 0 7"/><path d="M6 18a9 9 0 0 1 0-12M18 6a9 9 0 0 1 0 12"/></svg>
+          <span class="num">01</span>
+        </div>
+        <h3>A box in the field</h3>
+        <p>Leaf wetness, temperature, humidity and rain — measured right at the leaf, the exact conditions a fungus needs to take hold.</p>
+      </article>
+
+      <article class="step reveal">
+        <div class="top">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="3.2"/><ellipse cx="12" cy="12" rx="10" ry="4.2" transform="rotate(-28 12 12)"/></svg>
+          <span class="num">02</span>
+        </div>
+        <h3>Free satellites</h3>
+        <p>Sentinel-2 reads crop stress from orbit; Sentinel-1 radar sees through monsoon cloud. Both free, at 10-metre resolution.</p>
+      </article>
+
+      <article class="step reveal">
+        <div class="top">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M18 10h-1.26A8 8 0 1 0 9 20h9a5 5 0 0 0 0-10z"/></svg>
+          <span class="num">03</span>
+        </div>
+        <h3>Free weather</h3>
+        <p>Decades of hourly history to learn from (ERA5-Land, NASA POWER), plus a daily forecast (Open-Meteo) that drives the warning.</p>
+      </article>
+
+      <article class="step reveal">
+        <div class="top">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="6.5" y="6.5" width="11" height="11" rx="2"/><rect x="10" y="10" width="4" height="4"/><path d="M9 3v2M15 3v2M9 19v2M15 19v2M3 9h2M3 15h2M19 9h2M19 15h2"/></svg>
+          <span class="num">04</span>
+        </div>
+        <h3>One Raspberry Pi</h3>
+        <p>A small computer at home pulls every source together and runs the models each night. No cloud, no laptop, no field servers.</p>
+      </article>
+
+      <article class="step reveal">
+        <div class="top">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 17l5-5 4 3 7-8"/><path d="M21 7v5h-5"/></svg>
+          <span class="num">05</span>
+        </div>
+        <h3>A 12–72h warning</h3>
+        <p>The output is a rising risk curve for the next one to three days — an honest window, not a false-precise single hour.</p>
+      </article>
+
+      <article class="step reveal">
+        <div class="top">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><ellipse cx="12" cy="6" rx="7" ry="3"/><path d="M5 6v12c0 1.7 3.1 3 7 3s7-1.3 7-3V6"/><path d="M5 12c0 1.7 3.1 3 7 3s7-1.3 7-3"/></svg>
+          <span class="num">06</span>
+        </div>
+        <h3>A growing dataset</h3>
+        <p>Every real outbreak is logged against the conditions that preceded it — the first local record of this crop's disease.</p>
+      </article>
+    </div>
+  </div>
+</section>
+
+<!-- Intelligence -->
+<section class="section" id="engine">
+  <div class="container">
+    <div class="section-head reveal">
+      <p class="eyebrow">Intelligence</p>
+      <h2>Two stages, <span class="serif">one honest answer.</span></h2>
+      <p class="lede">Known plant-science rules give a dependable floor from day one. A learned "healthy baseline" catches what the rules miss — and every answer comes as a calibrated range, not a fake-precise number.</p>
+    </div>
+
+    <div class="stats">
+      <div class="stat reveal"><span class="n">12–72h</span><span class="l">Warning window</span></div>
+      <div class="stat reveal"><span class="n">2</span><span class="l">Target diseases (v0)</span></div>
+      <div class="stat reveal"><span class="n">~75%</span><span class="l">Target accuracy</span></div>
+      <div class="stat reveal"><span class="n">1</span><span class="l">Field, one season</span></div>
+    </div>
+
+    <div class="grid grid-cards">
+      <article class="card reveal">
+        <span class="tag">Stage 1 · Physics</span>
+        <h3>Infection-pressure rules</h3>
+        <p>Published temperature, humidity and leaf-wetness thresholds score disease pressure live. Works on day one, no training data — a ~60–70% floor.</p>
+      </article>
+      <article class="card reveal">
+        <span class="tag">Stage 2 · Anomaly</span>
+        <h3>Learn healthy, detect the drift</h3>
+        <p>It models a healthy field across sensor and satellite signals, then flags the departure — so it needs no library of disease-labelled examples.</p>
+      </article>
+      <article class="card reveal">
+        <span class="tag">The check · Attribution</span>
+        <h3>Disease, or just stress?</h3>
+        <p>A drift alone could be drought or hunger. It's confirmed only when the weather sits in the infection window and the satellite bands agree.</p>
+      </article>
+      <article class="card reveal">
+        <span class="tag">The honesty · Uncertainty</span>
+        <h3>A calibrated risk band</h3>
+        <p>Borrowing conformal prediction from ML safety, the answer is a range with a stated error rate — never a single, falsely precise number.</p>
+      </article>
+    </div>
+  </div>
+</section>
+
+<!-- Why it matters -->
+<section class="section" id="about">
+  <div class="container">
+    <div class="section-head reveal">
+      <p class="eyebrow">Why it matters</p>
+      <h2>Built from a village, <span class="serif">designed for millions.</span></h2>
+    </div>
+
+    <div class="values">
+      <div class="value reveal">
+        <div class="vic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M20 10c0 6-8 12-8 12s-8-6-8-12a8 8 0 0 1 16 0Z"/><circle cx="12" cy="10" r="2.5"/></svg></div>
+        <h3>Hyper-local</h3>
+        <p>Every rule, threshold and healthy-baseline is tuned to one real cabbage field in Harpur, UP — not a generic, all-crop model.</p>
+      </div>
+      <div class="value reveal">
+        <div class="vic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 3 3 8l9 5 9-5-9-5Z"/><path d="m3 13 9 5 9-5"/></svg></div>
+        <h3>Built for the overlooked</h3>
+        <p>Per-plot rigs cost a fortune and target vineyards; satellite platforms sell generic data to corporates. No deployed product combines pre-symptom prediction, one crop and cheap shared hardware for a smallholder.</p>
+      </div>
+      <div class="value reveal">
+        <div class="vic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="5" y="11" width="14" height="9" rx="2"/><path d="M8 11V7a4 4 0 0 1 7.5-1.8"/></svg></div>
+        <h3>Free by design</h3>
+        <p>The satellites, the weather and the science are free or open. The farmer buys no per-plot hardware — one cheap shared box can serve a whole cluster of fields.</p>
+      </div>
+    </div>
+
+    <p class="build-note reveal">Built solo from one family's cabbage field in Harpur, on minimum resources — <span class="serif">the first dataset of its kind, made by hand.</span></p>
+  </div>
+</section>
+
+<!-- Stack + Contact -->
+<section class="panel" id="stack">
+  <div class="container">
+    <div class="section-head reveal">
+      <p class="eyebrow">Under the hood</p>
+      <h2>The AgriSync stack.</h2>
+    </div>
+
+    <div class="pills reveal">
+      <span class="pill">Raspberry Pi</span>
+      <span class="pill">Leaf-wetness sensor</span>
+      <span class="pill">BME280</span>
+      <span class="pill">Rain gauge</span>
+      <span class="pill">7-in-1 soil sensor</span>
+      <span class="pill">Sentinel-2</span>
+      <span class="pill">Sentinel-1 radar</span>
+      <span class="pill">ERA5-Land</span>
+      <span class="pill">NASA POWER</span>
+      <span class="pill">Open-Meteo</span>
+      <span class="pill">ICAR-CRIDA records</span>
+      <span class="pill">Infection-pressure models</span>
+      <span class="pill">Anomaly detection</span>
+      <span class="pill">Conformal prediction</span>
+    </div>
+
+    <div class="connect reveal" id="connect">
+      <h3>Follow <span class="serif">the build.</span></h3>
+      <p>Built in the open for one cabbage field this season. Reach out if you work on plant pathology, remote sensing or edge ML — or want this in another village.</p>
+      <div class="connect-links">
+        <a class="btn btn-glass" href="https://x.com/nikhilsiddhu_" target="_blank" rel="noopener" aria-label="Connect on X">
+          <svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-5.214-6.817L4.99 21.75H1.68l7.73-8.835L1.254 2.25H8.08l4.713 6.231zm-1.161 17.52h1.833L7.084 4.126H5.117z"/></svg>
+          
+        </a>
+        <a class="btn btn-glass" href="https://www.linkedin.com/in/nikhil-siddhu-411406366" target="_blank" rel="noopener" aria-label="Connect on LinkedIn">
+          <svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M20.45 20.45h-3.56v-5.57c0-1.33-.02-3.04-1.85-3.04-1.85 0-2.13 1.45-2.13 2.94v5.67H9.35V9h3.42v1.56h.05c.48-.9 1.64-1.85 3.37-1.85 3.6 0 4.27 2.37 4.27 5.46v6.28zM5.34 7.43a2.06 2.06 0 1 1 0-4.13 2.06 2.06 0 0 1 0 4.13zM7.12 20.45H3.56V9h3.56v11.45zM22.22 0H1.77C.8 0 0 .78 0 1.74v20.52C0 23.22.8 24 1.77 24h20.45c.98 0 1.78-.78 1.78-1.74V1.74C24 .78 23.2 0 22.22 0z"/></svg>
+          
+        </a>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- What's next -->
+<aside class="whats-next reveal">
+  <span class="wn-label">What's next</span>
+  <p>Once v0's season is done: photo diagnosis from a leaf snap, more diseases, and more fields.</p>
+</aside>
+
+<!-- Footer -->
+<footer class="footer">
+  <a class="brand" href="#top">
+    <svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true" style="color:var(--green)"><path d="M6.05 8.05c-2.73 2.73-2.73 7.15-.02 9.88 1.47-3.4 4.09-6.24 7.36-7.93-2.77 2.34-4.71 5.61-5.39 9.32 2.6 1.23 5.8.78 7.95-1.37C19.43 14.47 20 4 20 4S9.53 4.57 6.05 8.05z"/></svg>
+    AgriSync
+  </a>
+  <p class="meta">© 2026 AgriSync. All rights reserved.</p>
+  <p class="status">In active development · field deployment August 2026</p>
+  <div class="archive">
+    <span class="cur">Version 0</span>
+  </div>
+</footer>
+
+<script>
+  // Mobile menu
+  (function(){
+    var toggle = document.getElementById('menu-toggle');
+    var menu = document.getElementById('mobile-menu');
+    if(!toggle || !menu) return;
+    function setMenu(open){
+      menu.classList.toggle('open', open);
+      toggle.setAttribute('aria-expanded', open ? 'true' : 'false');
+      toggle.setAttribute('aria-label', open ? 'Close menu' : 'Open menu');
+      document.body.style.overflow = open ? 'hidden' : '';
+    }
+    toggle.addEventListener('click', function(){ setMenu(!menu.classList.contains('open')); });
+    menu.querySelectorAll('a').forEach(function(a){ a.addEventListener('click', function(){ setMenu(false); }); });
+    document.addEventListener('keydown', function(e){ if(e.key === 'Escape') setMenu(false); });
+  })();
+
+  // Progressive hero video — show gradient instantly, upgrade to video only on a good connection
+  (function(){
+    var v = document.getElementById('hero-video');
+    if(!v) return;
+    var c = navigator.connection || navigator.mozConnection || navigator.webkitConnection;
+    var slow = c && (c.saveData === true || ['slow-2g','2g','3g'].indexOf(c.effectiveType) !== -1);
+    if(slow) return; // stay on the gradient
+
+    v.muted = true; v.defaultMuted = true; v.setAttribute('muted','');
+    v.playsInline = true; v.loop = true;
+
+    var source = document.createElement('source');
+    source.src = 'hero-bg.mp4';
+    source.type = 'video/mp4';
+    v.appendChild(source);
+    v.load();
+
+    var reveal = function(){ v.classList.add('is-ready'); };
+    var inView = true;
+    var tryPlay = function(){ if(document.hidden || !inView) return; var p = v.play(); if(p && p.catch) p.catch(function(){}); };
+
+    v.addEventListener('canplay', tryPlay);
+    v.addEventListener('loadeddata', tryPlay);
+    v.addEventListener('playing', reveal);
+    document.addEventListener('visibilitychange', function(){ if(!document.hidden) tryPlay(); });
+    window.addEventListener('pageshow', tryPlay);
+
+    // Pause once the hero scrolls out of view — halts continuous video decode and the
+    // fixed header recompositing over moving frames (the main mobile scroll-jank source).
+    // The video is untouched; it resumes when the hero returns.
+    var hero = v.closest('.hero') || v;
+    if('IntersectionObserver' in window){
+      var vio = new IntersectionObserver(function(entries){
+        inView = entries[0].isIntersecting;
+        if(inView){ tryPlay(); }
+        else if(!v.paused){ v.pause(); }
+      }, { threshold: 0.12 });
+      vio.observe(hero);
+    }
+
+    tryPlay();
+  })();
+
+  // Scroll reveal — subtle fade + lift, staggered per group
+  (function(){
+    var els = document.querySelectorAll('.reveal');
+    if(!els.length) return;
+    if(!('IntersectionObserver' in window) || window.matchMedia('(prefers-reduced-motion:reduce)').matches){
+      els.forEach(function(e){ e.classList.add('in'); });
+      return;
+    }
+    var io = new IntersectionObserver(function(entries){
+      entries.forEach(function(en){
+        if(!en.isIntersecting) return;
+        var t = en.target;
+        var sibs = Array.prototype.filter.call(t.parentElement.children, function(ch){ return ch.classList.contains('reveal'); });
+        var i = Math.max(0, sibs.indexOf(t));
+        var delay = Math.min(i, 6) * 70;
+        t.style.transitionDelay = delay + 'ms';
+        t.classList.add('in');
+        io.unobserve(t);
+        setTimeout(function(){ t.style.transitionDelay = ''; }, delay + 800);
+      });
+    }, { threshold: 0.14, rootMargin: '0px 0px -6% 0px' });
+    els.forEach(function(e){ io.observe(e); });
+  })();
+
+  // Fluidity: scroll-progress bar + header state — one passive, rAF-coalesced listener
+  (function(){
+    var bar = document.getElementById('scroll-progress');
+    var header = document.querySelector('.header');
+    var ticking = false;
+    function update(){
+      ticking = false;
+      var st = window.scrollY || document.documentElement.scrollTop || 0;
+      var max = (document.documentElement.scrollHeight - window.innerHeight) || 1;
+      if(bar) bar.style.transform = 'scaleX(' + Math.min(1, Math.max(0, st / max)) + ')';
+      if(header) header.classList.toggle('scrolled', st > 40);
+    }
+    function onScroll(){ if(!ticking){ ticking = true; requestAnimationFrame(update); } }
+    window.addEventListener('scroll', onScroll, { passive: true });
+    window.addEventListener('resize', onScroll, { passive: true });
+    update();
+  })();
+
+  // Fluidity: active-section highlight in the nav (scroll-spy)
+  (function(){
+    var links = Array.prototype.slice.call(document.querySelectorAll('.nav a[href^="#"]'));
+    if(!links.length || !('IntersectionObserver' in window)) return;
+    var map = {};
+    links.forEach(function(a){ var s = document.getElementById(a.getAttribute('href').slice(1)); if(s) map[s.id] = a; });
+    var spy = new IntersectionObserver(function(entries){
+      entries.forEach(function(en){
+        if(!en.isIntersecting) return;
+        links.forEach(function(a){ a.classList.remove('active'); });
+        if(map[en.target.id]) map[en.target.id].classList.add('active');
+      });
+    }, { rootMargin: '-45% 0px -50% 0px', threshold: 0 });
+    Object.keys(map).forEach(function(id){ spy.observe(document.getElementById(id)); });
+  })();
+
+  // Fluidity: soft pointer-following glow on cards/steps (hover + fine pointer only)
+  (function(){
+    if(!window.matchMedia || !window.matchMedia('(hover:hover) and (pointer:fine)').matches) return;
+    var raf = null, pending = null;
+    function apply(){ raf = null; if(pending){ pending.el.style.setProperty('--mx', pending.x + 'px'); pending.el.style.setProperty('--my', pending.y + 'px'); } }
+    document.querySelectorAll('.card, .step').forEach(function(el){
+      el.addEventListener('pointermove', function(e){
+        var r = el.getBoundingClientRect();
+        pending = { el: el, x: e.clientX - r.left, y: e.clientY - r.top };
+        if(!raf) raf = requestAnimationFrame(apply);
+      });
+    });
+  })();
+</script>
+
+</body>
+</html>
