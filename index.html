@@ -4,7 +4,7 @@
 <meta charset="utf-8"/>
 <meta name="viewport" content="width=device-width, initial-scale=1"/>
 <title>AgriSync | The field finally speaks data</title>
-<meta name="description" content="AgriSync is an early-warning system for cabbage disease on a smallholder farm in Harpur, Uttar Pradesh. A field sensor box plus free satellite and weather data, read on one Raspberry Pi, flags disease risk 12–72 hours before symptoms show."/>
+<meta name="description" content="AgriSync is an early-warning system for cabbage disease on one smallholder farm in Hapur, Uttar Pradesh. A ₹8,000 solar sensor box plus free satellite and weather data give a 12–72 hour disease-risk curve — and the first labelled record of this crop's disease. Deploys August 2026."/>
 <meta name="theme-color" content="#f4f2ec"/>
 <link rel="canonical" href="https://agrisync.tech/"/>
 <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='%233f5e39'><path d='M6.05 8.05c-2.73 2.73-2.73 7.15-.02 9.88 1.47-3.4 4.09-6.24 7.36-7.93-2.77 2.34-4.71 5.61-5.39 9.32 2.6 1.23 5.8.78 7.95-1.37C19.43 14.47 20 4 20 4S9.53 4.57 6.05 8.05z'/></svg>"/>
@@ -13,12 +13,12 @@
 <meta property="og:type" content="website"/>
 <meta property="og:url" content="https://agrisync.tech/"/>
 <meta property="og:title" content="AgriSync | The field finally speaks data"/>
-<meta property="og:description" content="An early-warning system for cabbage disease. A field sensor box plus free satellite and weather data on one Raspberry Pi — a 12–72 hour disease-risk warning, before symptoms show."/>
+<meta property="og:description" content="An early-warning system for cabbage disease. A ₹8,000 solar sensor box plus free satellite and weather data — a 12–72 hour disease-risk curve, and a first-of-its-kind labelled dataset."/>
 <meta property="og:image" content="https://agrisync.tech/screen.png"/>
 <!-- Twitter -->
 <meta name="twitter:card" content="summary_large_image"/>
 <meta name="twitter:title" content="AgriSync | The field finally speaks data"/>
-<meta name="twitter:description" content="An early-warning system for cabbage disease. A field sensor box plus free satellite and weather data on one Raspberry Pi — a 12–72 hour disease-risk warning, before symptoms show."/>
+<meta name="twitter:description" content="An early-warning system for cabbage disease. A ₹8,000 solar sensor box plus free satellite and weather data — a 12–72 hour disease-risk curve, and a first-of-its-kind labelled dataset."/>
 <meta name="twitter:image" content="https://agrisync.tech/screen.png"/>
 
 <link rel="preconnect" href="https://fonts.googleapis.com"/>
@@ -222,7 +222,7 @@
 
   /* Stats */
   .stats{display:grid;grid-template-columns:repeat(2,1fr);gap:1.4rem 1rem;max-width:720px;margin:0 auto clamp(2.8rem,5vw,3.8rem);text-align:center;}
-  .stat .n{display:block;font-size:clamp(2rem,6vw,3rem);font-weight:700;letter-spacing:-.03em;color:var(--ink);line-height:1;}
+  .stat .n{display:block;font-size:clamp(2rem,6vw,3rem);font-weight:700;letter-spacing:-.03em;color:var(--ink);line-height:1;white-space:nowrap;}
   .stat .l{display:block;margin-top:.4rem;font-size:.82rem;color:var(--ink-soft);}
   .stat{transition:transform .4s cubic-bezier(.22,1,.36,1);}
   .stat .n{transition:color .3s ease;}
@@ -411,6 +411,7 @@
     <a href="#what">Overview</a>
     <a href="#how">How it works</a>
     <a href="#engine">Intelligence</a>
+    <a href="#status">Status</a>
     <a href="#about">About</a>
     <a href="#stack">Stack</a>
   </nav>
@@ -425,6 +426,7 @@
   <a href="#what">Overview</a>
   <a href="#how">How it works</a>
   <a href="#engine">Intelligence</a>
+  <a href="#status">Status</a>
   <a href="#about">About</a>
   <a href="#stack">Stack</a>
   <a class="btn btn-greenglass js-dashboard-cta" href="https://dashboard.agrisync.tech">Dashboard</a>
@@ -440,9 +442,8 @@
 
   <div class="hero-inner">
     <h1>The field finally <span class="serif">speaks data.</span></h1>
-    <p class="sub">An early-warning system for cabbage disease. A small box in the field, plus free satellite and weather data, learns what a healthy field looks like — and flags the drift toward disease 12–72 hours before it shows on the leaf.</p>
-    <!-- Dashboard CTA — intentionally unwired for now; add href when the dashboard is ready -->
-   <a class="btn btn-glass btn-hero-play js-dashboard-cta" href="https://dashboard.agrisync.tech">
+    <p class="sub">An early-warning system for cabbage disease. A solar box reads the microclimate at the leaf, free satellite and weather data do the rest — a 12–72 hour risk curve, and the first labelled record of this crop's disease.</p>
+    <a class="btn btn-glass btn-hero-play js-dashboard-cta" href="https://dashboard.agrisync.tech">
       <span class="play-ring" aria-hidden="true"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M8 5v14l11-7z"/></svg></span>
       Dashboard
     </a>
@@ -461,14 +462,14 @@
     <div class="section-head reveal">
       <p class="eyebrow">What is AgriSync</p>
       <h2>A smartwatch for the field, <span class="serif">not a diagnosis after the fact.</span></h2>
-      <p class="lede">Most tools name a disease only once it's visible on a leaf — when the spray window is already half closed. AgriSync learns what one healthy cabbage field looks like and warns as it starts to drift, 12–72 hours before the eye can catch it.</p>
+      <p class="lede">Most tools name a disease only once it's visible on a leaf — when the spray window is already half closed. AgriSync learns what one healthy cabbage field looks like and flags the drift, aiming to warn 12–72 hours before the eye can catch it.</p>
     </div>
     <div class="intro-points reveal">
-      <div class="ip"><span class="ip-k">12–72 hours ahead</span><span class="ip-v">A rising disease-risk warning before symptoms — for Alternaria leaf spot and downy mildew.</span></div>
+      <div class="ip"><span class="ip-k">A 12–72 hour risk curve</span><span class="ip-v">Rising and falling infection pressure for Alternaria leaf spot and downy mildew, from published science.</span></div>
       <div class="ip"><span class="ip-k">Learns healthy, flags the drift</span><span class="ip-v">It models a healthy field, so it needs no library of "sick plant" photos to raise the alarm.</span></div>
-      <div class="ip"><span class="ip-k">One field, done properly</span><span class="ip-v">Tuned to a real cabbage field in Hapur, UP — not a generic, all-crop model.</span></div>
+      <div class="ip"><span class="ip-k">One field, one season</span><span class="ip-v">One farm in Hapur, UP; one crop; two diseases — finished and proven, not half-built across many.</span></div>
     </div>
-    <p class="intro-why reveal">A smallholder can lose most of a crop to disease in a single week. <span class="serif">AgriSync buys back the hours that decide the season.</span></p>
+    <p class="intro-why reveal">A smallholder can lose most of a crop in a single week. <span class="serif">The data is the product — the predictor is the proof that it works.</span></p>
   </div>
 </section>
 
@@ -477,8 +478,8 @@
   <div class="container">
     <div class="section-head reveal">
       <p class="eyebrow">How it works</p>
-      <h2>One Raspberry Pi runs the <span class="serif">whole pipeline.</span></h2>
-      <p class="lede">One box in the field, free satellite and weather data, and a small computer at home — that's the whole system. No cloud bill, no farmer hardware to buy.</p>
+      <h2>One box in the field, <span class="serif">one Pi at home.</span></h2>
+      <p class="lede">A solar node reads the leaf every 30 seconds and sends it home over Wi-Fi, where a Raspberry Pi 5 fuses it with free satellite and weather data. About ₹8,000 of parts. No mains power, no cloud bill.</p>
     </div>
 
     <div class="grid grid-steps">
@@ -488,7 +489,7 @@
           <span class="num">01</span>
         </div>
         <h3>A box in the field</h3>
-        <p>Leaf wetness, temperature, humidity and rain — measured right at the leaf, the exact conditions a fungus needs to take hold.</p>
+        <p>Air temperature, humidity, leaf-surface temperature and rain — read every 30 seconds, right where infection actually happens.</p>
       </article>
 
       <article class="step reveal">
@@ -497,7 +498,7 @@
           <span class="num">02</span>
         </div>
         <h3>Free satellites</h3>
-        <p>Sentinel-2 reads crop stress from orbit; Sentinel-1 radar sees through monsoon cloud. Both free, at 10-metre resolution.</p>
+        <p>Sentinel-2 reads crop stress from orbit; Sentinel-1 radar sees through monsoon cloud. Both free, both field-scale.</p>
       </article>
 
       <article class="step reveal">
@@ -506,7 +507,7 @@
           <span class="num">03</span>
         </div>
         <h3>Free weather</h3>
-        <p>Decades of hourly history to learn from (ERA5-Land, NASA POWER), plus a daily forecast (Open-Meteo) that drives the warning.</p>
+        <p>Decades of hourly history to learn from (ERA5-Land, NASA POWER), plus the 12–72 hour forecast (Open-Meteo) that makes prediction possible.</p>
       </article>
 
       <article class="step reveal">
@@ -514,8 +515,8 @@
           <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="6.5" y="6.5" width="11" height="11" rx="2"/><rect x="10" y="10" width="4" height="4"/><path d="M9 3v2M15 3v2M9 19v2M15 19v2M3 9h2M3 15h2M19 9h2M19 15h2"/></svg>
           <span class="num">04</span>
         </div>
-        <h3>One Raspberry Pi</h3>
-        <p>A small computer at home pulls every source together and runs the models each night. No cloud, no laptop, no field servers.</p>
+        <h3>A Pi 5 at home</h3>
+        <p>It stores every reading, pulls in the outside data and runs the engine. No cloud, no laptop, no field servers.</p>
       </article>
 
       <article class="step reveal">
@@ -533,9 +534,11 @@
           <span class="num">06</span>
         </div>
         <h3>A growing dataset</h3>
-        <p>Every real outbreak is logged against the conditions that preceded it — the first local record of this crop's disease.</p>
+        <p>The headline deliverable: a season of leaf-level readings paired with dated records of what the plants actually did.</p>
       </article>
     </div>
+
+    <p class="build-note reveal">Leaf wetness is inferred, not measured — when the leaf cools to its dew point it's treated as wet. <span class="serif">Cheap and sound, and the biggest compromise in the build.</span></p>
   </div>
 </section>
 
@@ -551,7 +554,7 @@
     <div class="stats">
       <div class="stat reveal"><span class="n">12–72h</span><span class="l">Warning window</span></div>
       <div class="stat reveal"><span class="n">2</span><span class="l">Target diseases (v0)</span></div>
-      <div class="stat reveal"><span class="n">~75%</span><span class="l">Target accuracy</span></div>
+      <div class="stat reveal"><span class="n">60–70%</span><span class="l">Day-one physics floor</span></div>
       <div class="stat reveal"><span class="n">1</span><span class="l">Field, one season</span></div>
     </div>
 
@@ -559,7 +562,7 @@
       <article class="card reveal">
         <span class="tag">Stage 1 · Physics</span>
         <h3>Infection-pressure rules</h3>
-        <p>Published temperature, humidity and leaf-wetness thresholds score disease pressure live. Works on day one, no training data — a ~60–70% floor.</p>
+        <p>Published temperature and leaf-wetness models score disease pressure live. Works on day one, no training data — a 60–70% floor. Modest, but honest and immediate.</p>
       </article>
       <article class="card reveal">
         <span class="tag">Stage 2 · Anomaly</span>
@@ -574,9 +577,35 @@
       <article class="card reveal">
         <span class="tag">The honesty · Uncertainty</span>
         <h3>A calibrated risk band</h3>
-        <p>Borrowing conformal prediction from ML safety, the answer is a range with a stated error rate — never a single, falsely precise number.</p>
+        <p>Risk is a range with a stated error rate across the 12–72 hour window. Act on "risk is climbing over two days" — nobody should act on a made-up 87%.</p>
       </article>
     </div>
+  </div>
+</section>
+
+<!-- Status -->
+<section class="section" id="status">
+  <div class="container">
+    <div class="section-head reveal">
+      <p class="eyebrow">Status · July 2026</p>
+      <h2>What's built, <span class="serif">and what isn't.</span></h2>
+      <p class="lede">The box deploys at transplant, August 2026. Nothing here has been validated in a real field yet — that's what the coming season is for.</p>
+    </div>
+
+    <div class="grid grid-cards">
+      <article class="card reveal">
+        <span class="tag">Working today</span>
+        <h3>Sensors, server, physics</h3>
+        <p>Firmware for both boards. Database and ingestion. The live forecast feed. The infection model for both diseases, and the 12–72 hour risk API. Power and enclosure are specified.</p>
+      </article>
+      <article class="card reveal">
+        <span class="tag">Still to come</span>
+        <h3>Dashboard, satellites, the learned part</h3>
+        <p>The risk dashboard. Sentinel-1 / Sentinel-2 ingestion. The healthy-baseline anomaly detector, which trains during the season. Calibrated uncertainty bands. Phone alerts.</p>
+      </article>
+    </div>
+
+    <p class="build-note reveal">The firmware is written and reviewed but not yet flashed, and the box isn't assembled. <span class="serif">Any accuracy figure before the season would be a guess.</span></p>
   </div>
 </section>
 
@@ -585,7 +614,7 @@
   <div class="container">
     <div class="section-head reveal">
       <p class="eyebrow">Why it matters</p>
-      <h2>Built from a village, <span class="serif">designed for millions.</span></h2>
+      <h2>Built from one village field, <span class="serif">for the farms nobody instruments.</span></h2>
     </div>
 
     <div class="values">
@@ -601,8 +630,8 @@
       </div>
       <div class="value reveal">
         <div class="vic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="5" y="11" width="14" height="9" rx="2"/><path d="M8 11V7a4 4 0 0 1 7.5-1.8"/></svg></div>
-        <h3>Free by design</h3>
-        <p>The satellites, the weather and the science are free or open. The farmer buys no per-plot hardware — one cheap shared box can serve a whole cluster of fields.</p>
+        <h3>Cheap by design</h3>
+        <p>The satellites, the weather and the science are free or open. The box is about ₹8,000 of parts, solar-powered and off-grid — no mains, no subscription, no cloud bill.</p>
       </div>
     </div>
 
@@ -619,20 +648,23 @@
     </div>
 
     <div class="pills reveal">
-      <span class="pill">Raspberry Pi</span>
-      <span class="pill">Leaf-wetness sensor</span>
+      <span class="pill">Raspberry Pi 5</span>
+      <span class="pill">ESP32</span>
+      <span class="pill">ESP32-CAM</span>
       <span class="pill">BME280</span>
-      <span class="pill">Rain gauge</span>
-      <span class="pill">7-in-1 soil sensor</span>
+      <span class="pill">MLX90614 infrared</span>
+      <span class="pill">ADS1115</span>
+      <span class="pill">Rain sensor</span>
+      <span class="pill">Soil sensor</span>
+      <span class="pill">10 W solar + SLA battery</span>
       <span class="pill">Sentinel-2</span>
       <span class="pill">Sentinel-1 radar</span>
       <span class="pill">ERA5-Land</span>
       <span class="pill">NASA POWER</span>
       <span class="pill">Open-Meteo</span>
-      <span class="pill">ICAR-CRIDA records</span>
-      <span class="pill">Infection-pressure models</span>
+      <span class="pill">Infection models</span>
       <span class="pill">Anomaly detection</span>
-      <span class="pill">Conformal prediction</span>
+      <span class="pill">Calibrated uncertainty</span>
     </div>
 
     <div class="connect reveal" id="connect">
@@ -655,7 +687,7 @@
 <!-- What's next -->
 <aside class="whats-next reveal">
   <span class="wn-label">What's next</span>
-  <p>Once v0's season is done: photo diagnosis from a leaf snap, more diseases, and more fields.</p>
+  <p>Deliberately not this season: a farmer-facing app, photo diagnosis, a second crop, drones. All written down, none being built. Finishing one narrow thing well is the strategy.</p>
 </aside>
 
 <!-- Footer -->
@@ -665,7 +697,10 @@
     AgriSync
   </a>
   <p class="meta">© 2026 AgriSync. All rights reserved.</p>
-  <p class="status">In active development · field deployment August 2026</p>
+  <p class="status">Firmware written, box not yet assembled · deploys at transplant, August 2026</p>
+  <div class="archive">
+    <span class="cur">Version 0</span>
+  </div>
 </footer>
 
 <script>
