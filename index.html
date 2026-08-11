@@ -836,5 +836,351 @@
   })();
 </script>
 
+<!--
+  AgriSync sign-in widget.
+-->
+
+<style>
+  /* ---------------------------------------------------------------- auth -- */
+  /* Uses your existing --paper / --ink / --green variables where they exist,
+     with fallbacks so this also works if pasted somewhere they do not. */
+
+  .ag-auth { position: relative; display: inline-flex; align-items: center; }
+
+  /* Signed-out button. Matches your .btn sizing but with a real border, so it
+     reads as an action rather than another piece of frosted glass. */
+  .ag-signin {
+    display: inline-flex; align-items: center; gap: .5rem;
+    padding: .7rem 1.25rem; border-radius: 999px;
+    border: 1.5px solid var(--ink, #20271f);
+    background: var(--ink, #20271f); color: var(--paper, #f4f2ec);
+    font: inherit; font-size: .78rem; font-weight: 600;
+    letter-spacing: .08em; text-transform: uppercase;
+    cursor: pointer; white-space: nowrap;
+    transition: transform .25s cubic-bezier(.22,1,.36,1), opacity .25s ease;
+  }
+  .ag-signin:hover { opacity: .88; }
+  .ag-signin:active { transform: scale(.96); }
+
+  /* Signed-in avatar */
+  .ag-avatar {
+    width: 40px; height: 40px; border-radius: 50%;
+    border: 1.5px solid var(--ink, #20271f);
+    background: var(--green, #3f5e39); color: #fff;
+    font: inherit; font-size: 15px; font-weight: 600;
+    display: inline-flex; align-items: center; justify-content: center;
+    cursor: pointer; padding: 0;
+    transition: transform .25s cubic-bezier(.22,1,.36,1);
+  }
+  .ag-avatar:hover { transform: scale(1.05); }
+  .ag-avatar:active { transform: scale(.96); }
+
+  /* Dropdown */
+  .ag-menu {
+    position: absolute; top: calc(100% + 12px); right: 0; z-index: 9000;
+    min-width: 244px; padding: 8px;
+    background: var(--card, #fbfaf6);
+    border: 1.5px solid var(--ink, #20271f);
+    border-radius: 16px;
+    box-shadow: 0 18px 40px rgba(30,40,25,.16);
+    opacity: 0; visibility: hidden; transform: translateY(-6px);
+    transition: opacity .18s ease, transform .18s ease, visibility .18s;
+  }
+  .ag-menu.open { opacity: 1; visibility: visible; transform: translateY(0); }
+  .ag-who {
+    padding: 10px 12px 12px; margin-bottom: 6px;
+    border-bottom: 1px solid var(--line, #e4e1d6);
+  }
+  .ag-who b {
+    display: block; font-size: 14.5px; font-weight: 600;
+    color: var(--ink, #20271f); text-transform: none; letter-spacing: 0;
+  }
+  .ag-who span {
+    display: block; font-size: 12.5px; color: var(--ink-soft, #5f655a);
+    margin-top: 2px; word-break: break-all;
+  }
+  .ag-tag {
+    display: inline-block; margin-top: 8px; padding: 2px 9px;
+    border-radius: 999px; font-size: 10.5px; font-weight: 600;
+    letter-spacing: .07em; text-transform: uppercase;
+    background: var(--green, #3f5e39); color: #fff;
+  }
+  .ag-menu a, .ag-menu button.ag-item {
+    display: flex; align-items: center; gap: 9px; width: 100%;
+    padding: 9px 12px; border: 0; border-radius: 10px; background: none;
+    font: inherit; font-size: 14px; font-weight: 500; text-align: left;
+    color: var(--ink, #20271f); text-decoration: none; cursor: pointer;
+    text-transform: none; letter-spacing: 0;
+  }
+  .ag-menu a:hover, .ag-menu button.ag-item:hover { background: var(--paper, #f4f2ec); }
+  .ag-menu .ag-out { color: #9c3b2e; }
+  .ag-sep { height: 1px; margin: 6px 4px; background: var(--line, #e4e1d6); }
+
+  /* Modal */
+  .ag-backdrop {
+    position: fixed; inset: 0; z-index: 9998;
+    background: rgba(24,28,22,.42);
+    -webkit-backdrop-filter: blur(6px); backdrop-filter: blur(6px);
+    display: flex; align-items: center; justify-content: center; padding: 24px;
+    opacity: 0; visibility: hidden; transition: opacity .22s ease, visibility .22s;
+  }
+  .ag-backdrop.open { opacity: 1; visibility: visible; }
+  .ag-modal {
+    position: relative; width: 100%; max-width: 400px;
+    background: var(--card, #fbfaf6);
+    border: 1.5px solid var(--ink, #20271f);
+    border-radius: 22px; padding: 38px 34px 30px;
+    box-shadow: 0 30px 70px rgba(20,28,18,.28);
+    transform: translateY(10px) scale(.98);
+    transition: transform .28s cubic-bezier(.22,1,.36,1);
+    text-align: center;
+  }
+  .ag-backdrop.open .ag-modal { transform: translateY(0) scale(1); }
+  .ag-close {
+    position: absolute; top: 14px; right: 14px;
+    width: 30px; height: 30px; border-radius: 50%;
+    border: 1.5px solid var(--ink, #20271f); background: none;
+    color: var(--ink, #20271f); font-size: 15px; line-height: 1;
+    cursor: pointer; display: inline-flex; align-items: center; justify-content: center;
+  }
+  .ag-close:hover { background: var(--paper, #f4f2ec); }
+  .ag-modal h3 {
+    margin: 0 0 8px; font-size: 23px; font-weight: 600;
+    letter-spacing: -.01em; color: var(--ink, #20271f);
+  }
+  .ag-modal h3 em {
+    font-family: Georgia, 'Times New Roman', serif; font-style: italic;
+    color: var(--green, #3f5e39);
+  }
+  .ag-modal p {
+    margin: 0 0 22px; font-size: 14.5px; line-height: 1.55;
+    color: var(--ink-soft, #5f655a);
+  }
+  .ag-gbtn { display: flex; justify-content: center; min-height: 44px; }
+  .ag-fine {
+    margin: 20px 0 0; font-size: 11.5px; line-height: 1.5;
+    color: var(--ink-soft, #5f655a);
+  }
+  .ag-err {
+    margin: 14px 0 0; font-size: 13px; color: #9c3b2e; min-height: 18px;
+  }
+
+  @media (max-width: 640px) {
+    .ag-menu { right: -8px; min-width: 214px; }
+    .ag-modal { padding: 32px 24px 26px; }
+  }
+</style>
+
+<div class="ag-backdrop" id="agBackdrop" role="dialog" aria-modal="true" aria-hidden="true">
+  <div class="ag-modal">
+    <button class="ag-close" id="agClose" aria-label="Close">&times;</button>
+    <h3>See the <em>whole field.</em></h3>
+    <p>Sign in to open the full record, the daily breakdown and the canopy
+       images. Free, and it takes one click.</p>
+    <div class="ag-gbtn" id="agGoogleBtn"></div>
+    <p class="ag-err" id="agErr"></p>
+    <p class="ag-fine">
+      We receive your name and email address from Google, and nothing else.
+      No password is created and none is stored.
+    </p>
+  </div>
+</div>
+
+<script src="https://accounts.google.com/gsi/client" async defer></script>
+<script>
+(function () {
+  var API   = 'https://api.agrisync.tech';
+  var DASH  = 'https://dashboard.agrisync.tech';
+  var state = { signed_in: false };
+
+  var backdrop = document.getElementById('agBackdrop');
+  var errBox   = document.getElementById('agErr');
+  var mounted  = false;
+
+  /* ------------------------------------------------------------- helpers -- */
+
+  function api(path, options) {
+    // credentials:'include' is what carries the session cookie across
+    // subdomains. Without it the browser sends nothing and you are always
+    // signed out.
+    return fetch(API + path, Object.assign({ credentials: 'include' }, options || {}))
+      .then(function (r) { return r.json(); });
+  }
+
+  function openModal() {
+    backdrop.classList.add('open');
+    backdrop.setAttribute('aria-hidden', 'false');
+    errBox.textContent = '';
+    mountGoogle();
+  }
+  function closeModal() {
+    backdrop.classList.remove('open');
+    backdrop.setAttribute('aria-hidden', 'true');
+  }
+
+  document.getElementById('agClose').addEventListener('click', closeModal);
+  backdrop.addEventListener('click', function (e) {
+    if (e.target === backdrop) closeModal();      // click outside to dismiss
+  });
+  document.addEventListener('keydown', function (e) {
+    if (e.key === 'Escape') closeModal();
+  });
+
+  /* -------------------------------------------------------------- google -- */
+
+  function mountGoogle() {
+    if (mounted || !window.google || !window.google.accounts) return;
+
+    api('/auth/config').then(function (cfg) {
+      if (!cfg.client_id) {
+        errBox.textContent = 'Sign-in is not configured yet.';
+        return;
+      }
+      google.accounts.id.initialize({
+        client_id: cfg.client_id,
+        callback: onGoogle,
+        ux_mode: 'popup',
+        auto_select: false,
+      });
+      google.accounts.id.renderButton(
+        document.getElementById('agGoogleBtn'),
+        { theme: 'outline', size: 'large', shape: 'pill',
+          text: 'continue_with', width: 300, logo_alignment: 'left' }
+      );
+      mounted = true;
+    }).catch(function () {
+      errBox.textContent = 'Cannot reach the server. Try again in a moment.';
+    });
+  }
+
+  function onGoogle(response) {
+    errBox.textContent = '';
+    api('/auth/google', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ credential: response.credential }),
+    }).then(function (data) {
+      if (!data.ok) {
+        errBox.textContent = data.error || 'That sign-in did not work.';
+        return;
+      }
+      closeModal();
+      refresh();
+    }).catch(function () {
+      errBox.textContent = 'Could not reach the server.';
+    });
+  }
+
+  /* --------------------------------------------------------------- header -- */
+
+  function render(container) {
+    container.innerHTML = '';
+
+    if (!state.signed_in) {
+      var b = document.createElement('button');
+      b.className = 'ag-signin';
+      b.type = 'button';
+      b.textContent = 'Sign in';
+      b.addEventListener('click', openModal);
+      container.appendChild(b);
+      return;
+    }
+
+    var av = document.createElement('button');
+    av.className = 'ag-avatar';
+    av.type = 'button';
+    av.textContent = state.initial || '·';
+    av.setAttribute('aria-label', 'Account');
+
+    var menu = document.createElement('div');
+    menu.className = 'ag-menu';
+    menu.innerHTML =
+      '<div class="ag-who"><b>' + esc(state.name || 'Signed in') + '</b>' +
+      '<span>' + esc(state.email) + '</span>' +
+      (state.is_admin ? '<span class="ag-tag">Admin</span>'
+                      : (state.is_granted ? '<span class="ag-tag">Full access</span>' : '')) +
+      '</div>' +
+      '<a href="' + DASH + '">Dashboard</a>' +
+      '<a href="' + API + '/photos">Field images</a>' +
+      (state.is_granted ? '<a href="' + API + '/export/readings.csv">Download data</a>' : '') +
+      '<div class="ag-sep"></div>' +
+      '<button class="ag-item ag-out" type="button" id="agOut">Sign out</button>';
+
+    av.addEventListener('click', function (e) {
+      e.stopPropagation();
+      menu.classList.toggle('open');
+    });
+    document.addEventListener('click', function () { menu.classList.remove('open'); });
+    menu.addEventListener('click', function (e) { e.stopPropagation(); });
+
+    container.appendChild(av);
+    container.appendChild(menu);
+
+    menu.querySelector('#agOut').addEventListener('click', function () {
+      api('/auth/logout', { method: 'POST' }).then(function () {
+        if (window.google && google.accounts) google.accounts.id.disableAutoSelect();
+        refresh();
+      });
+    });
+  }
+
+  function esc(s) {
+    return String(s || '').replace(/[&<>"']/g, function (c) {
+      return { '&': '&amp;', '<': '&lt;', '>': '&gt;',
+               '"': '&quot;', "'": '&#39;' }[c];
+    });
+  }
+
+  /* Take over the existing Connect button wherever it appears, and give any
+     "log in to see more" prompts on the page a working click. */
+  function slots() {
+    var found = [];
+
+    document.querySelectorAll('.header-cta, [data-ag-auth]').forEach(function (el) {
+      if (el.classList.contains('ag-auth')) { found.push(el); return; }
+      var box = document.createElement('div');
+      box.className = 'ag-auth';
+      el.parentNode.replaceChild(box, el);
+      found.push(box);
+    });
+
+    return found;
+  }
+
+  var containers = null;
+
+  function refresh() {
+    api('/auth/me').then(function (data) {
+      state = data || { signed_in: false };
+      if (!containers) containers = slots();
+      containers.forEach(render);
+      document.body.classList.toggle('ag-in', !!state.signed_in);
+      document.body.classList.toggle('ag-out-state', !state.signed_in);
+      // Anything on the page that wants to react to sign-in can listen.
+      document.dispatchEvent(new CustomEvent('ag:auth', { detail: state }));
+    }).catch(function () {
+      // API unreachable. Show the signed-out state rather than an error - the
+      // marketing site should still work if the Pi is off.
+      state = { signed_in: false };
+      if (!containers) containers = slots();
+      containers.forEach(render);
+    });
+  }
+
+  // Any element with data-ag-signin opens the modal. Use it on the blurred
+  // "see the full history" prompts.
+  document.addEventListener('click', function (e) {
+    var t = e.target.closest && e.target.closest('[data-ag-signin]');
+    if (t) { e.preventDefault(); openModal(); }
+  });
+
+  if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', refresh);
+  } else {
+    refresh();
+  }
+})();
+</script>
+  
 </body>
 </html>
