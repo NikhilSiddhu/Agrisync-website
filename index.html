@@ -378,6 +378,138 @@
     .mobile-menu{-webkit-backdrop-filter:blur(16px);backdrop-filter:blur(16px);}
   }
 
+  /* ------------------------------------------------------------- PHONES --
+     Everything above this point is desktop-first: the only max-width rules
+     in the file were a blur reduction and an auth-modal tweak, so phones were
+     rendering the base layout with desktop spacing. This block is the phone
+     layout. Desktop is untouched. */
+  @media (max-width:640px){
+
+    /* Notch and home-indicator safety */
+    .header{top:calc(.6rem + env(safe-area-inset-top));}
+    body{padding-bottom:env(safe-area-inset-bottom);}
+
+    /* Header pill: brand + sign-in + hamburger is three things in ~360px.
+       Trim the padding rather than dropping anything. */
+    .header{
+      width:calc(100% - 1rem);
+      padding:.38rem .38rem .38rem .9rem;
+      gap:.35rem;
+      border-radius:22px;
+    }
+    .brand{font-size:1.02rem;gap:.45rem;}
+    .brand svg{width:19px;height:19px;}
+    .hamburger{padding:.6rem .4rem;}
+    .ag-signin{padding:.58rem .9rem;font-size:.68rem;letter-spacing:.06em;}
+    .ag-avatar{width:34px;height:34px;font-size:14px;}
+
+    /* Hero. The block sat low because 7rem of top padding was fighting the
+       flex centring, so the top third of the screen was empty sky. */
+    .hero-inner{padding:4.25rem 1.25rem 0;}
+    .hero h1{font-size:clamp(1.95rem,9vw,2.55rem);line-height:1.02;}
+    .hero h1 .serif{font-size:clamp(2.8rem,14.5vw,3.9rem);}
+    .hero .sub{
+      margin:1.15rem auto 1.75rem;
+      max-width:33ch;
+      font-size:1rem;
+      line-height:1.55;
+    }
+
+    /* The overlay was fully transparent between 34% and 58%, which is exactly
+       where the paragraph and the button sit. White text was landing on a
+       sunlit meadow. Keep the top clear so the serif line still reads dark on
+       bright sky, and bring the scrim in below it. */
+    .hero-overlay{
+      background:linear-gradient(180deg,
+        rgba(16,24,14,.30) 0%,
+        rgba(16,24,14,.04) 26%,
+        rgba(16,24,14,.06) 45%,
+        rgba(16,24,14,.46) 68%,
+        rgba(16,24,14,.58) 100%);
+    }
+    .hero .sub{text-shadow:0 1px 2px rgba(0,0,0,.45), 0 2px 16px rgba(0,0,0,.5);}
+    /* The hero button was pale glass over pale flowers. Give it something to
+       sit on without changing its shape. */
+    .btn-hero-play{
+      background:rgba(255,255,255,.82);
+      border-color:rgba(255,255,255,.9);
+      box-shadow:inset 0 1px 0 rgba(255,255,255,.9), 0 8px 26px rgba(0,0,0,.28);
+    }
+    .scroll-cue{bottom:1.2rem;}
+
+    /* Mobile menu. Was six 1.6rem links spread over a full viewport with
+       1.6rem gaps and no grouping, which read as unfinished. Tighten it,
+       clear the header, and separate the navigation from the actions. */
+    .mobile-menu{
+      justify-content:flex-start;
+      gap:0;
+      padding:calc(6.5rem + env(safe-area-inset-top)) 1.5rem
+              calc(2rem + env(safe-area-inset-bottom));
+      overflow-y:auto;
+    }
+    .mobile-menu a:not(.btn){
+      width:100%;
+      max-width:340px;
+      text-align:center;
+      font-size:1.18rem;
+      font-weight:600;
+      padding:.85rem 1rem;
+      border-radius:14px;
+    }
+    /* Separators as border-TOP on every link after the first. :last-of-type
+       would match the CONNECT button, not the last nav link, because both are
+       <a> elements. */
+    .mobile-menu a:not(.btn) + a:not(.btn){border-top:1px solid rgba(32,39,31,.09);}
+    .mobile-menu .btn{
+      margin-top:.7rem;
+      width:100%;
+      max-width:340px;
+      justify-content:center;
+      padding:.95rem 1.4rem;
+    }
+    /* Gap between the nav list and the actions, for the same reason. */
+    .mobile-menu a:not(.btn) + .btn{margin-top:1.7rem;}
+
+    /* Vertical rhythm. clamp() bottomed out at 4.5rem top AND bottom, so
+       every section boundary was 9rem of nothing on a 780px-tall screen. */
+    .section{padding:3.4rem 0;}
+    .container{padding:0 1.25rem;}
+    .section-head{margin-bottom:2rem;}
+    .section-head h2{font-size:clamp(1.7rem,7vw,2.1rem);}
+    .lede,.intro-why,.build-note{font-size:1rem;}
+
+    /* Cards and steps */
+    .step,.card{padding:1.35rem;border-radius:16px;}
+    .grid{gap:.9rem;}
+    .values{gap:1.6rem;}
+    .intro-points{gap:1.1rem;margin-top:2rem;}
+
+    /* Stats: .n is white-space:nowrap, so a long value in a 2-column grid
+       overflows the viewport on a 320px phone. */
+    .stats{gap:1.5rem .75rem;margin-bottom:2.4rem;}
+    .stat .n{font-size:clamp(1.6rem,7.5vw,2.1rem);}
+    .stat .l{font-size:.78rem;line-height:1.35;}
+
+    /* Panels were full-bleed with no side margin on phones */
+    .panel{margin:0 1rem;border-radius:20px;}
+
+    /* Anchor offset has to match the smaller header */
+    section[id],#connect{scroll-margin-top:76px;}
+
+    /* Hover lifts do nothing on touch and leave elements stuck in the hovered
+       state after a tap */
+    .step:hover,.card:hover,.stat:hover,.value:hover .vic{transform:none;}
+  }
+
+  /* Very small phones */
+  @media (max-width:360px){
+    .brand{font-size:.95rem;}
+    .ag-signin{padding:.5rem .7rem;font-size:.64rem;}
+    .hero h1{font-size:1.85rem;}
+    .hero h1 .serif{font-size:2.55rem;}
+    .stats{grid-template-columns:1fr;}
+  }
+
   @media (prefers-reduced-motion:reduce){
     html{scroll-behavior:auto;}
     .reveal{opacity:1;transform:none;transition:none;}
@@ -729,8 +861,12 @@
     v.muted = true; v.defaultMuted = true; v.setAttribute('muted','');
     v.playsInline = true; v.loop = true;
 
+    // Pick the encode by viewport, not by device class. The original was a
+    // single 12 MB 1928x1072 file served to every phone on mobile data; these
+    // are 357 KB and 810 KB and look identical behind the overlay.
+    var wide = Math.max(window.innerWidth, window.innerHeight) * (window.devicePixelRatio || 1);
     var source = document.createElement('source');
-    source.src = 'hero-bg.mp4';
+    source.src = wide > 1100 ? 'hero-bg.mp4' : 'hero-bg-sm.mp4';
     source.type = 'video/mp4';
     v.appendChild(source);
     v.load();
