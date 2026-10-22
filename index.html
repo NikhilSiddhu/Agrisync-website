@@ -4,7 +4,7 @@
 <meta charset="utf-8"/>
 <meta name="viewport" content="width=device-width, initial-scale=1"/>
 <title>AgriSync | The field finally speaks data</title>
-<meta name="description" content="AgriSync is an early-warning system for cabbage disease on one smallholder farm in Hapur, Uttar Pradesh. A ₹8,000 solar sensor box on a cellular link, plus free satellite and weather data, working toward a 12–72 hour disease-risk curve and a labelled season of field data. Deployed and uploading since August 2026."/>
+<meta name="description" content="AgriSync is an early-warning system for cabbage disease on one smallholder farm in Hapur, Uttar Pradesh. A ₹8,000 solar sensor box on a cellular link, fused with free satellite and weather data, scoring disease pressure for the next 12–72 hours and building a labelled season of field data. Deployed since August 2026."/>
 <meta name="theme-color" content="#f4f2ec"/>
 <link rel="canonical" href="https://agrisync.tech/"/>
 <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='%233f5e39'><path d='M6.05 8.05c-2.73 2.73-2.73 7.15-.02 9.88 1.47-3.4 4.09-6.24 7.36-7.93-2.77 2.34-4.71 5.61-5.39 9.32 2.6 1.23 5.8.78 7.95-1.37C19.43 14.47 20 4 20 4S9.53 4.57 6.05 8.05z'/></svg>"/>
@@ -13,7 +13,7 @@
 <meta property="og:type" content="website"/>
 <meta property="og:url" content="https://agrisync.tech/"/>
 <meta property="og:title" content="AgriSync | The field finally speaks data"/>
-<meta property="og:description" content="An early-warning system for cabbage disease. A ₹8,000 solar sensor box on a cellular link, live in a Hapur cabbage field since August 2026, working toward a 12–72 hour disease-risk curve."/>
+<meta property="og:description" content="An early-warning system for cabbage disease. A ₹8,000 solar sensor box in a Hapur cabbage field since August 2026, plus free satellite and weather data, scoring disease pressure 12–72 hours ahead."/>
 <meta property="og:image" content="https://agrisync.tech/og-image.png"/>
 <meta property="og:image:width" content="1200"/>
 <meta property="og:image:height" content="630"/>
@@ -21,7 +21,7 @@
 <!-- Twitter -->
 <meta name="twitter:card" content="summary_large_image"/>
 <meta name="twitter:title" content="AgriSync | The field finally speaks data"/>
-<meta name="twitter:description" content="An early-warning system for cabbage disease. A ₹8,000 solar sensor box on a cellular link, live in a Hapur cabbage field since August 2026, working toward a 12–72 hour disease-risk curve."/>
+<meta name="twitter:description" content="An early-warning system for cabbage disease. A ₹8,000 solar sensor box in a Hapur cabbage field since August 2026, plus free satellite and weather data, scoring disease pressure 12–72 hours ahead."/>
 <meta name="twitter:image" content="https://agrisync.tech/og-image.png"/>
 
 <link rel="preconnect" href="https://fonts.googleapis.com"/>
@@ -600,7 +600,7 @@
 
   <div class="hero-inner">
     <h1>The field finally <span class="serif">speaks data.</span></h1>
-    <p class="sub">An early-warning system for cabbage disease. A solar box reads the microclimate in the field; free satellite and weather data will do the rest: a 12–72 hour risk curve, and a season of field data labelled with what the plants actually did.</p>
+    <p class="sub">An early-warning system for cabbage disease. A solar box reads the microclimate in the field; free satellite and weather data do the rest: a 12–72 hour risk forecast, and a season of field data labelled with what the plants actually did.</p>
     <a class="btn btn-glass btn-hero-play js-dashboard-cta" href="https://dashboard.agrisync.tech">
       <span class="play-ring" aria-hidden="true"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M8 5v14l11-7z"/></svg></span>
       Dashboard
@@ -637,7 +637,7 @@
     <div class="section-head reveal">
       <p class="eyebrow">How it works</p>
       <h2>One box in the field, <span class="serif">one Pi at home.</span></h2>
-      <p class="lede">A solar node reads the canopy every five minutes and sends it home over a cellular modem — there is no Wi-Fi in the field. A Raspberry Pi 5 stores every reading and will fuse them with free satellite and weather data once those feeds are built. About ₹8,000 of parts. No mains power, no cloud bill.</p>
+      <p class="lede">A solar node reads the canopy every five minutes and sends it home over a cellular modem; there is no Wi-Fi in the field. A Raspberry Pi 5 stores every reading and pulls in free satellite and weather data for the same field every hour. About ₹8,000 of parts. No mains power, no cloud bill.</p>
     </div>
 
     <div class="grid grid-steps">
@@ -656,7 +656,7 @@
           <span class="num">02</span>
         </div>
         <h3>Free satellites</h3>
-        <p>Sentinel-2 reads crop stress from orbit; Sentinel-1 radar sees through monsoon cloud. Both free, both field-scale. Ingestion is not built yet.</p>
+        <p>Sentinel-2 reads how green the canopy is on clear days; Sentinel-1 radar sees through monsoon cloud. Both free, both read over the same 30 m square of the field, both on the dashboard.</p>
       </article>
 
       <article class="step reveal">
@@ -665,7 +665,7 @@
           <span class="num">03</span>
         </div>
         <h3>Free weather</h3>
-        <p>Decades of hourly history to learn from (ERA5-Land, NASA POWER), plus the 12–72 hour forecast (Open-Meteo) that makes prediction possible. Not live yet.</p>
+        <p>The ERA5-Land reanalysis checks the station hour by hour and stands in for the days it was down. ERA5 adds rain and NASA POWER sunlight. The Open-Meteo forecast, with a 51-run ECMWF ensemble, drives the 12–72 hour warning.</p>
       </article>
 
       <article class="step reveal">
@@ -674,7 +674,7 @@
           <span class="num">04</span>
         </div>
         <h3>A Pi 5 at home</h3>
-        <p>It stores every reading and runs the engine, and will pull in the outside data once that lands. The database sits on the Pi itself — no cloud bill, no third-party outage, nothing to keep paying for after the season.</p>
+        <p>It stores every reading, runs the engine and pulls in the outside data every hour. The database sits on the Pi itself: no cloud bill, no third-party outage, nothing to keep paying for after the season.</p>
       </article>
 
       <article class="step reveal">
@@ -683,7 +683,7 @@
           <span class="num">05</span>
         </div>
         <h3>A 12–72h warning</h3>
-        <p>The output is a rising risk curve for the next one to three days — an honest window, not a false-precise single hour.</p>
+        <p>The forecast, run through the same disease models: low, rising or high for each of the next three days, with how 51 weather runs split. An honest window, not a false-precise single hour.</p>
       </article>
 
       <article class="step reveal">
@@ -692,7 +692,7 @@
           <span class="num">06</span>
         </div>
         <h3>A growing dataset</h3>
-        <p>The headline deliverable: a season of field readings paired with dated records of what the plants actually did.</p>
+        <p>The headline deliverable: a season of field readings paired with dated records of what the plants actually did. Every walk through the field goes into the field log.</p>
       </article>
     </div>
 
@@ -720,22 +720,22 @@
       <article class="card reveal">
         <span class="tag">Stage 1 · Physics</span>
         <h3>Infection-pressure rules</h3>
-        <p>Published temperature and leaf-wetness models score disease pressure live, shown as low, rising or high. Works on day one with no training data. Not yet checked against a real outbreak.</p>
+        <p>Published temperature and leaf-wetness models score disease pressure live and on the forecast, shown as low, rising or high. Works on day one with no training data. Not yet checked against a real outbreak.</p>
       </article>
       <article class="card reveal">
         <span class="tag">Stage 2 · Anomaly</span>
         <h3>Learn healthy, detect the drift</h3>
-        <p>It models a healthy field across sensor and satellite signals, then flags the departure — so it needs no library of disease-labelled examples.</p>
+        <p>The goal: model a healthy field across sensor and satellite signals and flag the departure, with no library of disease-labelled examples. Live in a first, simple form: each hour checked against the same hour over the last 15 days.</p>
       </article>
       <article class="card reveal">
         <span class="tag">The check · Attribution</span>
         <h3>Disease, or just stress?</h3>
-        <p>A drift alone could be drought or hunger. It's confirmed only when the weather sits in the infection window and the satellite bands agree.</p>
+        <p>A drop in greenness alone could be drought or hunger. The dashboard points at disease only when the canopy falls while the weather sat in the infection window. A fixed rule for now, not yet checked against outcomes.</p>
       </article>
       <article class="card reveal">
         <span class="tag">The honesty · Uncertainty</span>
         <h3>A calibrated risk band</h3>
-        <p>The goal, once a season of outcomes exists: risk as a range with a stated error rate across the 12–72 hour window. Act on "risk is climbing over two days", never on a made-up 87%.</p>
+        <p>The goal, once a season of outcomes exists: risk as a range with a stated error rate across the 12–72 hour window. Act on "risk is climbing over two days", never on a made-up 87%. Live today: the spread in the weather, as how 51 forecast runs split between low, rising and high. That is not yet a calibrated error rate.</p>
       </article>
     </div>
   </div>
@@ -747,19 +747,19 @@
     <div class="section-head reveal">
       <p class="eyebrow">Status · October 2026</p>
       <h2>What's built, <span class="serif">and what isn't.</span></h2>
-      <p class="lede">The station went up in Hapur on 11 August and has uploaded every five minutes since. The box, the link and the pipeline are done. The satellite and weather feeds slipped past their October target; they and the part that learns are not live yet.</p>
+      <p class="lede">The station went up in Hapur on 11 August. The box, the link and the pipeline are done, and in October the satellite and weather feeds went live. The station has gaps from power, sensor and link failures; the reanalysis now covers those days, marked as modelled, not measured. The part that learns waits for the season's outcomes.</p>
     </div>
 
     <div class="grid grid-cards">
       <article class="card reveal">
         <span class="tag">Working today</span>
         <h3>The station, end to end</h3>
-        <p>Both boards flashed and running on solar. Cellular upload with every request signed, so no shared secret crosses the wire and a dead link is buffered rather than lost. A camera photographing the same leaves on a fixed interval. Database, ingestion, the infection model for both diseases, the risk API, and a public dashboard with a signed-in view of the full record.</p>
+        <p>Both boards flashed and running on solar. Cellular upload with every request signed, so no shared secret crosses the wire and a dead link is buffered rather than lost. A camera photographing the same leaves on a fixed interval. Database, ingestion, the infection model for both diseases, the risk API, and a public dashboard with a signed-in view of the full record. Since October: disease pressure 12–72 hours ahead, Sentinel&#8209;2 and Sentinel&#8209;1 over the field, the ERA5-Land cross-check, an unusual-conditions check, a disease-or-stress check, and a field log for what the plants actually did.</p>
       </article>
       <article class="card reveal">
         <span class="tag">Still to come</span>
-        <h3>Outside data, and the learned part</h3>
-        <p>Next: the weather feeds (ERA5-Land, NASA POWER, Open-Meteo) and Sentinel-1 / Sentinel-2 ingestion. Then direct leaf-wetness measurement, which the models really want, and the healthy-baseline anomaly detector — which cannot exist before there is a season of healthy baseline to train on. Calibrated uncertainty bands, then alerts.</p>
+        <h3>Calibration, and the learned part</h3>
+        <p>Calibrated uncertainty bands, once the field log holds a season of outcomes. A learned healthy-field model in place of today's simple check, which cannot exist before there is a season of healthy baseline to train on. Direct leaf-wetness measurement, which the models really want. A firmware fix so readings buffered during a cellular outage are re-sent. Then alerts.</p>
       </article>
     </div>
 
@@ -814,13 +814,15 @@
       <span class="pill">Rain sensor</span>
       <span class="pill">A7670C cellular modem</span>
       <span class="pill">20 W solar + PWM + 12 V VRLA</span>
-      <span class="pill planned">Sentinel-2</span>
-      <span class="pill planned">Sentinel-1 radar</span>
-      <span class="pill planned">ERA5-Land</span>
-      <span class="pill planned">NASA POWER</span>
-      <span class="pill planned">Open-Meteo</span>
+      <span class="pill">Sentinel-2</span>
+      <span class="pill">Sentinel-1 radar</span>
+      <span class="pill">ERA5-Land</span>
+      <span class="pill">NASA POWER</span>
+      <span class="pill">Open-Meteo</span>
+      <span class="pill">ECMWF ensemble</span>
       <span class="pill">Infection models</span>
-      <span class="pill planned">Anomaly detection</span>
+      <span class="pill">Anomaly check</span>
+      <span class="pill planned">Learned healthy baseline</span>
       <span class="pill planned">Calibrated uncertainty</span>
     </div>
 
