@@ -347,6 +347,18 @@ section { position: relative; scroll-margin-top: 84px; }
 }
 /* ============================================================ end nav */
 
+/* ============================================================ shared behaviour
+   Both sites. Text you read can be selected and copied, in the leaf's tint;
+   the controls you press cannot, so a double tap or a slide never paints
+   them blue. Links keep the hand cursor after nav.js moves their address to
+   data-href (no address bubble in the corner of the window). */
+::selection { background: rgba(63, 94, 57, .24); }
+.foot ::selection, .film-ui ::selection { background: rgba(195, 220, 156, .32); }
+.nav, .sheet nav, button, .btn, [role="link"], [role="button"], [role="slider"], .chips, .pin, .swatches,
+.part-btn, .acc-btn, .group-btn, .hero-now, .live, .now-live, .pv { -webkit-user-select: none; user-select: none; }
+a[data-href] { cursor: pointer; }
+a, button, [role="link"], [role="button"], [role="slider"] { -webkit-tap-highlight-color: transparent; }
+
 
 .close-btn { width: 44px; height: 44px; border-radius: 50%; border: 1px solid var(--rule); background: transparent;
   display: grid; place-items: center; }
@@ -398,6 +410,8 @@ section { position: relative; scroll-margin-top: 84px; }
   -webkit-backdrop-filter: blur(14px) saturate(140%); backdrop-filter: blur(14px) saturate(140%);
   font: 500 10.5px/1 var(--mono); letter-spacing: .12em; text-transform: uppercase; white-space: nowrap; }
 .hero-now .t2 { color: var(--on-night-3); }
+/* Not live (the Pi could not be reached): the pill says the day it is from, on a phone too. */
+.hero-now.stale .dot { background: var(--on-night-3) !important; box-shadow: none !important; }
 .hero-now b { font: 400 25px/1 var(--display); letter-spacing: -.01em; text-transform: none; color: var(--on-night); }
 .hero-now .dot { width: 7px; height: 7px; border-radius: 50%; flex: none; background: var(--low-n); box-shadow: 0 0 0 3px rgba(156, 196, 135, .22); }
 .hero-now .lvl { color: var(--low-n); }
@@ -429,7 +443,7 @@ section { position: relative; scroll-margin-top: 84px; }
 @media (max-width: 719px) {
   .film-copy { bottom: 108px; }
   .hero-h { font-size: min(16.4vw, 72px); }
-  .hero-now .t2 { display: none; }
+  .hero-now:not(.stale) .t2 { display: none; }
   .cue { display: none; }
   .film-play { right: auto; left: 16px; bottom: 28px; }   /* the sparkle sits low on the right on a phone */
 }
@@ -732,6 +746,24 @@ body.ag-in .season-more.in { display: inline-flex; }
 .checks.not .mk { background: transparent; border: 1.5px solid var(--rule); }
 .checks.not li { color: var(--ink-3); }
 @media (min-width: 900px) { .cols3 { grid-template-columns: repeat(3, 1fr); gap: 40px; } }
+/* What runs where: four small cells under the lists, ruled like a spec sheet. */
+.versions { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); margin-top: clamp(32px, 4vw, 48px);
+  border-top: 1px solid var(--ink); }
+.versions > div { padding: 14px 16px; display: grid; gap: 4px; align-content: start; min-width: 0; }
+.versions > div:nth-child(odd) { padding-left: 0; }
+.versions > div:nth-child(even) { border-left: 1px solid var(--rule-2); }
+.versions > div:nth-child(-n + 2) { border-bottom: 1px solid var(--rule-2); }
+.versions .k { font: 500 10.5px/1.2 var(--mono); letter-spacing: .12em; text-transform: uppercase; color: var(--ink-3); }
+.versions .v { font: 400 30px/1 var(--display); letter-spacing: -.01em; }
+.versions .s { font-size: 13px; line-height: 1.4; color: var(--ink-3); }
+.versions .s.on::before { content: ""; display: inline-block; width: 7px; height: 7px; border-radius: 50%; background: var(--low);
+  margin-right: 7px; vertical-align: 1px; box-shadow: 0 0 0 3px rgba(91, 138, 76, .18); }
+@media (min-width: 900px) {
+  .versions { grid-template-columns: repeat(4, minmax(0, 1fr)); }
+  .versions > div, .versions > div:nth-child(odd), .versions > div:nth-child(-n + 2) { padding-left: 20px; border-left: 1px solid var(--rule-2); border-bottom: 0; }
+  .versions > div:first-child { padding-left: 0; border-left: 0; }
+}
+
 /* Made takes two of the three columns and splits its list across them. */
 @media (min-width: 900px) {
   .cols2 { grid-template-columns: 2fr 1fr; }
@@ -996,7 +1028,7 @@ body.ag-in .season-more.in { display: inline-flex; }
         <p class="hero-sub">Tomorrow's chance of disease, as one number. Known before a single leaf shows a spot.</p>
         <div class="hero-cta">
           <a class="btn btn-light" href="#odds">See today's odds <svg class="arr"><use href="#i-arrow"/></svg></a>
-          <p class="hero-now" id="hero-live" data-level="moderate"><span class="dot" aria-hidden="true"></span><span class="t2">Right now</span> <b id="hc-p">12%</b> <span class="lvl" id="hc-level">moderate</span></p>
+          <p class="hero-now stale" id="hero-live" data-level="moderate"><span class="dot" aria-hidden="true"></span><span class="t2" id="hc-when">As of 22 Oct</span> <b id="hc-p">12%</b> <span class="lvl" id="hc-level">moderate</span></p>
         </div>
       </div>
       <p class="ai" id="film-ai">AI-generated film</p>
@@ -1228,12 +1260,23 @@ body.ag-in .season-more.in { display: inline-flex; }
       <div class="col">
         <h3>Not this season <small>LATER</small></h3>
         <ul class="checks not">
-          <li><span class="mk"></span><span>Fitting the wetness sensor and loading the new firmware on the pole</span></li>
+          <li><span class="mk"></span><span>Firmware 1.6.0 on the pole: settings and updates over 4G, no cable after that</span></li>
+          <li><span class="mk"></span><span>Fitting the leaf wetness sensor</span></li>
+          <li><span class="mk"></span><span>A new rain plate; this one has read wet since 27 September</span></li>
           <li><span class="mk"></span><span>A farmer app</span></li>
           <li><span class="mk"></span><span>Diagnosis from photos</span></li>
           <li><span class="mk"></span><span>A second crop</span></li>
         </ul>
       </div>
+    </div>
+    <!-- What runs where, today. The firmware and the Pi's software come live
+         from the Pi (summary.json); the values here are what was true when
+         the page was built. -->
+    <div class="versions" id="versions" role="group" aria-label="Versions running now">
+      <div><p class="k">Phytoplex firmware</p><p class="v num" id="ver-fw">1.4.0</p><p class="s" id="ver-fw-s">On the pole</p></div>
+      <div><p class="k">Next firmware</p><p class="v num" id="ver-next">1.6.0</p><p class="s">Written; goes on after the season</p></div>
+      <div><p class="k">Pi software</p><p class="v num" id="ver-pi">2026.10.28</p><p class="s" id="ver-pi-s">Odds engine 1.0</p></div>
+      <div><p class="k">This page</p><p class="v num">28 Oct 2026</p><p class="s">Published</p></div>
     </div>
   </div>
 </section>
@@ -1246,7 +1289,7 @@ body.ag-in .season-more.in { display: inline-flex; }
       <h2 id="parts-h"><span class="caps">What it's</span> <span class="ital">made of.</span></h2>
       <p class="lede">Every part, and why it is there. Tap + to open one.</p>
     </div>
-    <div class="groups"><div class="group"><button class="group-btn" type="button" aria-expanded="false" aria-controls="grp-0"><span class="g">Hardware</span><span class="c">9 parts</span><span class="plus" aria-hidden="true"></span></button><div class="group-body" id="grp-0"><div><ul><li class="acc"><button class="acc-btn" type="button" aria-expanded="false" id="part-0-0" aria-controls="part-0-0-b"><span class="t">Raspberry Pi 5</span><span></span><span class="plus" aria-hidden="true"></span></button><div class="acc-body" id="part-0-0-b" role="region" aria-labelledby="part-0-0"><div><div class="inner"><p>The home unit. Stores every reading, fetches the outside data each hour and runs the odds engine. No cloud bill.</p></div></div></div></li><li class="acc"><button class="acc-btn" type="button" aria-expanded="false" id="part-0-1" aria-controls="part-0-1-b"><span class="t">ESP32</span><span></span><span class="plus" aria-hidden="true"></span></button><div class="acc-body" id="part-0-1-b" role="region" aria-labelledby="part-0-1"><div><div class="inner"><p>The box&#x27;s controller. Reads the sensors every five minutes and signs each upload, so nothing can be faked on the way.</p></div></div></div></li><li class="acc"><button class="acc-btn" type="button" aria-expanded="false" id="part-0-2" aria-controls="part-0-2-b"><span class="t">ESP32-CAM</span><span></span><span class="plus" aria-hidden="true"></span></button><div class="acc-body" id="part-0-2-b" role="region" aria-labelledby="part-0-2"><div><div class="inner"><p>Photographs the same leaves on a schedule, so the record has pictures as well as numbers.</p></div></div></div></li><li class="acc"><button class="acc-btn" type="button" aria-expanded="false" id="part-0-3" aria-controls="part-0-3-b"><span class="t">BME280</span><span></span><span class="plus" aria-hidden="true"></span></button><div class="acc-body" id="part-0-3-b" role="region" aria-labelledby="part-0-3"><div><div class="inner"><p>Air temperature, humidity and pressure among the leaves. The dew point is worked out from the first two.</p></div></div></div></li><li class="acc"><button class="acc-btn" type="button" aria-expanded="false" id="part-0-4" aria-controls="part-0-4-b"><span class="t">ADS1115</span><span></span><span class="plus" aria-hidden="true"></span></button><div class="acc-body" id="part-0-4-b" role="region" aria-labelledby="part-0-4"><div><div class="inner"><p>Turns analog signals into precise numbers. The leaf wetness sensor plugs in here.</p></div></div></div></li><li class="acc"><button class="acc-btn" type="button" aria-expanded="false" id="part-0-5" aria-controls="part-0-5-b"><span class="t">Rain plate</span><span></span><span class="plus" aria-hidden="true"></span></button><div class="acc-body" id="part-0-5-b" role="region" aria-labelledby="part-0-5"><div><div class="inner"><p>Tells wet from dry when rain falls on it. It does not measure millimetres.</p></div></div></div></li><li class="acc"><button class="acc-btn" type="button" aria-expanded="false" id="part-0-6" aria-controls="part-0-6-b"><span class="t">A7670C 4G modem</span><span></span><span class="plus" aria-hidden="true"></span></button><div class="acc-body" id="part-0-6-b" role="region" aria-labelledby="part-0-6"><div><div class="inner"><p>There is no Wi-Fi in the field. Every reading travels home over the mobile network.</p></div></div></div></li><li class="acc"><button class="acc-btn" type="button" aria-expanded="false" id="part-0-7" aria-controls="part-0-7-b"><span class="t">20 W solar, 12 V battery</span><span></span><span class="plus" aria-hidden="true"></span></button><div class="acc-body" id="part-0-7-b" role="region" aria-labelledby="part-0-7"><div><div class="inner"><p>Keeps the box running day and night with no mains power.</p></div></div></div></li><li class="acc"><button class="acc-btn" type="button" aria-expanded="false" id="part-0-8" aria-controls="part-0-8-b"><span class="t">Leaf wetness sensor</span><span class="soon">Planned</span><span class="plus" aria-hidden="true"></span></button><div class="acc-body" id="part-0-8-b" role="region" aria-labelledby="part-0-8"><div><div class="inner"><p>Will measure wet leaves directly instead of computing them. Goes in after the season.</p></div></div></div></li></ul></div></div></div><div class="group"><button class="group-btn" type="button" aria-expanded="false" aria-controls="grp-1"><span class="g">Data</span><span class="c">6 parts</span><span class="plus" aria-hidden="true"></span></button><div class="group-body" id="grp-1"><div><ul><li class="acc"><button class="acc-btn" type="button" aria-expanded="false" id="part-1-0" aria-controls="part-1-0-b"><span class="t">Sentinel-2</span><span></span><span class="plus" aria-hidden="true"></span></button><div class="acc-body" id="part-1-0-b" role="region" aria-labelledby="part-1-0"><div><div class="inner"><p>European satellite that sees colour. Measures how green the field is on clear days.</p></div></div></div></li><li class="acc"><button class="acc-btn" type="button" aria-expanded="false" id="part-1-1" aria-controls="part-1-1-b"><span class="t">Sentinel-1 radar</span><span></span><span class="plus" aria-hidden="true"></span></button><div class="acc-body" id="part-1-1-b" role="region" aria-labelledby="part-1-1"><div><div class="inner"><p>Radar sees through cloud, so the canopy is followed even when Sentinel-2 cannot see it.</p></div></div></div></li><li class="acc"><button class="acc-btn" type="button" aria-expanded="false" id="part-1-2" aria-controls="part-1-2-b"><span class="t">ECMWF ensemble</span><span></span><span class="plus" aria-hidden="true"></span></button><div class="acc-body" id="part-1-2-b" role="region" aria-labelledby="part-1-2"><div><div class="inner"><p>51 versions of the same forecast. Their spread becomes the range around the odds.</p></div></div></div></li><li class="acc"><button class="acc-btn" type="button" aria-expanded="false" id="part-1-3" aria-controls="part-1-3-b"><span class="t">Open-Meteo</span><span></span><span class="plus" aria-hidden="true"></span></button><div class="acc-body" id="part-1-3-b" role="region" aria-labelledby="part-1-3"><div><div class="inner"><p>Free access to the forecasts, and to what earlier forecasts said, which is how the field correction learns.</p></div></div></div></li><li class="acc"><button class="acc-btn" type="button" aria-expanded="false" id="part-1-4" aria-controls="part-1-4-b"><span class="t">ERA5 and ERA5-Land</span><span></span><span class="plus" aria-hidden="true"></span></button><div class="acc-body" id="part-1-4-b" role="region" aria-labelledby="part-1-4"><div><div class="inner"><p>Hour-by-hour weather history. Fills the hours the station missed and supplies cloud, wind and sunshine.</p></div></div></div></li><li class="acc"><button class="acc-btn" type="button" aria-expanded="false" id="part-1-5" aria-controls="part-1-5-b"><span class="t">NASA POWER</span><span></span><span class="plus" aria-hidden="true"></span></button><div class="acc-body" id="part-1-5-b" role="region" aria-labelledby="part-1-5"><div><div class="inner"><p>Daily sunlight records for the field, as a cross-check.</p></div></div></div></li></ul></div></div></div><div class="group"><button class="group-btn" type="button" aria-expanded="false" aria-controls="grp-2"><span class="g">Software</span><span class="c">9 parts</span><span class="plus" aria-hidden="true"></span></button><div class="group-body" id="grp-2"><div><ul><li class="acc"><button class="acc-btn" type="button" aria-expanded="false" id="part-2-0" aria-controls="part-2-0-b"><span class="t">Odds engine</span><span></span><span class="plus" aria-hidden="true"></span></button><div class="acc-body" id="part-2-0-b" role="region" aria-labelledby="part-2-0"><div><div class="inner"><p>Runs the season and the next 72 hours 1,020 times with the uncertain numbers varied, and averages them into one chance.</p></div></div></div></li><li class="acc"><button class="acc-btn" type="button" aria-expanded="false" id="part-2-1" aria-controls="part-2-1-b"><span class="t">Leaf energy balance</span><span></span><span class="plus" aria-hidden="true"></span></button><div class="acc-body" id="part-2-1-b" role="region" aria-labelledby="part-2-1"><div><div class="inner"><p>Works out dew and drying from radiation, wind and humidity, hour by hour.</p></div></div></div></li><li class="acc"><button class="acc-btn" type="button" aria-expanded="false" id="part-2-2" aria-controls="part-2-2-b"><span class="t">Infection models</span><span></span><span class="plus" aria-hidden="true"></span></button><div class="acc-body" id="part-2-2-b" role="region" aria-labelledby="part-2-2"><div><div class="inner"><p>The wet hours and temperatures five cabbage diseases need, from published trials, in Magarey&#x27;s generic infection model.</p></div></div></div></li><li class="acc"><button class="acc-btn" type="button" aria-expanded="false" id="part-2-3" aria-controls="part-2-3-b"><span class="t">Field correction</span><span></span><span class="plus" aria-hidden="true"></span></button><div class="acc-body" id="part-2-3-b" role="region" aria-labelledby="part-2-3"><div><div class="inner"><p>Learns how this field differs from the forecast and corrects the next one, from the last 30 days only, because the offset moves with the season.</p></div></div></div></li><li class="acc"><button class="acc-btn" type="button" aria-expanded="false" id="part-2-4" aria-controls="part-2-4-b"><span class="t">Calibration</span><span></span><span class="plus" aria-hidden="true"></span></button><div class="acc-body" id="part-2-4-b" role="region" aria-labelledby="part-2-4"><div><div class="inner"><p>Moves the odds toward what the field log shows. Called checked after 20 walks with at least 3 outbreaks.</p></div></div></div></li><li class="acc"><button class="acc-btn" type="button" aria-expanded="false" id="part-2-5" aria-controls="part-2-5-b"><span class="t">Anomaly check</span><span></span><span class="plus" aria-hidden="true"></span></button><div class="acc-body" id="part-2-5-b" role="region" aria-labelledby="part-2-5"><div><div class="inner"><p>Flags any hour far from the same hour over the last 15 days.</p></div></div></div></li><li class="acc"><button class="acc-btn" type="button" aria-expanded="false" id="part-2-6" aria-controls="part-2-6-b"><span class="t">Disease-or-stress rule</span><span></span><span class="plus" aria-hidden="true"></span></button><div class="acc-body" id="part-2-6-b" role="region" aria-labelledby="part-2-6"><div><div class="inner"><p>Points at disease only when the canopy falls while the weather favoured infection.</p></div></div></div></li><li class="acc"><button class="acc-btn" type="button" aria-expanded="false" id="part-2-7" aria-controls="part-2-7-b"><span class="t">MongoDB</span><span></span><span class="plus" aria-hidden="true"></span></button><div class="acc-body" id="part-2-7-b" role="region" aria-labelledby="part-2-7"><div><div class="inner"><p>The database on the Pi. Every reading since 11 August, kept at home.</p></div></div></div></li><li class="acc"><button class="acc-btn" type="button" aria-expanded="false" id="part-2-8" aria-controls="part-2-8-b"><span class="t">Cloudflare Tunnel</span><span></span><span class="plus" aria-hidden="true"></span></button><div class="acc-body" id="part-2-8-b" role="region" aria-labelledby="part-2-8"><div><div class="inner"><p>Puts the Pi online without opening any port on the home network.</p></div></div></div></li></ul></div></div></div></div>
+    <div class="groups"><div class="group"><button class="group-btn" type="button" aria-expanded="false" aria-controls="grp-0"><span class="g">Hardware</span><span class="c">9 parts</span><span class="plus" aria-hidden="true"></span></button><div class="group-body" id="grp-0"><div><ul><li class="acc"><button class="acc-btn" type="button" aria-expanded="false" id="part-0-0" aria-controls="part-0-0-b"><span class="t">Raspberry Pi 5</span><span></span><span class="plus" aria-hidden="true"></span></button><div class="acc-body" id="part-0-0-b" role="region" aria-labelledby="part-0-0"><div><div class="inner"><p>The home unit. Stores every reading, fetches the outside data each hour and runs the odds engine. No cloud bill.</p></div></div></div></li><li class="acc"><button class="acc-btn" type="button" aria-expanded="false" id="part-0-1" aria-controls="part-0-1-b"><span class="t">ESP32</span><span></span><span class="plus" aria-hidden="true"></span></button><div class="acc-body" id="part-0-1-b" role="region" aria-labelledby="part-0-1"><div><div class="inner"><p>The box&#x27;s controller. Reads the sensors every five minutes and signs each upload, so nothing can be faked on the way.</p></div></div></div></li><li class="acc"><button class="acc-btn" type="button" aria-expanded="false" id="part-0-2" aria-controls="part-0-2-b"><span class="t">ESP32-CAM</span><span></span><span class="plus" aria-hidden="true"></span></button><div class="acc-body" id="part-0-2-b" role="region" aria-labelledby="part-0-2"><div><div class="inner"><p>Photographs the same leaves on a schedule, so the record has pictures as well as numbers.</p></div></div></div></li><li class="acc"><button class="acc-btn" type="button" aria-expanded="false" id="part-0-3" aria-controls="part-0-3-b"><span class="t">BME280</span><span></span><span class="plus" aria-hidden="true"></span></button><div class="acc-body" id="part-0-3-b" role="region" aria-labelledby="part-0-3"><div><div class="inner"><p>Air temperature, humidity and pressure among the leaves. The dew point is worked out from the first two.</p></div></div></div></li><li class="acc"><button class="acc-btn" type="button" aria-expanded="false" id="part-0-4" aria-controls="part-0-4-b"><span class="t">ADS1115</span><span></span><span class="plus" aria-hidden="true"></span></button><div class="acc-body" id="part-0-4-b" role="region" aria-labelledby="part-0-4"><div><div class="inner"><p>Turns analog signals into precise numbers. The leaf wetness sensor plugs in here.</p></div></div></div></li><li class="acc"><button class="acc-btn" type="button" aria-expanded="false" id="part-0-5" aria-controls="part-0-5-b"><span class="t">Rain plate</span><span></span><span class="plus" aria-hidden="true"></span></button><div class="acc-body" id="part-0-5-b" role="region" aria-labelledby="part-0-5"><div><div class="inner"><p>Tells wet from dry when rain falls on it. It does not measure millimetres. This one has read wet since 27 September and is replaced after the season.</p></div></div></div></li><li class="acc"><button class="acc-btn" type="button" aria-expanded="false" id="part-0-6" aria-controls="part-0-6-b"><span class="t">A7670C 4G modem</span><span></span><span class="plus" aria-hidden="true"></span></button><div class="acc-body" id="part-0-6-b" role="region" aria-labelledby="part-0-6"><div><div class="inner"><p>There is no Wi-Fi in the field. Every reading travels home over the mobile network.</p></div></div></div></li><li class="acc"><button class="acc-btn" type="button" aria-expanded="false" id="part-0-7" aria-controls="part-0-7-b"><span class="t">20 W solar, 12 V battery</span><span></span><span class="plus" aria-hidden="true"></span></button><div class="acc-body" id="part-0-7-b" role="region" aria-labelledby="part-0-7"><div><div class="inner"><p>Keeps the box running day and night with no mains power.</p></div></div></div></li><li class="acc"><button class="acc-btn" type="button" aria-expanded="false" id="part-0-8" aria-controls="part-0-8-b"><span class="t">Leaf wetness sensor</span><span class="soon">Planned</span><span class="plus" aria-hidden="true"></span></button><div class="acc-body" id="part-0-8-b" role="region" aria-labelledby="part-0-8"><div><div class="inner"><p>Will measure wet leaves directly instead of computing them. Goes in after the season.</p></div></div></div></li></ul></div></div></div><div class="group"><button class="group-btn" type="button" aria-expanded="false" aria-controls="grp-1"><span class="g">Data</span><span class="c">6 parts</span><span class="plus" aria-hidden="true"></span></button><div class="group-body" id="grp-1"><div><ul><li class="acc"><button class="acc-btn" type="button" aria-expanded="false" id="part-1-0" aria-controls="part-1-0-b"><span class="t">Sentinel-2</span><span></span><span class="plus" aria-hidden="true"></span></button><div class="acc-body" id="part-1-0-b" role="region" aria-labelledby="part-1-0"><div><div class="inner"><p>European satellite that sees colour. Measures how green the field is on clear days.</p></div></div></div></li><li class="acc"><button class="acc-btn" type="button" aria-expanded="false" id="part-1-1" aria-controls="part-1-1-b"><span class="t">Sentinel-1 radar</span><span></span><span class="plus" aria-hidden="true"></span></button><div class="acc-body" id="part-1-1-b" role="region" aria-labelledby="part-1-1"><div><div class="inner"><p>Radar sees through cloud, so the canopy is followed even when Sentinel-2 cannot see it.</p></div></div></div></li><li class="acc"><button class="acc-btn" type="button" aria-expanded="false" id="part-1-2" aria-controls="part-1-2-b"><span class="t">ECMWF ensemble</span><span></span><span class="plus" aria-hidden="true"></span></button><div class="acc-body" id="part-1-2-b" role="region" aria-labelledby="part-1-2"><div><div class="inner"><p>51 versions of the same forecast. Their spread becomes the range around the odds.</p></div></div></div></li><li class="acc"><button class="acc-btn" type="button" aria-expanded="false" id="part-1-3" aria-controls="part-1-3-b"><span class="t">Open-Meteo</span><span></span><span class="plus" aria-hidden="true"></span></button><div class="acc-body" id="part-1-3-b" role="region" aria-labelledby="part-1-3"><div><div class="inner"><p>Free access to the forecasts, and to what earlier forecasts said, which is how the field correction learns.</p></div></div></div></li><li class="acc"><button class="acc-btn" type="button" aria-expanded="false" id="part-1-4" aria-controls="part-1-4-b"><span class="t">ERA5 and ERA5-Land</span><span></span><span class="plus" aria-hidden="true"></span></button><div class="acc-body" id="part-1-4-b" role="region" aria-labelledby="part-1-4"><div><div class="inner"><p>Hour-by-hour weather history. Fills the hours the station missed and supplies cloud, wind and sunshine.</p></div></div></div></li><li class="acc"><button class="acc-btn" type="button" aria-expanded="false" id="part-1-5" aria-controls="part-1-5-b"><span class="t">NASA POWER</span><span></span><span class="plus" aria-hidden="true"></span></button><div class="acc-body" id="part-1-5-b" role="region" aria-labelledby="part-1-5"><div><div class="inner"><p>Daily sunlight records for the field, as a cross-check.</p></div></div></div></li></ul></div></div></div><div class="group"><button class="group-btn" type="button" aria-expanded="false" aria-controls="grp-2"><span class="g">Software</span><span class="c">11 parts</span><span class="plus" aria-hidden="true"></span></button><div class="group-body" id="grp-2"><div><ul><li class="acc"><button class="acc-btn" type="button" aria-expanded="false" id="part-2-0" aria-controls="part-2-0-b"><span class="t">Odds engine</span><span></span><span class="plus" aria-hidden="true"></span></button><div class="acc-body" id="part-2-0-b" role="region" aria-labelledby="part-2-0"><div><div class="inner"><p>Runs the season and the next 72 hours 1,020 times with the uncertain numbers varied, and averages them into one chance.</p></div></div></div></li><li class="acc"><button class="acc-btn" type="button" aria-expanded="false" id="part-2-1" aria-controls="part-2-1-b"><span class="t">Leaf energy balance</span><span></span><span class="plus" aria-hidden="true"></span></button><div class="acc-body" id="part-2-1-b" role="region" aria-labelledby="part-2-1"><div><div class="inner"><p>Works out dew and drying from radiation, wind and humidity, hour by hour.</p></div></div></div></li><li class="acc"><button class="acc-btn" type="button" aria-expanded="false" id="part-2-2" aria-controls="part-2-2-b"><span class="t">Infection models</span><span></span><span class="plus" aria-hidden="true"></span></button><div class="acc-body" id="part-2-2-b" role="region" aria-labelledby="part-2-2"><div><div class="inner"><p>The wet hours and temperatures five cabbage diseases need, from published trials, in Magarey&#x27;s generic infection model.</p></div></div></div></li><li class="acc"><button class="acc-btn" type="button" aria-expanded="false" id="part-2-3" aria-controls="part-2-3-b"><span class="t">Field correction</span><span></span><span class="plus" aria-hidden="true"></span></button><div class="acc-body" id="part-2-3-b" role="region" aria-labelledby="part-2-3"><div><div class="inner"><p>Learns how this field differs from the forecast and corrects the next one, from the last 30 days only, because the offset moves with the season.</p></div></div></div></li><li class="acc"><button class="acc-btn" type="button" aria-expanded="false" id="part-2-4" aria-controls="part-2-4-b"><span class="t">Calibration</span><span></span><span class="plus" aria-hidden="true"></span></button><div class="acc-body" id="part-2-4-b" role="region" aria-labelledby="part-2-4"><div><div class="inner"><p>Moves the odds toward what the field log shows. Called checked after 20 walks with at least 3 outbreaks.</p></div></div></div></li><li class="acc"><button class="acc-btn" type="button" aria-expanded="false" id="part-2-5" aria-controls="part-2-5-b"><span class="t">Anomaly check</span><span></span><span class="plus" aria-hidden="true"></span></button><div class="acc-body" id="part-2-5-b" role="region" aria-labelledby="part-2-5"><div><div class="inner"><p>Flags any hour far from the same hour over the last 15 days.</p></div></div></div></li><li class="acc"><button class="acc-btn" type="button" aria-expanded="false" id="part-2-6" aria-controls="part-2-6-b"><span class="t">Disease-or-stress rule</span><span></span><span class="plus" aria-hidden="true"></span></button><div class="acc-body" id="part-2-6-b" role="region" aria-labelledby="part-2-6"><div><div class="inner"><p>Points at disease only when the canopy falls while the weather favoured infection.</p></div></div></div></li><li class="acc"><button class="acc-btn" type="button" aria-expanded="false" id="part-2-7" aria-controls="part-2-7-b"><span class="t">Health check</span><span></span><span class="plus" aria-hidden="true"></span></button><div class="acc-body" id="part-2-7-b" role="region" aria-labelledby="part-2-7"><div><div class="inner"><p>Names a part that is failing while the data still flows: a rain plate stuck wet, a sensor gone from the bus, a battery running low.</p></div></div></div></li><li class="acc"><button class="acc-btn" type="button" aria-expanded="false" id="part-2-8" aria-controls="part-2-8-b"><span class="t">Settings and updates over 4G</span><span class="soon">Planned</span><span class="plus" aria-hidden="true"></span></button><div class="acc-body" id="part-2-8-b" role="region" aria-labelledby="part-2-8"><div><div class="inner"><p>From firmware 1.6.0 the Pi sets how often the box reads, faster on wet nights, and sends it new firmware between readings, checked and reversible. Goes on the box after the season.</p></div></div></div></li><li class="acc"><button class="acc-btn" type="button" aria-expanded="false" id="part-2-9" aria-controls="part-2-9-b"><span class="t">MongoDB</span><span></span><span class="plus" aria-hidden="true"></span></button><div class="acc-body" id="part-2-9-b" role="region" aria-labelledby="part-2-9"><div><div class="inner"><p>The database on the Pi. Every reading since 11 August, kept at home.</p></div></div></div></li><li class="acc"><button class="acc-btn" type="button" aria-expanded="false" id="part-2-10" aria-controls="part-2-10-b"><span class="t">Cloudflare Tunnel</span><span></span><span class="plus" aria-hidden="true"></span></button><div class="acc-body" id="part-2-10-b" role="region" aria-labelledby="part-2-10"><div><div class="inner"><p>Puts the Pi online without opening any port on the home network.</p></div></div></div></li></ul></div></div></div></div>
   </div>
 </section>
 
@@ -1669,15 +1712,87 @@ body.ag-in .season-more.in { display: inline-flex; }
   }
   window.AGNav = { isOpen: isOpen, close: function () { set(false); } };
 
+  // Links without the address bubble. While the pointer is over a link, the
+  // browser shows its address in a corner of the window; these pages do not
+  // want that. So once the page has loaded, every link keeps its address in
+  // data-href instead of href, and a click, Enter, or a middle, Cmd or Ctrl
+  // click does what the link would have done. The page source keeps the real
+  // href for search engines and anyone without script. Left alone: downloads,
+  // mail and phone links, and anything marked data-keep-href.
+  function ref(a) { return a.getAttribute('data-href') || a.getAttribute('href') || ''; }
+  function quiet(a) {
+    if (a.hasAttribute('data-href') || a.hasAttribute('data-keep-href') || a.hasAttribute('download')) return;
+    var href = a.getAttribute('href');
+    if (!href || /^(mailto:|tel:|javascript:)/i.test(href)) return;
+    a.setAttribute('data-href', href);
+    a.removeAttribute('href');
+    if (!a.hasAttribute('role')) a.setAttribute('role', 'link');
+    if (!a.hasAttribute('tabindex')) a.setAttribute('tabindex', '0');
+  }
+  function quietAll(root) {
+    if (root.nodeType !== 1) return;
+    if (root.matches && root.matches('a[href]')) quiet(root);
+    if (root.querySelectorAll) Array.prototype.forEach.call(root.querySelectorAll('a[href]'), quiet);
+  }
+  function follow(a, e, byKey) {
+    var href = a.getAttribute('data-href');
+    var newTab = !!(e.metaKey || e.ctrlKey || e.shiftKey || e.button === 1);
+    if (href.charAt(0) === '#' && !newTab) {
+      var t = href.length > 1 ? document.getElementById(href.slice(1)) : null;
+      if (history.pushState) history.pushState(null, '', href); else location.hash = href;
+      if (t) {
+        t.scrollIntoView({ block: 'start' });         // smooth, or not, as the page's scroll-behavior says
+        if (byKey) {                                   // a keyboard jump moves focus there too, as a real link does
+          if (!t.hasAttribute('tabindex')) t.setAttribute('tabindex', '-1');
+          t.focus({ preventScroll: true });
+        }
+      } else window.scrollTo(0, 0);
+      return;
+    }
+    var url = new URL(href, location.href).href;
+    if (newTab) window.open(url, '_blank', 'noopener');
+    else location.assign(url);
+  }
+  quietAll(document.body);
+  if ('MutationObserver' in window) {
+    new MutationObserver(function (ms) {
+      ms.forEach(function (m) { Array.prototype.forEach.call(m.addedNodes, quietAll); });
+    }).observe(document.body, { childList: true, subtree: true });
+  }
+  // On window, so every other handler (sign-in, requests) has had its say and
+  // can still cancel the jump with preventDefault.
+  var byKey = false;
+  window.addEventListener('click', function (e) {
+    var a = e.target.closest && e.target.closest('a[data-href]');
+    if (!a || e.defaultPrevented || e.button !== 0) return;
+    e.preventDefault();
+    follow(a, e, byKey);
+  });
+  window.addEventListener('auxclick', function (e) {
+    var a = e.target.closest && e.target.closest('a[data-href]');
+    if (!a || e.defaultPrevented || e.button !== 1) return;
+    e.preventDefault();
+    follow(a, e, false);
+  });
+  window.addEventListener('keydown', function (e) {
+    if (e.key !== 'Enter' || e.defaultPrevented) return;
+    var a = e.target.closest && e.target.closest('a[data-href]');
+    if (!a || a !== e.target) return;
+    e.preventDefault();
+    byKey = true;                                    // other handlers see it as the click it is
+    try { a.click(); } finally { byKey = false; }
+  });
+
   // The section crossing the middle of the screen marks its link current,
   // in the bar and in the phone menu; a section with no link clears it.
-  var links = Array.prototype.slice.call(document.querySelectorAll('.nav .links a[href^="#"], #menu nav a[href^="#"]'));
+  var links = Array.prototype.slice.call(document.querySelectorAll(
+    '.nav .links a[href^="#"], .nav .links a[data-href^="#"], #menu nav a[href^="#"], #menu nav a[data-href^="#"]'));
   if (!links.length || !('IntersectionObserver' in window)) return;
   var io = new IntersectionObserver(function (entries) {
     entries.forEach(function (x) {
       if (!x.isIntersecting) return;
       links.forEach(function (a) {
-        if (a.getAttribute('href') === '#' + x.target.id) a.setAttribute('aria-current', 'true');
+        if (ref(a) === '#' + x.target.id) a.setAttribute('aria-current', 'true');
         else a.removeAttribute('aria-current');
       });
     });
@@ -2009,13 +2124,18 @@ body.ag-in .season-more.in { display: inline-flex; }
     if (o.top) out += ' ' + esc(o.top) + ' most likely.';
     return out;
   }
-  function renderOdds(o) {
+  function renderOdds(o, live) {
     if (!o || o.p == null) return;
     var lv = o.level || level(o.p);
     var P = pct(o.p);
     document.documentElement.dataset.odds = P;
     if ($('hc-p')) $('hc-p').textContent = P + '%';
     if ($('hero-live')) $('hero-live').dataset.level = lv;
+    // "Right now" only when the number came from the Pi just now and is not
+    // overdue; otherwise the pill says which day it is from.
+    var fresh = !!live && !o.stale;
+    if ($('hero-live')) $('hero-live').classList.toggle('stale', !fresh);
+    if ($('hc-when')) $('hc-when').textContent = fresh ? 'Right now' : 'As of ' + String(o.updated || '').split(',')[0];
     setBig(P);
     $('o-words').textContent = o.words || '';
     [$('hc-level'), $('o-level')].forEach(function (el) { if (el) { el.textContent = lv; el.dataset.level = lv; } });
@@ -2626,25 +2746,59 @@ body.ag-in .season-more.in { display: inline-flex; }
   if (document.fonts && document.fonts.ready) document.fonts.ready.then(fitWordmark);
   window.addEventListener('resize', function () { clearTimeout(fitWordmark.t); fitWordmark.t = setTimeout(fitWordmark, 150); }, { passive: true });
 
+  /* ------------------------------------------------------------ versions */
+  // What runs where, from the Pi: the firmware the box's latest reading came
+  // from, and the Pi's own release, engine and commit.
+  function renderVersions(s) {
+    var v = s.versions, l = s.latest || {};
+    if (!v) return;
+    if (v.firmware && $('ver-fw')) $('ver-fw').textContent = v.firmware;
+    if ($('ver-fw-s')) {
+      $('ver-fw-s').textContent = l.online ? 'On the pole, sending now' : 'On the pole';
+      $('ver-fw-s').classList.toggle('on', !!l.online);
+    }
+    if (v.next_firmware && $('ver-next')) $('ver-next').textContent = v.next_firmware;
+    if (v.release && $('ver-pi')) $('ver-pi').textContent = v.release;
+    if ($('ver-pi-s')) $('ver-pi-s').textContent = 'Odds engine ' + (v.odds_engine || '') + (v.commit ? ' · ' + v.commit : '');
+  }
+
   /* ------------------------------------------------------------ data */
-  function render(s) {
+  // The page carries the numbers it was built with, then asks the Pi for the
+  // live ones, and asks again every five minutes (and on coming back to the
+  // tab after longer than that), so it never needs a reload to stay current.
+  function render(s, live) {
     if (!s) return;
-    if (s.odds) renderOdds(s.odds);
+    if (s.odds) renderOdds(s.odds, live);
     if (s.orbit && s.orbit.optical && s.orbit.optical.length) {
       orbit = s.orbit; renderSwatches(orbit.optical); drawStrip();
     }
+    if (live) renderVersions(s);
   }
   var fallback = null;
   try { fallback = JSON.parse($('ag-fallback').textContent); } catch (e) {}
-  if (fallback) render(fallback);
-  if (window.fetch) {
+  if (fallback) render(fallback, false);
+  var EVERY = 5 * 60 * 1000, lastAsk = 0;
+  function ask() {
+    if (!window.fetch) return;
+    lastAsk = Date.now();
     var ctl = window.AbortController ? new AbortController() : null;
-    var t = setTimeout(function () { if (ctl) ctl.abort(); }, 5000);
+    var t = setTimeout(function () { if (ctl) ctl.abort(); }, 8000);
     fetch(SUMMARY, { cache: 'no-store', signal: ctl ? ctl.signal : undefined })
       .then(function (r) { return r.ok ? r.json() : null; })
       .catch(function () { return null; })
-      .then(function (s) { clearTimeout(t); render(s || window.AG_SAMPLE || null); });
+      .then(function (s) {
+        clearTimeout(t);
+        if (s && !s.error) render(s, true);
+        else if (window.AG_SAMPLE && !lastLive) render(window.AG_SAMPLE, false);
+        if (s && !s.error) lastLive = true;
+      });
   }
+  var lastLive = false;
+  ask();
+  setInterval(function () { if (!document.hidden) ask(); }, EVERY);
+  document.addEventListener('visibilitychange', function () {
+    if (!document.hidden && Date.now() - lastAsk > EVERY) ask();
+  });
 })();
 
 </script>
