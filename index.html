@@ -12,14 +12,14 @@
 <meta property="og:url" content="https://agrisync.tech/"/>
 <meta property="og:title" content="AgriSync | Odds before spots"/>
 <meta property="og:description" content="The chance a cabbage field picks up a disease in the next 24 hours, as one number. From a sensor in the crop, two satellites and 51 weather forecasts."/>
-<meta property="og:image" content="https://agrisync.tech/og-image.png"/>
+<meta property="og:image" content="https://agrisync.tech/og-image.jpg"/>
 <meta property="og:image:width" content="1200"/>
 <meta property="og:image:height" content="630"/>
-<meta property="og:image:alt" content="AgriSync: odds before spots"/>
+<meta property="og:image:alt" content="AgriSync: odds before spots. A dew-covered cabbage leaf at first light."/>
 <meta name="twitter:card" content="summary_large_image"/>
 <meta name="twitter:title" content="AgriSync | Odds before spots"/>
 <meta name="twitter:description" content="The chance a cabbage field picks up a disease in the next 24 hours, as one number."/>
-<meta name="twitter:image" content="https://agrisync.tech/og-image.png"/>
+<meta name="twitter:image" content="https://agrisync.tech/og-image.jpg"/>
 <link rel="preconnect" href="https://fonts.googleapis.com"/>
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin/>
 <link href="https://fonts.googleapis.com/css2?family=Instrument+Sans:ital,wdth,wght@0,75..100,400..700;1,75..100,400..700&amp;family=Instrument+Serif:ital@0;1&amp;family=DM+Mono:wght@400;500&amp;display=swap" rel="stylesheet"/>
@@ -372,18 +372,42 @@ a, button, [role="link"], [role="button"], [role="slider"] { -webkit-tap-highlig
 .hero { position: relative; height: 165svh; background: var(--paper); }
 .hero-stage { position: sticky; top: 0; height: 100svh; overflow: hidden; overflow: clip; }
 .film {
-  position: absolute; inset: 0; margin: 0; overflow: hidden; isolation: isolate;
-  background: #17241b var(--poster, none) 50% 100% / cover no-repeat;   /* crops keep the bottom edge, where the sparkle is */
+  position: absolute; inset: 0; margin: 0; overflow: hidden; isolation: isolate; background: #141d18;
   transform: scale(calc(1 - .12 * var(--p, 0))); border-radius: calc(28px * var(--p, 0));
+  /* The leaf sits right of centre; narrower screens crop from the left, where the field is dark. */
+  --fpos: 62% 42%;
 }
-@media (orientation: portrait) { .film { background-image: var(--poster-sm, var(--poster, none)); } }
-.film canvas, .film video { position: absolute; inset: 0; width: 100%; height: 100%; }
-.film video { object-fit: cover; object-position: 50% 100%; opacity: 0; transition: opacity var(--t-sheet) var(--ease); }
+@media (orientation: portrait) { .film { --fpos: 24% 40%; } }
+/* Three layers of the same first frame, so the hero is never blank: the
+   inlined blur, the poster, then the film fading in on top. */
+.film-media { position: absolute; inset: 0; }
+/* The inlined blur is 48 px wide: blurred again here so it reads as soft focus, not blocks. */
+.film-media::before { content: ""; position: absolute; inset: -48px; background: var(--lqip, none) var(--fpos) / cover no-repeat; filter: blur(24px); }
+@media (orientation: portrait) { .film-media::before { background-image: var(--lqip-sm, var(--lqip, none)); } }
+.film canvas, .film video, .film-poster { position: absolute; inset: 0; width: 100%; height: 100%; }
+.film video, .film-poster { object-fit: cover; object-position: var(--fpos); }
+.film video { opacity: 0; transition: opacity var(--t-sheet) var(--ease); }
 .film video.on { opacity: 1; }
+.js .film-poster { opacity: 0; transition: opacity .7s var(--ease); }
+.js .film-poster.on { opacity: 1; }
 .film.has-film canvas { display: none; }
+/* On load the film settles: it starts 6% larger and sinks to its place over
+   three seconds, while the headline rises in. */
+@keyframes film-settle { from { transform: scale(1.06); } to { transform: none; } }
+.js .film-media { animation: film-settle 3.2s cubic-bezier(.16, 1, .3, 1) both; }
+/* Shade for the words, and only where they are: a pool of dark from the
+   bottom-left corner under the headline, a little at the foot for the scroll
+   cue, and a band at the head for the clear nav over a pale sky. The leaf on
+   the right keeps its light. */
 .film-shade { position: absolute; inset: 0; pointer-events: none;
-  background: linear-gradient(to top, rgba(11, 22, 15, .72) 0%, rgba(11, 22, 15, .34) 34%, rgba(11, 22, 15, 0) 60%),
-              linear-gradient(to bottom, rgba(11, 22, 15, .38) 0%, rgba(11, 22, 15, 0) 20%); }
+  background: radial-gradient(120% 92% at 0% 100%, rgba(9, 18, 12, .84) 0%, rgba(9, 18, 12, .52) 32%, rgba(9, 18, 12, .14) 58%, rgba(9, 18, 12, 0) 74%),
+              linear-gradient(to top, rgba(9, 18, 12, .42) 0%, rgba(9, 18, 12, 0) 24%),
+              linear-gradient(to bottom, rgba(9, 18, 12, .5) 0%, rgba(9, 18, 12, .16) 14%, rgba(9, 18, 12, 0) 26%); }
+@media (max-width: 719px) {
+  /* On a phone the words sit over the leaf itself. */
+  .film-shade { background: linear-gradient(to top, rgba(9, 18, 12, .9) 0%, rgba(9, 18, 12, .62) 34%, rgba(9, 18, 12, 0) 66%),
+                            linear-gradient(to bottom, rgba(9, 18, 12, .5) 0%, rgba(9, 18, 12, 0) 20%); }
+}
 .film-ui { position: absolute; left: 0; top: 0; width: 100%; height: 100%; z-index: 3; pointer-events: none;
   --edge: max(clamp(16px, 4.2vw, 56px), env(safe-area-inset-left, 0px), calc((100vw - 1240px) / 2)); }
 .film-ui > * { pointer-events: auto; }
@@ -419,12 +443,6 @@ a, button, [role="link"], [role="button"], [role="slider"] { -webkit-tap-highlig
 .hero-now[data-level="moderate"] .lvl { color: var(--mid-n); }
 .hero-now[data-level="high"] .dot { background: var(--high-n); box-shadow: 0 0 0 3px rgba(238, 141, 99, .22); }
 .hero-now[data-level="high"] .lvl { color: var(--high-n); }
-/* The film is made with Gemini and keeps its sparkle; on a laptop or desktop screen this sits
-   8 px left of it, and only while the whole sparkle is in frame (app.js). */
-.film-ui .ai { position: absolute; left: 0; top: 0; margin: 0; font: 500 10px/1 var(--mono); letter-spacing: .12em; text-transform: uppercase;
-  color: rgba(244, 242, 236, .8); text-shadow: 0 1px 10px rgba(0, 0, 0, .5); white-space: nowrap; pointer-events: none;
-  opacity: 0; transition: opacity var(--t-mid) var(--ease); }
-.film-ui .ai.on { opacity: 1; }
 /* Pause and play: not drawn on the film. It shows only when reached with the
    keyboard (Tab), so the film can still be stopped by anyone who needs to. */
 .film-play:not(:focus-visible) { opacity: 0; pointer-events: none; }
@@ -445,10 +463,11 @@ a, button, [role="link"], [role="button"], [role="slider"] { -webkit-tap-highlig
   .hero-h { font-size: min(16.4vw, 72px); }
   .hero-now:not(.stale) .t2 { display: none; }
   .cue { display: none; }
-  .film-play { right: auto; left: 16px; bottom: 28px; }   /* the sparkle sits low on the right on a phone */
+  .film-play { right: 16px; bottom: 28px; }
 }
 /* Reduced motion: no sticky scroll; the film is a framed card that stays put. */
 @media (prefers-reduced-motion: reduce) {
+  .js .film-media { animation: none; }
   .hero { height: auto; }
   .hero-stage { position: relative; }
   .film { inset: 84px 12px 12px; border-radius: 28px; transform: none; }
@@ -1016,9 +1035,15 @@ body.ag-in .season-more.in { display: inline-flex; }
 <!-- ================================================================ hero -->
 <section class="hero" id="hero" aria-labelledby="hero-h">
   <div class="hero-stage">
-    <figure class="film has-film" id="film" style="--poster:url(hero.webp);--poster-sm:url(hero-sm.webp)">
-      <canvas id="hero-field" aria-hidden="true"></canvas>
-      <video id="hero-video" muted playsinline loop preload="none" aria-hidden="true" data-src="hero.mp4" data-src-sm="hero-sm.mp4" data-src-webm="hero.webm" data-src-sm-webm="hero-sm.webm"></video>
+    <!-- The film's first frame paints at once (a tiny blurred copy is inlined,
+         the full poster follows), and the film fades in over it on the same
+         frame, so the hero is never blank. -->
+    <figure class="film has-film" id="film" style="--lqip:url(data:image/webp;base64,UklGRhQBAABXRUJQVlA4IAgBAABQBwCdASowABsAPqlInkmmJKMhNVQMAMAVCWUAynsz8JRIUIAanYxkoFT2FG4AbIs6BOFjIaE56sC+sLW9oyr3w3QAAP5S2FxZqa3yWbkGChU/t2gD9mTc/CEMytnKRpwR5DaD4yUTqlPaxyfikkuIysTOmH3S4w6nApmlxJy9sqO/4eLKqG0blQi0tF9ZDgsClGdwm9FjJG38wZ9xq8bdt0vgbMVP+DRV5N4FB0CQ2Ca5Mnp4p25NgxYCepqYowClX7H2/tG/qJCHOlkkgi0+zAVWBC4GHS4h7YZrzl+38T5ZH7GqFXRrHDrGm7mX5oQL4wBEXpXnbk85fDrtRDjPOTFiGYzgAAA=);--lqip-sm:url(data:image/webp;base64,UklGRrgAAABXRUJQVlA4IKwAAABwBQCdASoSACAAPrVQo0unJKMhqAqo4BaJZQAHBQsgtwDR381odSPOadl+0w0IKzBsXLggAP7TQ4m33ZpVR3+I4vh7vKw8EnxQ64dsjqihixrAPuieIAyuINPE2oGrXVV9IHm9Bo7SEY96SqgjzJE0fNHjDox7GamGHQbzKRZLP7DAiX1naKt0xihhs+H1fhRw/9cIDdUlaC8yeBFHUFQ1rv5mkrAZ5J83KZQA)">
+      <div class="film-media">
+        <canvas id="hero-field" aria-hidden="true"></canvas>
+        <picture><source media="(orientation: portrait)" srcset="hero-sm.webp" width="608" height="1080"><img class="film-poster" src="hero.webp" width="1920" height="1080" alt="" fetchpriority="high" decoding="async"></picture>
+        <video id="hero-video" muted playsinline loop preload="none" aria-hidden="true" data-src="hero.mp4" data-src-sm="hero-sm.mp4" data-src-webm="hero.webm" data-src-sm-webm="hero-sm.webm"></video>
+      </div>
       <div class="film-shade" aria-hidden="true"></div>
     </figure>
     <!-- Follows the film's rect as it settles into a card, but is not scaled with it. -->
@@ -1026,13 +1051,12 @@ body.ag-in .season-more.in { display: inline-flex; }
       <div class="film-copy">
         <p class="eyebrow">Live from a cabbage field in Hapur</p>
         <h1 class="hero-h" id="hero-h"><span class="ln l1"><span class="caps w" style="--i:0">Odds</span> <span class="caps w" style="--i:1">before</span></span> <span class="ln l2"><span class="ital w" style="--i:2">spots.</span></span></h1>
-        <p class="hero-sub">Tomorrow's chance of disease, as one number. Known before a single leaf shows a spot.</p>
+        <p class="hero-sub">Dew like this is how disease gets in. AgriSync turns the wet hours ahead into one number, before a single leaf shows a spot.</p>
         <div class="hero-cta">
           <a class="btn btn-light" href="#odds">See today's odds <svg class="arr"><use href="#i-arrow"/></svg></a>
           <p class="hero-now stale" id="hero-live" data-level="moderate"><span class="dot" aria-hidden="true"></span><span class="t2" id="hc-when">As of 22 Oct</span> <b id="hc-p">12%</b> <span class="lvl" id="hc-level">moderate</span></p>
         </div>
       </div>
-      <p class="ai" id="film-ai">AI-generated film</p>
       <button class="film-play" id="film-play" type="button" aria-label="Pause the film" aria-pressed="false"><svg class="i-pause"><use href="#i-pause"/></svg><svg class="i-play"><use href="#i-play"/></svg></button>
       <div class="cue" aria-hidden="true"><span>Scroll</span><i></i></div>
     </div>
@@ -1956,7 +1980,13 @@ body.ag-in .season-more.in { display: inline-flex; }
     // H.264 plays everywhere that matters; VP9 for browsers built without it.
     var webm = !v.canPlayType('video/mp4; codecs="avc1.640028"') && !!v.canPlayType('video/webm; codecs="vp9"');
     var key = portrait && v.dataset.srcSm ? 'srcSm' : 'src';
-    if (film) film.dataset.cut = key === 'srcSm' ? 'sm' : 'lg';   // which frame the sparkle is measured in
+    // The poster is the film's first frame: it fades in over the inlined blur
+    // as soon as it arrives, and the film fades in over it on the same frame.
+    var po = film && film.querySelector('.film-poster');
+    if (po) {
+      var lit = function () { po.classList.add('on'); };
+      if (po.complete && po.naturalWidth) lit(); else { po.addEventListener('load', lit); po.addEventListener('error', lit); }
+    }
     var inView = true, userPaused = false, loaded = false;
     function load() { if (loaded) return; loaded = true; v.src = (webm && v.dataset[key + 'Webm']) || v.dataset[key]; v.load(); }
     function show(playing) {
@@ -2007,21 +2037,15 @@ body.ag-in .season-more.in { display: inline-flex; }
   // full-bleed into a card (the stylesheet does the scale and radius), the
   // scroll cue is gone by .15, and the nav stays clear over the film until
   // paper shows round it. The text layer follows the film's on-screen rect
-  // without its scale, and the AI label sits 8 px left of Gemini's sparkle,
-  // found from the object-fit: cover geometry (bottom edge kept).
-  var stageEl = hero ? hero.querySelector('.hero-stage') : null, filmUi = $('film-ui'), aiNote = $('film-ai');
+  // without its scale.
+  var stageEl = hero ? hero.querySelector('.hero-stage') : null, filmUi = $('film-ui');
   var cue = hero ? hero.querySelector('.cue') : null, navEl = $('top');
-  // Each cut's frame size and the sparkle in it (centre and radius, source px).
-  var CUTS = { lg: { w: 1280, h: 720, x: 1159, y: 600, r: 20 }, sm: { w: 720, h: 1280, x: 600, y: 1160, r: 22 } };
-  var portraitMq = window.matchMedia ? window.matchMedia('(orientation: portrait)') : { matches: false };
-  function heroCut() { return film && film.dataset.cut ? film.dataset.cut : (portraitMq.matches ? 'sm' : 'lg'); }
   function heroProgress() {
     if (reduced || !hero) return 0;
     var span = hero.offsetHeight - window.innerHeight;
     return span > 0 ? Math.min(1, Math.max(0, -hero.getBoundingClientRect().top / span)) : 0;
   }
   var phoneMq = window.matchMedia ? window.matchMedia('(max-width: 719px)') : { matches: false };
-  var laptopMq = window.matchMedia ? window.matchMedia('(min-width: 1024px) and (orientation: landscape) and (hover: hover)') : { matches: true };
   function placeHeroUi() {
     if (!film || !filmUi || !stageEl) return;
     var W = film.offsetWidth, Hh = film.offsetHeight;
@@ -2030,26 +2054,11 @@ body.ag-in .season-more.in { display: inline-flex; }
     // On a laptop the layer only follows the card, so the words keep their
     // size. On a phone the words fill the width, so the layer shrinks with the
     // card instead: nothing re-wraps halfway through the scroll.
-    var sc = phoneMq.matches ? k : 1, uw = r.width / sc, uh = r.height / sc, f = k / sc;
+    var sc = phoneMq.matches ? k : 1, uw = r.width / sc, uh = r.height / sc;
     filmUi.style.left = (r.left - sr.left).toFixed(1) + 'px'; filmUi.style.top = (r.top - sr.top).toFixed(1) + 'px';
     filmUi.style.width = uw.toFixed(1) + 'px'; filmUi.style.height = uh.toFixed(1) + 'px';
     filmUi.style.transformOrigin = '0 0';
     filmUi.style.transform = sc < .9999 ? 'scale(' + sc.toFixed(4) + ')' : '';
-    if (!aiNote || !film.classList.contains('has-film')) return;
-    var s = CUTS[heroCut()], c = Math.max(W / s.w, Hh / s.h);
-    var ox = (W - s.w * c) * .5, oy = Hh - s.h * c;          // object-position 50% 100%
-    var x = (ox + s.x * c) * f, y = (oy + s.y * c) * f, rr = s.r * c * f;   // in the layer's own px
-    var lw = aiNote.offsetWidth, lh = aiNote.offsetHeight;
-    // Only on a laptop or desktop screen, beside the sparkle, and only while
-    // the whole sparkle is in frame. Where the crop cuts it off (narrow
-    // windows) the label goes too: it labels the mark, it does not stand in
-    // for it. Tablets and phones never show it.
-    var seen = laptopMq.matches && x - rr > lw + 16 && x + rr < uw && y - rr > 0 && y + rr < uh;
-    if (seen) {
-      aiNote.style.left = (x - rr - 8 - lw).toFixed(1) + 'px';
-      aiNote.style.top = (y - lh / 2).toFixed(1) + 'px';
-    }
-    aiNote.classList.toggle('on', seen);
   }
   var heroQueued = false;
   function heroFrame() {
